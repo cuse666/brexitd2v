@@ -7,8 +7,8 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 
-app.get('/bubble_online', function(req, res) {
-  res.sendFile(path.join(__dirname + '/views/hashtag_online_ff.html'));
+app.get('/bubble_online_ff', function(req, res) {
+  res.sendFile(path.join(__dirname + '/views/bubble_online_ff.html'));
 });
 
 app.listen(3000);
