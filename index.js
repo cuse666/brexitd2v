@@ -8,7 +8,9 @@ app.get('/', function(req, res) {
 });
 
 app.get('/bubble_online_ff', function(req, res) {
-  res.sendFile(path.join(__dirname + '/views/2_hashtag_online_ff.html'));
+  res.sendFile(path.join(__dirname + '/views/bubble_online_ff.html'));
 });
+
+app.use('/public',express.static(__dirname+'/views/public'));
 
 app.listen(3000);
