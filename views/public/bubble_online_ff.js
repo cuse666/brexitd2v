@@ -1539,7 +1539,7 @@
         "div#downside-block"
       ).style.height = `${downsideBlockHeight}px`;
 
-      let rows = downsideBlock
+      /*let rows = downsideBlock
         .selectAll(".lifeCycleRow")
         .data(labelSet)
         .enter()
@@ -1552,7 +1552,16 @@
           if (ele.style("display") !== "none") {
             ele.style("display", "none");
           }
-        });
+        });*/
+
+      let rows = downsideBlock
+        .selectAll(".lifeCycleRow")
+        .data(labelSet)
+        .enter()
+        .append("div")
+        .attr("class", "lifeCycleRow")
+        .attr("id", d => `lifeCycleRow-${d}`)
+        .style("display", "none");
 
       rows
         .append("div")
