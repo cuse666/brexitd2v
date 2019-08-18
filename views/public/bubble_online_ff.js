@@ -828,7 +828,7 @@
     }
 
     function isVisible(dataItem) {
-      return dataItem.freq >= 2000 || dataItem.forward >= 50;
+      return dataItem.freq >= 500 || dataItem.forward >= 50;
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
@@ -1085,13 +1085,14 @@
 
     function sliderClickedHandler(event) {
       console.log("sliderClickedHandler", buttonPlay)
-      let hyperParam = 0;
+      //let hyperParam = 0;
       stopTime();
 
       let offset = parseFloat(d3.select(".video-slider").attr("x"));
       let minCXPos = offset + anchorScale.domain()[0];
       let maxCXPos = offset + anchorScale.domain()[1];
-      let currentCXPos = Math.max(minCXPos, d3.event.x + hyperParam);
+      //let currentCXPos = Math.max(minCXPos, d3.event.x + hyperParam);
+      let currentCXPos = Math.max(minCXPos, d3.event.x);
       currentCXPos = Math.min(maxCXPos, currentCXPos);
 
       let anchor = d3.select(".video-anchor");
@@ -1392,7 +1393,7 @@
         //   }
         // })
         .style("opacity", function(d) {
-          if (d.forward > 50 && d.freq > 2000) {
+          if (d.forward > 50 && d.freq > 500) {
             return 1;
           } else {
             return 0;
