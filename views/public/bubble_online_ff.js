@@ -1393,7 +1393,7 @@
         //   }
         // })
         .style("opacity", function(d) {
-          if (d.forward > 50 && d.freq > 500) {
+          if (d.forward > 0 && d.freq > 100) {
             return 1;
           } else {
             return 0;
