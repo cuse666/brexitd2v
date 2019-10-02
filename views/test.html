@@ -642,36 +642,6 @@
         background-color: #efefef;
       }
 
-
-
-/*test line*/
-/* 13. Basic Styling with CSS */
-
-/* Style the lines by removing the fill and applying a stroke */
-.line {
-    fill: none;
-    stroke: #ffab00;
-    stroke-width: 3;
-}
-  
-.overlay {
-  fill: none;
-  pointer-events: all;
-}
-
-/* Style the dots by assigning a fill and stroke */
-.dot {
-    fill: #ffab00;
-    stroke: #fff;
-}
-  
-  .focus circle {
-  fill: none;
-  stroke: steelblue;
-}
-
-/*      test*/
-
     </style>
   </head>
 
@@ -685,16 +655,141 @@
     <div class="container">
       <div id="chartAside"></div>
       <div id="rightAside"></div>
-      <div id="my_dataviz"></div>
     </div>
+	<p></p>
+	<div id="scatter_area"></div>
+	<!-- Create a div where the graph will take place -->
+	<div id="my_dataviz"></div>	
     </div>
     <script src="public/d3.min.js"></script>
-
-    <!--<script src="https://d3js.org/d3.v4.js"></script>--->
     <script src="public/labeler.js"></script>
     <script src="public/popper.min.js"></script>
     <script src="public/tippy.js"></script>
-    <script src="public/bubble_online_ff.js"></script>
-    <script src="public/test.js"></script>
+    <!--<script src="public/bubble_online_ff.js"></script>-->
+	<script src="public/clusters.js"></script>
+	<!-- Load d3.js -->
+	<script src="https://d3js.org/d3.v4.js"></script>
+	
+	<script>
+	/*
+d3.dsv(",", "public/data/hashtag_bubble_deleted0414.csv", function(d) {
+  return {    
+    keys: Object.keys(d),
+    values: Object.values(d)    ,
+	x: d.trend ,
+	y: d['201606']
+  };
+}).then(function(data) {
+  console.log(data);  
+});
+*/
+	</script>
+	
+	<script>
+	
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz_1")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv", function(data) {
+//d3.csv("public/data/test.csv", function(data) {  
+  // Add X axis
+  var x = d3.scaleLinear()
+    .domain([0, 4000])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 500000])
+    .range([ height, 0]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Add dots
+  svg.append('g')
+    .selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+      .attr("cx", function (d) { return x(d.retweet); } )
+      .attr("cy", function (d) { return y(d.time); } )
+      .attr("r", 1.5)
+      .style("fill", "#69b3a2")
+
+})
+
+	</script>
+	
+	<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+//Read the data
+d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/3_TwoNumOrdered_comma.csv",
+
+  // When reading the csv, I must format variables:
+  function(d){
+    return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+  },
+
+  // Now I can use this dataset:
+  function(data) {
+
+    // Add X axis --> it is a date format
+    var x = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { return d.date; }))
+      .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+    // Add Y axis
+    var y = d3.scaleLinear()
+      .domain([0, d3.max(data, function(d) { return +d.value; })])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(d.date) })
+        .y(function(d) { return y(d.value) })
+        )
+
+})
+
+</script>
+
   </body>
 </html>
