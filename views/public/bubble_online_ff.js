@@ -129,14 +129,14 @@
     .domain([0, 0.2, 0.50448195659342, 0.72, 1])
     .range(["0", "1", "1", "2"]);
 
-  // 设定bar的最长长度为多少
+  // 设定bar的最长长度为多少 length of bar
   let tendBarLengthMin = 3;
   let trendBarLength = 117;
-  // 设定pivots
+  // 设定pivots  set pivots
   let rightAsidePivotFromLeft = 136 + trendBarLength;
   let bluePivot = rightAsidePivotFromLeft - trendBarLength;
   let redPivot = rightAsidePivotFromLeft + trendBarLength;
-  // 设定trendbar长度范围
+  // 设定trendbar长度范围 Trendbar length range
   var trendScale = d3
     .scaleLinear()
     .domain([-1, 0, 1])
@@ -422,7 +422,7 @@
       .attr("class", "aside")
       .style("position", "absolute")
       .style("height", svgHeight)
-      // 与rightAside保持一致吧
+      // 与rightAside保持一致吧 Keep up with rightAside
       .style("width", "410")
       .style("z-index", -100);
     let pivotLines = rightAsideSvg.append("g");
@@ -537,7 +537,7 @@
         )
         .attr("fill", "#76a6ca");
 
-      // 文字
+      // 文字 Character
       trendLegend
         .append("text")
         .attr("x", rightAsidePivotFromLeft)
@@ -598,7 +598,7 @@
       .attr("width", width + margin.right);
     let svgChart = svg.append("g").attr("id", "chart");
  
-    // 让video按键放在最上面
+    // 让video按键放在最上面 Put the video button on top
     let button = svg
       .append("image")
       .attr("class", "video-button")
@@ -692,7 +692,7 @@
         return d.y;
       })
       .attr("data-label", d => d.label.slice(1))
-      // 让圆上的主题的文字一直显示
+      // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
       .text(d => twitterText[d.label.slice(1)])
       .style("text-anchor", "middle")
       .style("fill", function(d) {
@@ -721,7 +721,7 @@
 
     // let pastTimeline = initSelectionTimeline(labelSet);
 
-    // 交换顺序
+    // 交换顺序 Swap Line and Circle
     let pastLine = initSelectionPastLine(labelSet);
     let pastCircle = initSelectionPastCircle(labelSet);
 
@@ -756,7 +756,7 @@
     let checkAll = d3.selectAll("input.input-all");
     let checkboxLabels = d3.selectAll("div.labelRow label");
 
-    // 绑定监听
+    // 绑定监听 Binding bubbles monitoring 
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -844,9 +844,9 @@
 
         for (let i = 1, len = lifeCycleOfLabel.length; i < len; i += 1) {
           let color = "";
-          if (labelSet0.indexOf(label) !== -1) color = "#76a6ca"; // 留
-          if (labelSet1.indexOf(label) !== -1) color = "#b2b2b2"; // 中
-          if (labelSet2.indexOf(label) !== -1) color = "#f1706f"; // 脱
+          if (labelSet0.indexOf(label) !== -1) color = "#76a6ca"; // 留 Stay
+          if (labelSet1.indexOf(label) !== -1) color = "#b2b2b2"; // 中 Neutral
+          if (labelSet2.indexOf(label) !== -1) color = "#f1706f"; // 脱 Leave
           
           gradient[label].push(
             `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) /
@@ -1408,13 +1408,13 @@
 
     function createAsidePanel(labelSet, idName) {
       let asideWidth = 190;
-      let lineHeight = 24; // 和css联动
+      let lineHeight = 24; // 和css联动 work with CSS
       let aside = d3
         .select("#rightAside")
         .append("div")
         .attr("class", "aside")
         .style("height", height / 3);
-      // 这句下面还有一句
+      // 这句下面还有一句 
       // document.querySelector("div#aside").style.width = `${asideWidth}px`;
       // document.querySelector("div#aside").style.height = `${anchor.attr("cy")}px`;
       // document.querySelector("div#aside").style.margin = `${margin.top}px 0 ${svgHeight - anchor.attr("cy")}px 0`;
@@ -1507,7 +1507,7 @@
       // document.querySelector("div#eleOfLabelRow").style.height = svgHeight/3 - 20 + 'px';
     }
 
-    // 左边圆大小的编码
+    // 左边圆大小的编码 Encoding the size of the left circle 
     function createDownsidePanel(labelSet) {
       let downsideBlockHeight = 130;
       let downsideTitleHeight = 30;
@@ -1586,7 +1586,7 @@
       // .html("sdfadsf");
     }
 
-    // 本函数在mouseover事件里调用
+    // 本函数在mouseover事件里调用 This function is called in the mouseover event
     function updateMask(selectedLabel) {
       if (selectedLabel.length === 0) {
         d3.selectAll(".dot")
@@ -1805,7 +1805,7 @@
               radius
             );
 
-            // 改成用path
+            // 改成用path Convert to use the path
             let lineLen = Math.sqrt(
               (lineCoord.x2 - lineCoord.x1) * (lineCoord.x2 - lineCoord.x1) +
                 (lineCoord.y2 - lineCoord.y1) * (lineCoord.y2 - lineCoord.y1)
@@ -2003,7 +2003,7 @@
         return;
       }
       // else we filter elements by currentDate
-      // 是展示轨迹点吗?
+      // 是展示轨迹点吗? Is it the track point?
       targetPastCircle["ele"]
         .selectAll("circle")
         .filter(function() {
