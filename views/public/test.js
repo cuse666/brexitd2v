@@ -1,14 +1,15 @@
-d3.csv('public/data/hashtag_bubble_deleted0414.csv').then((data) => {
+d3.csv('public/data/storyline.csv').then(
+  (data) => {
     // array of objects
     console.log(data.length);
-    console.log(data);
+    console.log("------------>" , data[0]['YearMonth']);
     
     // do something with the data
   }).catch((error) => {
     console.error('Error loading the data');
   });
 
-
+/*
 
 // 2. Use the margin convention practice 
 var margin = {top: 50, right: 50, bottom: 50, left: 50}
@@ -104,3 +105,5 @@ svg.selectAll(".dot")
 //     focus.attr("transform", "translate(" + x(d.date) + "," + y(d.close) + ")");
 //     focus.select("text").text(d);
 //   }
+
+8\*/

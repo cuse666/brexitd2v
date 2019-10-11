@@ -1,5 +1,6 @@
 (async function main() {
   let en2ch = await getExplanation();
+
   let lang = "en";
 
   var margin = { top: 10, bottom: 80, left: 120, right: 30 };
@@ -53,7 +54,7 @@
       height / 14 * 2,
       height / 14 * 1,
 
-      console.log([
+      console.log([ 
         height / 14 * 14,
         height / 14 * 13,
         height / 14 * 12,
@@ -74,14 +75,14 @@
   var x = d3
     .scaleLinear()
     .domain([
-      0,
-      50,
-      100,
-      200,
-      300,
-      400,
-      800,
-      1800,
+      0, 
+      50, 
+      100, 
+      200, 
+      300, 
+      400, 
+      800, 
+      1800, 
       2900
     ])
 
@@ -152,14 +153,14 @@
     .axisBottom(x)
     .tickSize(-height + 5)
     .tickValues([
-      0,
-      50,
-      100,
-      200,
-      300,
-      400,
-      800,
-      1800,
+      0, 
+      50, 
+      100, 
+      200, 
+      300, 
+      400, 
+      800, 
+      1800, 
       2900
     ]);
 
@@ -298,7 +299,7 @@
     .text(lang === "en" ? "Retweet" : "支持量")
     .attr("class", "xLabel");
 
-  var bisect = d3.bisector(function (d) {
+  var bisect = d3.bisector(function(d) {
     return d[0];
   });
 
@@ -309,33 +310,17 @@
     if (d) return new Date(y, m, d);
     return new Date(y, m, 1);
   }
-  function getDataByMonth(data, time) {    
-    // Dataset format example
-    /* {label: "#abtv", 
-        forward: 1.6105742383512545, 
-        freq: 1.2079306787634407, 
-        time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
-        trend: "0.007179008", 
-        story: 0}
-    */     
+  function getDataByMonth(data, time) {
     return data.map(d => {
       return {
         label: d.label,
-        forward: findFreqByMonth(d.value, time), //find cx 
-        freq: findForwardByMonth(d.value, time), //find cy
+        forward: findFreqByMonth(d.value, time),
+        freq: findForwardByMonth(d.value, time),
         time: time,
-        trend: d.trend,
-        story: findStoryLine(d.value, time)
+        trend: d.trend
       };
     });
   }
-
-  function findStoryLine(data, time){
-    let index = bisect.left(data, time);
-    let now = data[index];    
-    return now[3]; //return story level 
-  }
-
   function findFreqByMonth(data, time) {
     let index = bisect.left(data, time);
     let now = data[index];
@@ -387,27 +372,24 @@
 
   var dataArray = [];
   var trendMap = new Map();
-  d3.csv("public/data/hashtag_bubble_deleted0414.csv").then(function (data) {
+  d3.csv("public/data/hashtag_bubble_deleted0414.csv").then(function(data) {
     data.forEach(d => {
       let tmp = {};
       tmp.label = d.hashtag.trim();
       tmp.trend = d.trend.trim();
       trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
       tmp.value = [];
-      // start default date
-      tmp.value.push([new Date(2015, 12), 0, 0, 0]);
+      tmp.value.push([new Date(2015, 12), 0, 0]);
       for (let label in d) {
         if (
           label !== "hashtag" &&
           label !== "trend" &&
-          label.substr(0, 2) !== "re" &&
-          label.substr(0, 2) !== "lv"
+          label.substr(0, 2) !== "re"
         ) {
           tmp.value.push([
             parseDate(label),
             parseInt(d[label]),
-            parseInt(d["re" + label]),
-            parseInt(d["lv" + label])
+            parseInt(d["re" + label])
           ]);
         }
       }
@@ -520,13 +502,13 @@
         .attr(
           "points",
           `${rightAsidePivotFromLeft +
-          legendGray +
-          legendRed},${height} ${rightAsidePivotFromLeft +
-          legendGray +
-          legendRed},${height + legendHeight} ${rightAsidePivotFromLeft +
-          legendGray +
-          legendRed +
-          10},${height + 10}`
+            legendGray +
+            legendRed},${height} ${rightAsidePivotFromLeft +
+            legendGray +
+            legendRed},${height + legendHeight} ${rightAsidePivotFromLeft +
+            legendGray +
+            legendRed +
+            10},${height + 10}`
         )
         .attr("fill", "#f1706f");
 
@@ -544,14 +526,14 @@
         .attr(
           "points",
           `${rightAsidePivotFromLeft -
-          legendGray -
-          legendBlue -
-          legendHeight / 2},${height +
-          legendHeight / 2} ${rightAsidePivotFromLeft -
-          legendGray -
-          legendBlue},${height} ${rightAsidePivotFromLeft -
-          legendGray -
-          legendBlue},${height + legendHeight}`
+            legendGray -
+            legendBlue -
+            legendHeight / 2},${height +
+            legendHeight / 2} ${rightAsidePivotFromLeft -
+            legendGray -
+            legendBlue},${height} ${rightAsidePivotFromLeft -
+            legendGray -
+            legendBlue},${height + legendHeight}`
         )
         .attr("fill", "#76a6ca");
 
@@ -603,16 +585,8 @@
     // Add a dot per state. Initialize the data at 1950, and set the colors.
     let startDate = new Date(2016, 0);
     let limitDate = new Date(2019, 4, 30, 23, 59, 59);
-    let endDate = new Date(2019, 5);    
-    // dataset format example
-    /* {label: "#abtv", 
-        forward: 1.6105742383512545, 
-        freq: 1.2079306787634407, 
-        time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
-        trend: "0.007179008", 
-        story: 0}
-    */         
-    let dataset = getDataByMonth(dataArray, startDate); // call begining
+    let endDate = new Date(2019, 5);
+    let dataset = getDataByMonth(dataArray, startDate);
 
     let clipPath = svg
       .append("clipPath")
@@ -623,7 +597,7 @@
       .attr("height", height)
       .attr("width", width + margin.right);
     let svgChart = svg.append("g").attr("id", "chart");
-
+ 
     // 让video按键放在最上面 Put the video button on top
     let button = svg
       .append("image")
@@ -637,9 +611,9 @@
       .attr(
         "transform",
         `translate(${margin.left - buttonSize + buttonXOffset},${margin.top +
-        height +
-        videoYOffset})`
-      );
+          height +
+          videoYOffset})`
+    );
     // .attr("clip-path", "url(#chart-area)");
 
     let showupText = svgChart
@@ -653,84 +627,16 @@
       .text(d => twitterText[d.label.slice(1)])
       .style("fill-opacity", 0);
 
-    let slow = true    
-    if (slow) {
-      var dot = svgChart
-        .append("g")
-        .attr("class", "dots")
-        .selectAll(".dot")
-        .data(dataset)
-        .enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("mask", "url(#mainMask)")
-        .attr("data-label", d => d.label.slice(1));
-
-      var text = svgChart
-        .append("g")
-        .selectAll(".text")
-        .data(dataset)
-        .enter()
-        .append("text")
-        .attr("class", "textLabel")
-        .attr("x", function (d) {
-          return d.x;
-        })
-        .attr("y", function (d) {
-          return d.y;
-        })
-        .attr("data-label", d => d.label.slice(1))
-        // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
-        .text(d => twitterText[d.label.slice(1)])
-        .style("text-anchor", "middle")
-        .style("fill", function (d) {
-          return "#242424";
-        })
-        .style("display", function (d) {
-          if (!isVisible(d)) {
-            return "none";
-          }
-        });
-
-    } else {  // old codes
-      var dot = svgChart
-        .append("g")
-        .attr("class", "dots")
-        .selectAll(".dot")
-        .data(dataset)
-        .enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("mask", "url(#mainMask)")
-        .attr("data-label", d => d.label.slice(1));
-
-      var text = svgChart
-        .append("g")
-        .selectAll(".text")
-        .data(dataset)
-        .enter()
-        .append("text")
-        .attr("class", "textLabel")
-        .attr("x", function (d) {
-          return d.x;
-        })
-        .attr("y", function (d) {
-          return d.y;
-        })
-        .attr("data-label", d => d.label.slice(1))
-        // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
-        .text(d => twitterText[d.label.slice(1)])
-        .style("text-anchor", "middle")
-        .style("fill", function (d) {
-          return "#242424";
-        })
-        .style("display", function (d) {
-          if (!isVisible(d)) {
-            return "none";
-          }
-        });
-
-    }
+    var dot = svgChart
+      .append("g")
+      .attr("class", "dots")
+      .selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("mask", "url(#mainMask)")
+      .attr("data-label", d => d.label.slice(1));
 
     let cursorLines = svgChart.append("g").attr("class", "cursor");
     let horizontalCursor = cursorLines
@@ -772,7 +678,31 @@
       .attr("dominant-baseline", "hanging")
       .style("fill-opacity", 0);
 
-
+    var text = svgChart
+      .append("g")
+      .selectAll(".text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("class", "textLabel")
+      .attr("x", function(d) {
+        return d.x;
+      })
+      .attr("y", function(d) {
+        return d.y;
+      })
+      .attr("data-label", d => d.label.slice(1))
+      // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
+      .text(d => twitterText[d.label.slice(1)])
+      .style("text-anchor", "middle")
+      .style("fill", function(d) {
+        return "#242424";
+      })
+      .style("display", function(d) {
+        if (!isVisible(d)) {
+          return "none";
+        }
+      });
 
     let textDateLabel = svgChart
       .append("g")
@@ -898,7 +828,7 @@
     }
 
     function isVisible(dataItem) {
-      return dataItem.freq >= 500 || dataItem.forward >= 50; //Y||X
+      return dataItem.freq >= 500 || dataItem.forward >= 50;
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
@@ -917,7 +847,7 @@
           if (labelSet0.indexOf(label) !== -1) color = "#76a6ca"; // 留 Stay
           if (labelSet1.indexOf(label) !== -1) color = "#b2b2b2"; // 中 Neutral
           if (labelSet2.indexOf(label) !== -1) color = "#f1706f"; // 脱 Leave
-
+          
           gradient[label].push(
             `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) /
               totalTime) * 100}%`
@@ -954,16 +884,14 @@
             return r(d.trend);
           }
         })
-        .style("fill", function (d) {          
-          //d.story == 2 is highlight
-          return d.story==2 ? color(d.trend):"#A7A99E"; //T:F
+        .style("fill", function(d) {
+          return color(d.trend);
         })
-        .style("stroke", function (d) {
-          //d.story == 2 is highlight
-          return d.story==2 ? color(d.trend):"#A7A99E";
+        .style("stroke", function(d) {
+          return color(d.trend);
         })
         .style("opacity", 1)
-        .style("display", function (d) {
+        .style("display", function(d) {
           let selectedLabel = getSelectedLabel();
           if (
             !isVisible(d) &&
@@ -1034,7 +962,7 @@
           "transform",
           d =>
             `translate(${x(d.forward + 1) + margin.left}, ${y.range()[0] +
-            margin.top})`
+              margin.top})`
         )
         .text(d => parseInt(d.forward) + 1);
     }
@@ -1074,7 +1002,7 @@
           let boxs = d3
             .selectAll("#" + idName + "Rows div.labelRow input")
             .property("checked", true);
-          boxs.each(function () {
+          boxs.each(function() {
             let label = d3.select(this).attr("name");
             d3.select(`#lifeCycleRow-${label}`).style("display", "block");
           });
@@ -1085,7 +1013,7 @@
           let boxs = d3
             .selectAll("#" + idName + "Rows div.labelRow input")
             .property("checked", false);
-          boxs.each(function () {
+          boxs.each(function() {
             let label = d3.select(this).attr("name");
             d3.select(`#lifeCycleRow-${label}`).style("display", "none");
           });
@@ -1132,8 +1060,7 @@
           isAnimationFinished = false;
         } else {
           let timeTodo = totalTime - getTime();
-          //startTime(easeFunc, totalTime, timeTodo, dateScale);          
-          startTime2(easeFunc, totalTime, timeTodo, dateScale);          
+          startTime(easeFunc, totalTime, timeTodo, dateScale);
           disableCursor();
         }
       }
@@ -1213,7 +1140,7 @@
       button.attr("xlink:href", `public/data/bubble/play.svg`);
       let timeTodo = totalTime - currentTime;
       startTime(easeFunc, totalTime, timeTodo, dateScale);
-
+      
       setTimeout(() => {
         buttonPlay = false;
         button.attr("xlink:href", `public/data/bubble/pause.svg`);
@@ -1287,125 +1214,26 @@
       timer.attr("T", 0);
     }
 
-    function startTime2(ease, totalTime, timeTodo, dateScale) {
-      timer
-        .transition()
-        .duration(timeTodo)
-        .ease(easeFunc)
-        .attr("T", totalTime);
-
-      
-      var count = 0
-      /*
-      for(let index in timeline){
-        if(index >= timeline.length){
-          break;
-        }
-        endDate = timeline[parseInt(index)+1];
-        console.log(endDate);
-        
-        svg
-        .transition()
-        .duration(3000)
-        .ease(easeFunc)
-        .tween("time", () => {
-          return function (t) {
-            /*
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              dateScale.invert(getTime()),
-              endDate
-            );
-            console.log(t)
-            console.log(month)  
-            tweenYear(month(t));
-            
-           console.log(++count, " >>> ", t)
-          };
-        });
-  
-      }*/
-
-      
-      // section 1
-      console.log('section1')
-      tmp1 = dataArray[31]
-      tmp2 = tmp1.value      
-      begin_Date = tmp2[0][0]
-      end_Date = tmp2[11][0]
-      story = findStoryLine(tmp2, tmp2[6][0])
-      story = findStoryLine(tmp2, tmp2[5][0])
-      story = findStoryLine(tmp2, tmp2[6][0])
-      console.log(story)
-      console.log("Section 2: start date=", begin_Date, " | end date = ",end_Date)         
-      // slow
-      //timeTodo = 3000
-      svg
-        .transition()
-        .duration(3000)        
-        .ease(easeFunc)
-        .tween("time", () => {
-          return function (t) {
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              begin_Date,
-              end_Date
-            );
-            tweenYear(month(t));
-            console.log(++count, " >>> ", t, " |", month(t))
-          };
-        }); 
-           
-        // section 2
-      console.log("Section 1: start date=", begin_Date, " | end date = ",end_Date)
-      tmp1 = dataArray[0]
-      tmp2 = tmp1.value      
-      begin_Date = tmp2[12][0]
-      end_Date = tmp2[41][0]
-
-      console.log("start date=", begin_Date, " | end date = ", end_Date)         
-      // slow
-      timeTodo = 10000
-      svg
-        .transition()
-        .duration(timeTodo)
-        .ease(easeFunc)
-        .tween("time", () => {
-          return function (t) {
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              begin_Date,
-              end_Date
-            );
-            tweenYear(month(t));
-            console.log(++count, " >>> ", t, " |", month(t))
-          };
-        });  
-      
-    }
-
-
     function startTime(ease, totalTime, timeTodo, dateScale) {
       timer
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-              
+
       svg
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .tween("time", () => {
-          return function (t) {
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              dateScale.invert(getTime()),
+          return function(t) {
+            var month = d3.interpolateDate(
+              dateScale.invert(totalTime - timeTodo),
               endDate
             );
-            tweenYear(month(t));            
+            tweenYear(month(t));
           };
-        });   
+        });
     }
 
     function stopTime() {
@@ -1424,22 +1252,11 @@
     function setTime(currentTime) {
       timer.attr("T", currentTime);
     }
-    
-    // repeat every times
+
     function tweenYear(year) {
-      // dataset format example 
-      /* {label: "#abtv", 
-        forward: 1.6105742383512545, 
-        freq: 1.2079306787634407, 
-        time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
-        trend: "0.007179008", 
-        story: 0}
-      */         
       let dataset = getDataByMonth(dataArray, year);
-      
+
       dot.data(dataset).call(position);
-      //console.log('>>>',d3.select("#chartAside").html());	
-      //d3.select("#my_dataviz").text( d3.select("#chartAside").html())	
       textDateLabel.data(dataset).call(textDateLabelPosition);
 
       // updateShowupText(year, dataset, showupText, showupLifeCycle);
@@ -1465,34 +1282,34 @@
     }
 
     // function updateShowupText(year, dataset, showupText, showupLifeCycle) {
-    // if (getSelectedLabel().length === 0) {
-    //   // let formatter = d3.timeFormat("%Y-%m-%d");
-    //   // let trueText = Object.keys(showupLifeCycle).filter(key => {
-    //   //   let cycle = showupLifeCycle[key];
-    //   //   for (let timestamp of cycle) {
-    //   //     if (formatter(timestamp[0]) === formatter(year)) {
-    //   //       return true;
-    //   //     }
-    //   //   }
-    //   //   return false;
-    //   // });
-    //   // console.log(trueText);
-    //   showupText.data(dataset)
-    //     .attr("transform", d => `translate(${x(d.forward + 1)+margin.left}, ${y(d.freq + 1)+margin.top})`)
-    //     // .filter(d => trueText.findIndex(text => text === d.label.slice(1)) >= 0 || (d.forward + 1 >= 800 || d.freq + 1 >= 50000))
-    //     .style('opacity',function(d){
-    //       if(d.forward>50&&d.freq>1400){
-    //         return 1;
-    //       }else{
-    //         return 0;
-    //       }
-    //     })
-    //     .filter(isVisible)
-    //     .style("fill-opacity", 1)
-    //     .transition()
-    //     .duration(1000)
-    //     .style("fill-opacity", 0.1);
-    // }
+      // if (getSelectedLabel().length === 0) {
+      //   // let formatter = d3.timeFormat("%Y-%m-%d");
+      //   // let trueText = Object.keys(showupLifeCycle).filter(key => {
+      //   //   let cycle = showupLifeCycle[key];
+      //   //   for (let timestamp of cycle) {
+      //   //     if (formatter(timestamp[0]) === formatter(year)) {
+      //   //       return true;
+      //   //     }
+      //   //   }
+      //   //   return false;
+      //   // });
+      //   // console.log(trueText);
+      //   showupText.data(dataset)
+      //     .attr("transform", d => `translate(${x(d.forward + 1)+margin.left}, ${y(d.freq + 1)+margin.top})`)
+      //     // .filter(d => trueText.findIndex(text => text === d.label.slice(1)) >= 0 || (d.forward + 1 >= 800 || d.freq + 1 >= 50000))
+      //     .style('opacity',function(d){
+      //       if(d.forward>50&&d.freq>1400){
+      //         return 1;
+      //       }else{
+      //         return 0;
+      //       }
+      //     })
+      //     .filter(isVisible)
+      //     .style("fill-opacity", 1)
+      //     .transition()
+      //     .duration(1000)
+      //     .style("fill-opacity", 0.1);
+      // }
     // }
 
     function updateTraj(currentDate) {
@@ -1539,7 +1356,7 @@
     }
 
     function textPosition(textData) {
-      text.data(textData).each(function (d) {
+      text.data(textData).each(function(d) {
         d.width = this.getBBox().width;
         d.forward = d.forward;
         d.freq = d.freq;
@@ -1558,14 +1375,14 @@
         .start(0);
 
       text
-        .attr("x", function (d) {
+        .attr("x", function(d) {
           return d.x;
         })
-        .attr("y", function (d) {
+        .attr("y", function(d) {
           return d.y;
         })
         .style("text-anchor", "middle")
-        .style("fill", function (d) {
+        .style("fill", function(d) {
           return "#242424";
         })
         // .attr('fill-opacity',function(d){
@@ -1575,14 +1392,14 @@
         //     return 0.1;
         //   }
         // })
-        .style("opacity", function (d) {
+        .style("opacity", function(d) {
           if (d.forward > 0 && d.freq > 100) {
             return 1;
           } else {
             return 0;
           }
         })
-        .style("display", function (d) {
+        .style("display", function(d) {
           if (!isVisible(d)) {
             return "none";
           }
@@ -1773,7 +1590,7 @@
     function updateMask(selectedLabel) {
       if (selectedLabel.length === 0) {
         d3.selectAll(".dot")
-          .filter(function (d, i) {
+          .filter(function(d, i) {
             return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
           })
           .transition()
@@ -1781,7 +1598,7 @@
           .attr("opacity", 1);
 
         d3.selectAll(".dot")
-          .filter(function (d, i) {
+          .filter(function(d, i) {
             return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
           })
           .transition()
@@ -1812,7 +1629,7 @@
       }
 
       d3.selectAll(".dot")
-        .filter(function (d, i) {
+        .filter(function(d, i) {
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -1823,7 +1640,7 @@
         .attr("opacity", 0.1);
 
       d3.selectAll(".dot")
-        .filter(function (d, i) {
+        .filter(function(d, i) {
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -1834,7 +1651,7 @@
         .attr("opacity", 1);
 
       d3.selectAll(".textLabel")
-        .filter(function (d, i) {
+        .filter(function(d, i) {
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -1845,7 +1662,7 @@
         .text("");
 
       d3.selectAll(".textLabel")
-        .filter(function (d, i) {
+        .filter(function(d, i) {
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -1969,6 +1786,7 @@
           let cx = x(data.forward + 1) + margin.left;
           let cy = y(data.freq + 1) + margin.top;
           let radius = !isVisible(data) ? 2 : r(data.trend);
+         
           let fill = color(data.trend);
           let date = d3.timeFormat("%Y%m%d%H")(currentDate);
 
@@ -1991,7 +1809,7 @@
             // 改成用path Convert to use the path
             let lineLen = Math.sqrt(
               (lineCoord.x2 - lineCoord.x1) * (lineCoord.x2 - lineCoord.x1) +
-              (lineCoord.y2 - lineCoord.y1) * (lineCoord.y2 - lineCoord.y1)
+                (lineCoord.y2 - lineCoord.y1) * (lineCoord.y2 - lineCoord.y1)
             );
             let rotateAngle =
               Math.atan2(
@@ -2004,13 +1822,13 @@
               .attr(
                 "d",
                 "M" +
-                lineCoord.x1 +
-                "," +
-                lineCoord.y1 +
-                " L" +
-                lineCoord.x2 +
-                "," +
-                lineCoord.y2
+                  lineCoord.x1 +
+                  "," +
+                  lineCoord.y1 +
+                  " L" +
+                  lineCoord.x2 +
+                  "," +
+                  lineCoord.y2
               )
               .style("filter", () => {
                 if (lineLen < 15 || Math.abs(rotateAngle) < 1) return "none";
@@ -2026,13 +1844,13 @@
             .attr(
               "d",
               "M" +
-              (cx + radius) +
-              "," +
-              (cy + radius) +
-              " L" +
-              (cx + radius) +
-              "," +
-              (cy + radius)
+                (cx + radius) +
+                "," +
+                (cy + radius) +
+                " L" +
+                (cx + radius) +
+                "," +
+                (cy + radius)
             )
             // .style("fill-opacity",0)
             .style("stroke-width", 1)
@@ -2086,7 +1904,7 @@
             .style("fill", fill)
             .style("stroke", fill)
             .classed("disabled", true)
-            .on("mouseover", function () {
+            .on("mouseover", function() {
               let tX = cx >= 30 ? cx - 10 : cx + 25;
               let tY = cy - 10;
               let backgroundPadding = 5;
@@ -2124,7 +1942,7 @@
                 })
                 .style("font-size", fontSize + "px");
             })
-            .on("mouseout", function () {
+            .on("mouseout", function() {
               d3.selectAll("[id*=tempTime]").remove();
             });
 
@@ -2189,7 +2007,7 @@
       // 是展示轨迹点吗? Is it the track point?
       targetPastCircle["ele"]
         .selectAll("circle")
-        .filter(function () {
+        .filter(function() {
           return (
             d3
               .select(this)
@@ -2201,7 +2019,7 @@
 
       targetPastCircle["ele"]
         .selectAll("circle")
-        .filter(function () {
+        .filter(function() {
           // return true;
           return (
             d3
@@ -2215,7 +2033,7 @@
       // targetPastLine["ele"].selectAll("line")
       targetPastLine["ele"]
         .selectAll("path")
-        .filter(function () {
+        .filter(function() {
           let nxSibling = d3.select(this.nextSibling);
           let node = d3.select(this);
           return (
@@ -2228,7 +2046,7 @@
       targetPastLine["ele"]
         .selectAll("path")
         // targetPastLine["ele"].selectAll("line")
-        .filter(function () {
+        .filter(function() {
           let nxSibling = d3.select(this.nextSibling);
           let node = d3.select(this);
           return (
@@ -2242,7 +2060,7 @@
       let index = -1;
       targetPastLine["eleMotion"]
         .selectAll("line")
-        .filter(function (_, i) {
+        .filter(function(_, i) {
           let nxSibling = d3.select(this.nextSibling);
           let node = d3.select(this);
           if (
@@ -2258,7 +2076,7 @@
 
       targetPastLine["eleMotion"]
         .selectAll("line")
-        .filter(function () {
+        .filter(function() {
           let nxSibling = d3.select(this.nextSibling);
           let node = d3.select(this);
           return (
@@ -2300,3 +2118,5 @@ async function getExplanation() {
 
   return en2ch;
 }
+
+
