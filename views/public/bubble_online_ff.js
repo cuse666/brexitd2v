@@ -52,23 +52,23 @@
       height / 14 * 3,
       height / 14 * 2,
       height / 14 * 1,
-
-      console.log([
-        height / 14 * 14,
-        height / 14 * 13,
-        height / 14 * 12,
-        height / 14 * 11,
-        height / 14 * 10,
-        height / 14 * 9,
-        height / 14 * 8,
-        height / 14 * 7,
-        height / 14 * 6,
-        height / 14 * 5,
-        height / 14 * 4,
-        height / 14 * 3,
-        height / 14 * 2,
-        height / 14 * 1,
-      ])
+      /*
+            console.log([
+              height / 14 * 14,
+              height / 14 * 13,
+              height / 14 * 12,
+              height / 14 * 11,
+              height / 14 * 10,
+              height / 14 * 9,
+              height / 14 * 8,
+              height / 14 * 7,
+              height / 14 * 6,
+              height / 14 * 5,
+              height / 14 * 4,
+              height / 14 * 3,
+              height / 14 * 2,
+              height / 14 * 1,
+            ])*/
     ]);
 
   var x = d3
@@ -95,18 +95,19 @@
       width / 9 * 6,
       width / 9 * 7,
       width / 9 * 8,
-
-      console.log([
-        width / 9 * 0,
-        width / 9 * 1,
-        width / 9 * 2,
-        width / 9 * 3,
-        width / 9 * 4,
-        width / 9 * 5,
-        width / 9 * 6,
-        width / 9 * 7,
-        width / 9 * 8,
-      ])
+      /*
+            console.log([
+              width / 9 * 0,
+              width / 9 * 1,
+              width / 9 * 2,
+              width / 9 * 3,
+              width / 9 * 4,
+              width / 9 * 5,
+              width / 9 * 6,
+              width / 9 * 7,
+              width / 9 * 8,
+            ])
+          */
     ]);
 
   var r = d3
@@ -306,10 +307,11 @@
     var y = str.substr(0, 4),
       m = str.substr(4, 2),
       d = str.substr(6, 2);
+      m = parseInt(m)-1; // month as a number (0-11)
     if (d) return new Date(y, m, d);
     return new Date(y, m, 1);
   }
-  function getDataByMonth(data, time) {    
+  function getDataByMonth(data, time) {
     // Dataset format example
     /* {label: "#abtv", 
         forward: 1.6105742383512545, 
@@ -317,7 +319,7 @@
         time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
         trend: "0.007179008", 
         story: 0}
-    */     
+    */
     return data.map(d => {
       return {
         label: d.label,
@@ -330,13 +332,13 @@
     });
   }
 
-  function findStoryLine(data, time){
+  function findStoryLine(data, time) {
     let index = bisect.left(data, time);
-    let now = data[index];    
+    let now = data[index];
     return now[3]; //return story level 
   }
 
-  function findFreqByMonth(data, time) {
+  function findFreqByMonth(data, time) {    
     let index = bisect.left(data, time);
     let now = data[index];
     if (index > 0) {
@@ -394,9 +396,8 @@
       tmp.trend = d.trend.trim();
       trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
       tmp.value = [];
-      // start default date
-      tmp.value.push([new Date(2015, 12), 0, 0, 0]);
-      for (let label in d) {
+      // start default date      
+      for (let label in d) {        
         if (
           label !== "hashtag" &&
           label !== "trend" &&
@@ -411,6 +412,7 @@
           ]);
         }
       }
+      tmp.value.push([new Date(2019, 5), 0, 0, 0]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
     });
@@ -603,7 +605,7 @@
     // Add a dot per state. Initialize the data at 1950, and set the colors.
     let startDate = new Date(2016, 0);
     let limitDate = new Date(2019, 4, 30, 23, 59, 59);
-    let endDate = new Date(2019, 5);    
+    let endDate = new Date(2019, 5);
     // dataset format example
     /* {label: "#abtv", 
         forward: 1.6105742383512545, 
@@ -611,7 +613,7 @@
         time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
         trend: "0.007179008", 
         story: 0}
-    */         
+    */
     let dataset = getDataByMonth(dataArray, startDate); // call begining
 
     let clipPath = svg
@@ -641,7 +643,7 @@
         videoYOffset})`
       );
     // .attr("clip-path", "url(#chart-area)");
-
+    
     let showupText = svgChart
       .append("g")
       .selectAll(".showupText")
@@ -653,84 +655,46 @@
       .text(d => twitterText[d.label.slice(1)])
       .style("fill-opacity", 0);
 
-    let slow = true    
-    if (slow) {
-      var dot = svgChart
-        .append("g")
-        .attr("class", "dots")
-        .selectAll(".dot")
-        .data(dataset)
-        .enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("mask", "url(#mainMask)")
-        .attr("data-label", d => d.label.slice(1));
+    dd = new Date(2016, 0)
+    dataset.push({label: "#center", forward: 100, freq: 2000, time: dd, trend: "0.3", story:2})
 
-      var text = svgChart
-        .append("g")
-        .selectAll(".text")
-        .data(dataset)
-        .enter()
-        .append("text")
-        .attr("class", "textLabel")
-        .attr("x", function (d) {
-          return d.x;
-        })
-        .attr("y", function (d) {
-          return d.y;
-        })
-        .attr("data-label", d => d.label.slice(1))
-        // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
-        .text(d => twitterText[d.label.slice(1)])
-        .style("text-anchor", "middle")
-        .style("fill", function (d) {
-          return "#242424";
-        })
-        .style("display", function (d) {
-          if (!isVisible(d)) {
-            return "none";
-          }
-        });
+    var dot = svgChart
+      .append("g")
+      .attr("class", "dots")
+      .selectAll(".dot")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("class", "dot")
+      .attr("mask", "url(#mainMask)")
+      .attr("data-label", d => d.label.slice(1))
 
-    } else {  // old codes
-      var dot = svgChart
-        .append("g")
-        .attr("class", "dots")
-        .selectAll(".dot")
-        .data(dataset)
-        .enter()
-        .append("circle")
-        .attr("class", "dot")
-        .attr("mask", "url(#mainMask)")
-        .attr("data-label", d => d.label.slice(1));
+    var text = svgChart
+      .append("g")
+      .selectAll(".text")
+      .data(dataset)
+      .enter()
+      .append("text")
+      .attr("class", "textLabel")
+      .attr("x", function (d) {
+        return d.x;
+      })
+      .attr("y", function (d) {
+        return d.y;
+      })
+      .attr("data-label", d => d.label.slice(1))
+      // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
+      .text(d => twitterText[d.label.slice(1)])
+      .style("text-anchor", "middle")
+      .style("fill", function (d) {
+        return "#242424";
+      })
+      .style("display", function (d) {
+        if (!isVisible(d)) {
+          return "none";
+        }
+      });
 
-      var text = svgChart
-        .append("g")
-        .selectAll(".text")
-        .data(dataset)
-        .enter()
-        .append("text")
-        .attr("class", "textLabel")
-        .attr("x", function (d) {
-          return d.x;
-        })
-        .attr("y", function (d) {
-          return d.y;
-        })
-        .attr("data-label", d => d.label.slice(1))
-        // 让圆上的主题的文字一直显示 Keep the text of the round theme displayed
-        .text(d => twitterText[d.label.slice(1)])
-        .style("text-anchor", "middle")
-        .style("fill", function (d) {
-          return "#242424";
-        })
-        .style("display", function (d) {
-          if (!isVisible(d)) {
-            return "none";
-          }
-        });
-
-    }
 
     let cursorLines = svgChart.append("g").attr("class", "cursor");
     let horizontalCursor = cursorLines
@@ -910,7 +874,7 @@
         gradient[label] = [];
         gradient[label].push("to right");
 
-        console.log(lifeCycleOfLabel);
+        //console.log(lifeCycleOfLabel);
 
         for (let i = 1, len = lifeCycleOfLabel.length; i < len; i += 1) {
           let color = "";
@@ -951,16 +915,23 @@
           if (!isVisible(d)) {
             return 2;
           } else {
-            return r(d.trend);
+            //return r(d.trend);
+            return r(d.radius);
           }
         })
-        .style("fill", function (d) {          
+        .style("fill", function (d) {
           //d.story == 2 is highlight
-          return d.story==2 ? color(d.trend):"#A7A99E"; //T:F
+          if(d.label=="#center"){
+            return "#bebebf";
+          }
+          return d.story != 0 ? color(d.trend) : "#AAA99E"; //T:F
         })
         .style("stroke", function (d) {
           //d.story == 2 is highlight
-          return d.story==2 ? color(d.trend):"#A7A99E";
+          if(d.label=="#center"){
+            return "#AAFFFF";
+          }
+          return d.story != 0 ? color(d.trend) : "#AAA99E"; //T:F
         })
         .style("opacity", 1)
         .style("display", function (d) {
@@ -1133,7 +1104,7 @@
         } else {
           let timeTodo = totalTime - getTime();
           //startTime(easeFunc, totalTime, timeTodo, dateScale);          
-          startTime2(easeFunc, totalTime, timeTodo, dateScale);          
+          startTime2(easeFunc, totalTime, timeTodo, dateScale);
           disableCursor();
         }
       }
@@ -1287,101 +1258,106 @@
       timer.attr("T", 0);
     }
 
+
+    var oldTime = 0;
+    function getSlowSeries(t, story, num_frame = 4) {
+      timeSeries = []
+      if (story == 3) { // renew scale			
+        timeSeries = new Array(num_frame)
+        timeSeries.fill(0)
+        delta = (t - oldTime) / (num_frame)
+        timeSeries = timeSeries.map(function (value, index) {
+          return oldTime + delta * (index);
+
+        }
+        );
+      }
+
+      oldTime = t;
+      return timeSeries
+    }
+
+
+    var maxStory = []
+    function getMaxStory(dateTime) {
+      if (maxStory.length == 0) { //find maximum story levels
+        listMonth = dataArray[0].value // select frist hastag because I need known all months (datetime)
+        for (row of listMonth) {
+          // row --> [date, cx, cy, trend]
+          let date = row[0]
+          let tmp = []
+          for (data of dataArray) { //select all hashtag
+            let value = data.value;
+            let index = bisect.left(value, date);
+            let now = value[index];
+            // now -> [date, cx, cy, story]
+            tmp.push(now[3]); // push all story leves from all hastags				
+          }
+          story = Math.max(...tmp) // get maximum story
+          maxStory.push([date, story]);
+        }
+      }
+
+      let index = bisect.left(maxStory, dateTime);
+      return maxStory[index - 1][1]; // maximum story levels
+    }
+
     function startTime2(ease, totalTime, timeTodo, dateScale) {
+
+
+      let monthScale = d3.interpolateDate(
+        //dateScale.invert(totalTime - timeTodo),              
+        dateScale.invert(getTime()),
+        endDate
+      );
+
+
+      function myEaseFunc(t) {
+        dateTime = monthScale(t);
+        // find maximum story level	
+        let story = getMaxStory(dateTime)        
+        if (story == 3) {
+          new_t = (1 - Math.cos(Math.PI * t)) / 3;          				
+          console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime ,"| max story=", story, "\n");
+          return [new_t, story]
+        } else {
+          console.log("origin t=", t, "story from date time", dateTime , "| max story=", story, "\n");
+          return [t, story]
+        }
+      }
+
+      function myTimer(t) {
+        t = Math.acos(1 - 3 * t) / Math.PI;
+        return t
+      }
+
       timer
         .transition()
         .duration(timeTodo)
-        .ease(easeFunc)
+        .ease(myTimer)
         .attr("T", totalTime);
 
-      
-      var count = 0
-      /*
-      for(let index in timeline){
-        if(index >= timeline.length){
-          break;
-        }
-        endDate = timeline[parseInt(index)+1];
-        console.log(endDate);
-        
-        svg
-        .transition()
-        .duration(3000)
-        .ease(easeFunc)
-        .tween("time", () => {
-          return function (t) {
-            /*
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              dateScale.invert(getTime()),
-              endDate
-            );
-            console.log(t)
-            console.log(month)  
-            tweenYear(month(t));
-            
-           console.log(++count, " >>> ", t)
-          };
-        });
-  
-      }*/
-
-      
-      // section 1
-      console.log('section1')
-      tmp1 = dataArray[31]
-      tmp2 = tmp1.value      
-      begin_Date = tmp2[0][0]
-      end_Date = tmp2[11][0]
-      story = findStoryLine(tmp2, tmp2[6][0])
-      story = findStoryLine(tmp2, tmp2[5][0])
-      story = findStoryLine(tmp2, tmp2[6][0])
-      console.log(story)
-      console.log("Section 2: start date=", begin_Date, " | end date = ",end_Date)         
-      // slow
-      //timeTodo = 3000
-      svg
-        .transition()
-        .duration(3000)        
-        .ease(easeFunc)
-        .tween("time", () => {
-          return function (t) {
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              begin_Date,
-              end_Date
-            );
-            tweenYear(month(t));
-            console.log(++count, " >>> ", t, " |", month(t))
-          };
-        }); 
-           
-        // section 2
-      console.log("Section 1: start date=", begin_Date, " | end date = ",end_Date)
-      tmp1 = dataArray[0]
-      tmp2 = tmp1.value      
-      begin_Date = tmp2[12][0]
-      end_Date = tmp2[41][0]
-
-      console.log("start date=", begin_Date, " | end date = ", end_Date)         
-      // slow
-      timeTodo = 10000
       svg
         .transition()
         .duration(timeTodo)
-        .ease(easeFunc)
+        .ease(myEaseFunc)
         .tween("time", () => {
-          return function (t) {
-            var month = d3.interpolateDate(              
-              //dateScale.invert(totalTime - timeTodo),              
-              begin_Date,
-              end_Date
-            );
-            tweenYear(month(t));
-            console.log(++count, " >>> ", t, " |", month(t))
+          return function (value) {
+            [t, story] = value
+            dateTime = null
+            if (story == 3) { //rescale
+              rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+              dateTime = monthScale(rescale_t);
+            } else {
+              dateTime = monthScale(t);
+            }
+
+            tweenYear(dateTime);
+            console.log("tween t=", t, "|rescale date=", dateTime);
           };
-        });  
-      
+
+        });
+
     }
 
 
@@ -1391,21 +1367,21 @@
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-              
+
       svg
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .tween("time", () => {
           return function (t) {
-            var month = d3.interpolateDate(              
+            var month = d3.interpolateDate(
               //dateScale.invert(totalTime - timeTodo),              
               dateScale.invert(getTime()),
               endDate
             );
-            tweenYear(month(t));            
+            tweenYear(month(t));
           };
-        });   
+        });
     }
 
     function stopTime() {
@@ -1424,7 +1400,15 @@
     function setTime(currentTime) {
       timer.attr("T", currentTime);
     }
+
+    var center1 = 100
+    var center2 = 100
+    var fisheye = d3.fisheye.circular()
+    .radius(50)
+    .distortion(2);
+    fisheye.focus([100,2000])
     
+
     // repeat every times
     function tweenYear(year) {
       // dataset format example 
@@ -1434,10 +1418,24 @@
         time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
         trend: "0.007179008", 
         story: 0}
-      */         
-      let dataset = getDataByMonth(dataArray, year);
-      
-      dot.data(dataset).call(position);
+      */
+      let dataset = getDataByMonth(dataArray, year);      
+
+      dd = new Date(2016, 0)
+       dataset.push({label: "#center", forward: 100, freq: 2000, time: dd, trend: "0.3", story:2})
+
+      dot.data(dataset)
+      .each(function (d) {
+        data ={x:d.forward, y:d.freq};
+        result = fisheye(data);        
+        d.forward = result.x;
+        d.freq = result.y;
+        d.radius = parseFloat(d.trend)*result.z;
+        return d;
+        
+      })
+      .call(position);
+
       //console.log('>>>',d3.select("#chartAside").html());	
       //d3.select("#my_dataviz").text( d3.select("#chartAside").html())	
       textDateLabel.data(dataset).call(textDateLabelPosition);
