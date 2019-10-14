@@ -334,7 +334,10 @@
 
   function findStoryLine(data, time) {
     let index = bisect.left(data, time);
-    let now = data[index];
+    if(index == 0){
+      return 0 //
+    }
+    let now = data[index-1];    
     return now[3]; //return story level 
   }
 
@@ -656,7 +659,7 @@
       .style("fill-opacity", 0);
 
     dd = new Date(2016, 0)
-    dataset.push({label: "#center", forward: 100, freq: 2000, time: dd, trend: "0.3", story:2})
+    dataset.push({label: "#zoom", forward: 0, freq: 0, time: dd, trend: "0", story:1})
 
     var dot = svgChart
       .append("g")
@@ -912,26 +915,36 @@
         .attr("cx", d => x(d.forward + 1) + margin.left)
         .attr("cy", d => y(d.freq + 1) + margin.top)
         .attr("r", d => {
+          let max_story = getMaxStory(d.time)
           if (!isVisible(d)) {
             return 2;
           } else {
-            //return r(d.trend);
-            return r(d.radius);
+            if(d.label=="#zoom"){
+              return y(d.trend)/2;
+            } if(max_story==1 && d.story==1){
+              return r(d.trend)*2;
+            }
+            else {
+              return r(d.trend);
+              //return r(d.radius);
+            }
           }
         })
         .style("fill", function (d) {
           //d.story == 2 is highlight
-          if(d.label=="#center"){
-            return "#bebebf";
+          let max_story = getMaxStory(d.time)
+          if(d.label=="#zoom"){
+            return "#7CFC00";
           }
-          return d.story != 0 ? color(d.trend) : "#AAA99E"; //T:F
+          return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T:F
         })
         .style("stroke", function (d) {
           //d.story == 2 is highlight
-          if(d.label=="#center"){
-            return "#AAFFFF";
+          let max_story = getMaxStory(d.time)
+          if(d.label=="#zoom"){
+            return "#7CFC00";
           }
-          return d.story != 0 ? color(d.trend) : "#AAA99E"; //T:F
+          return max_story == d.story? color(d.trend) : "#DCDCDC"; //T:F
         })
         .style("opacity", 1)
         .style("display", function (d) {
@@ -1281,10 +1294,10 @@
     var maxStory = []
     function getMaxStory(dateTime) {
       if (maxStory.length == 0) { //find maximum story levels
-        listMonth = dataArray[0].value // select frist hastag because I need known all months (datetime)
-        for (row of listMonth) {
+        let timeline = generateTimeline(dataArray);        
+        for (date of timeline) {
           // row --> [date, cx, cy, trend]
-          let date = row[0]
+          //let date = row[0]
           let tmp = []
           for (data of dataArray) { //select all hashtag
             let value = data.value;
@@ -1298,8 +1311,16 @@
         }
       }
 
-      let index = bisect.left(maxStory, dateTime);
-      return maxStory[index - 1][1]; // maximum story levels
+      
+      let index = 0;
+      max_story = 0;
+      try{
+      index = bisect.left(maxStory, dateTime);
+      max_story = maxStory[index - 1][1]; // maximum story levels
+      } catch(error){ // bug
+        console.log(error)
+      }
+      return max_story;
     }
 
     function startTime2(ease, totalTime, timeTodo, dateScale) {
@@ -1327,8 +1348,8 @@
       }
 
       function myTimer(t) {
-        t = Math.acos(1 - 3 * t) / Math.PI;
-        return t
+        rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+        return rescale_t;
       }
 
       timer
@@ -1401,36 +1422,95 @@
       timer.attr("T", currentTime);
     }
 
+    /*
     var center1 = 100
     var center2 = 100
     var fisheye = d3.fisheye.circular()
     .radius(50)
     .distortion(2);
     fisheye.focus([100,2000])
-    
+    */
+   function getDistance(center_x, center_y, x , y){
+      return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+   }
+   
+   function getCentroid(x_array, y_array){
+
+   }
 
     // repeat every times
     function tweenYear(year) {
       // dataset format example 
-      /* {label: "#abtv", 
+      /*[ {label: "#abtv", 
         forward: 1.6105742383512545, 
         freq: 1.2079306787634407, 
         time: Sun Jan 03 2016 11:54:48 GMT+0800 (China Standard Time), 
         trend: "0.007179008", 
+        story: 0} ,
+         
+        {label: "#brexitbetrayal", 
+        forward: 0, 
+        freq: 0, 
+        time: Mon Jan 04 2016 07:04:42 GMT+0700 (Indochina Time), 
+        trend: "0.794551017", 
         story: 0}
+      
+        .
+        .
+        .
+         ]
       */
       let dataset = getDataByMonth(dataArray, year);      
+        
+      let max_story = getMaxStory(year)
 
+      // calculate zoom center 
+      let sum_x = 0;
+      let sum_y = 0;
+      let count = 0      
+      let radius = "0"
+      for( d of dataset){
+        if (max_story == 1 && d.story == 1){
+          sum_x += d.forward;
+          sum_y += d.freq;
+          ++count;
+        }
+      }
+      let center_x = 0; 
+      let center_y = 0;
+      if (count !=0){
+        center_x=sum_x/count;
+        center_y=sum_y/count;
+      
+        // calculate radius of zoom
+        temp = [];
+        for( d of dataset){
+          if (max_story == 1 && d.story == 1){
+            temp.push(getDistance(x(center_x), y(center_y), x(d.forward), y(d.freq)));
+          }
+        }      
+        //radius = Math.max(...temp);        
+        //radius = Math.averag(...temp);        
+       // radius = 0.5
+       let sum = temp.reduce((previous, current) => current += previous);
+       let avg = sum / temp.length;
+       radius = avg;
+      }
+
+      
       dd = new Date(2016, 0)
-       dataset.push({label: "#center", forward: 100, freq: 2000, time: dd, trend: "0.3", story:2})
-
+      zoom = [{label: "#zoom", forward: center_x, freq: center_y, time: dd, trend: radius, story:1}];
+      dataset = zoom.concat(dataset)
+      //dataset.push({label: "#zoom", forward: center_x, freq: center_y, time: dd, trend: radius, story:1})
+            
       dot.data(dataset)
       .each(function (d) {
-        data ={x:d.forward, y:d.freq};
-        result = fisheye(data);        
+        //data ={x:d.forward, y:d.freq};
+        /*result = fisheye(data);        
         d.forward = result.x;
         d.freq = result.y;
-        d.radius = parseFloat(d.trend)*result.z;
+        */
+        //d.radius = parseFloat(d.trend);        
         return d;
         
       })
