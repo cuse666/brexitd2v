@@ -405,17 +405,19 @@
           label !== "hashtag" &&
           label !== "trend" &&
           label.substr(0, 2) !== "re" &&
-          label.substr(0, 2) !== "lv"
+          //label.substr(0, 2) !== "lv"
+          label.substr(0, 2) !== "absbtw"
         ) {
           tmp.value.push([
             parseDate(label),
             parseInt(d[label]),
             parseInt(d["re" + label]),
-            parseInt(d["lv" + label])
+            //parseInt(d["lv" + label]),
+            parseInt(d["absbtw" + label]),
           ]);
         }
       }
-      tmp.value.push([new Date(2019, 5), 0, 0, 0]); // 2019/05+1
+      tmp.value.push([new Date(2019, 5), tmp.value[40][1], tmp.value[40][2], tmp.value[40][3]]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
     });
@@ -768,7 +770,7 @@
       .append("svg:text")
       .attr("T", 0)
       .text("");
-    const totalTime = 120000;
+    const totalTime = 180000;
     const durationTime = 500;
     let easeFunc = d3.easeLinear;
 
@@ -919,9 +921,9 @@
           if (!isVisible(d)) {
             return 2;
           } else {
-            if(d.label=="#zoom"){
+            if(d.label == "#zoom"){
               return y(d.trend)/2;
-            } if(max_story==1 && d.story==1){
+            } if(max_story == 1 && d.story == 1){
               return r(d.trend)*2;
             }
             else {
@@ -931,20 +933,18 @@
           }
         })
         .style("fill", function (d) {
-          //d.story == 2 is highlight
           let max_story = getMaxStory(d.time)
-          if(d.label=="#zoom"){
-            return "#7CFC00";
+          if(d.label == "#zoom"){
+            return "#7CFC00"; //green
           }
-          return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T:F
+          return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
         })
         .style("stroke", function (d) {
-          //d.story == 2 is highlight
           let max_story = getMaxStory(d.time)
-          if(d.label=="#zoom"){
-            return "#7CFC00";
+          if(d.label == "#zoom"){
+            return "#7CFC00"; //green
           }
-          return max_story == d.story? color(d.trend) : "#DCDCDC"; //T:F
+          return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
         })
         .style("opacity", 1)
         .style("display", function (d) {
@@ -1338,7 +1338,8 @@
         // find maximum story level	
         let story = getMaxStory(dateTime)        
         if (story == 3) {
-          new_t = (1 - Math.cos(Math.PI * t)) / 3;          				
+          //new_t = (1 - Math.cos(Math.PI * t)) / 3; 
+          new_t = t*t*t;           				
           console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime ,"| max story=", story, "\n");
           return [new_t, story]
         } else {
@@ -1348,7 +1349,8 @@
       }
 
       function myTimer(t) {
-        rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+        //rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+        rescale_t = Math.cbrt(t)
         return rescale_t;
       }
 
@@ -1367,7 +1369,8 @@
             [t, story] = value
             dateTime = null
             if (story == 3) { //rescale
-              rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+              //rescale_t = Math.acos(1 - 3 * t) / Math.PI;
+              rescale_t = Math.cbrt(t)
               dateTime = monthScale(rescale_t);
             } else {
               dateTime = monthScale(t);
