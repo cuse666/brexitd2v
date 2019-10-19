@@ -307,7 +307,7 @@
     var y = str.substr(0, 4),
       m = str.substr(4, 2),
       d = str.substr(6, 2);
-      m = parseInt(m)-1; // month as a number (0-11)
+    m = parseInt(m) - 1; // month as a number (0-11)
     if (d) return new Date(y, m, d);
     return new Date(y, m, 1);
   }
@@ -334,14 +334,14 @@
 
   function findStoryLine(data, time) {
     let index = bisect.left(data, time);
-    if(index == 0){
+    if (index == 0) {
       return 0 //
     }
-    let now = data[index-1];    
+    let now = data[index - 1];
     return now[3]; //return story level 
   }
 
-  function findFreqByMonth(data, time) {    
+  function findFreqByMonth(data, time) {
     let index = bisect.left(data, time);
     let now = data[index];
     if (index > 0) {
@@ -400,20 +400,20 @@
       trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
       tmp.value = [];
       // start default date      
-      for (let label in d) {        
+      for (let label in d) {
         if (
           label !== "hashtag" &&
           label !== "trend" &&
           label.substr(0, 2) !== "re" &&
-          //label.substr(0, 2) !== "lv"
-          label.substr(0, 2) !== "absbtw"
+          label.substr(0, 2) !== "lv"
+
+
         ) {
           tmp.value.push([
             parseDate(label),
             parseInt(d[label]),
             parseInt(d["re" + label]),
-            //parseInt(d["lv" + label]),
-            parseInt(d["absbtw" + label]),
+            parseInt(d["lv" + label]),
           ]);
         }
       }
@@ -648,7 +648,7 @@
         videoYOffset})`
       );
     // .attr("clip-path", "url(#chart-area)");
-    
+
     let showupText = svgChart
       .append("g")
       .selectAll(".showupText")
@@ -660,8 +660,8 @@
       .text(d => twitterText[d.label.slice(1)])
       .style("fill-opacity", 0);
 
-    dd = new Date(2016, 0)
-    dataset.push({label: "#zoom", forward: 0, freq: 0, time: dd, trend: "0", story:1})
+    //dd = new Date(2016, 0)
+    //dataset.push({ label: "#zoom", forward: 0, freq: 0, time: dd, trend: "0", story: 1 })
 
     var dot = svgChart
       .append("g")
@@ -770,7 +770,7 @@
       .append("svg:text")
       .attr("T", 0)
       .text("");
-    const totalTime = 180000;
+    const totalTime = 120000;
     const durationTime = 500;
     let easeFunc = d3.easeLinear;
 
@@ -917,14 +917,14 @@
         .attr("cx", d => x(d.forward + 1) + margin.left)
         .attr("cy", d => y(d.freq + 1) + margin.top)
         .attr("r", d => {
-          let max_story = getMaxStory(d.time)
+          let [max_story, _] = getMaxStory(d.time)
           if (!isVisible(d)) {
             return 2;
           } else {
-            if(d.label == "#zoom"){
-              return y(d.trend)/2;
-            } if(max_story == 1 && d.story == 1){
-              return r(d.trend)*2;
+            if (d.label == "#zoom") {
+              return y(d.trend) / 2;
+            } if (max_story == 1 && d.story == 1) {
+              return r(d.trend) * 2;
             }
             else {
               return r(d.trend);
@@ -933,15 +933,15 @@
           }
         })
         .style("fill", function (d) {
-          let max_story = getMaxStory(d.time)
-          if(d.label == "#zoom"){
+          let [max_story, _] = getMaxStory(d.time)
+          if (d.label == "#zoom") {
             return "#7CFC00"; //green
           }
           return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
         })
         .style("stroke", function (d) {
-          let max_story = getMaxStory(d.time)
-          if(d.label == "#zoom"){
+          let [max_story, _] = getMaxStory(d.time)
+          if (d.label == "#zoom") {
             return "#7CFC00"; //green
           }
           return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
@@ -1294,7 +1294,7 @@
     var maxStory = []
     function getMaxStory(dateTime) {
       if (maxStory.length == 0) { //find maximum story levels
-        let timeline = generateTimeline(dataArray);        
+        let timeline = generateTimeline(dataArray);
         for (date of timeline) {
           // row --> [date, cx, cy, trend]
           //let date = row[0]
@@ -1307,20 +1307,28 @@
             tmp.push(now[3]); // push all story leves from all hastags				
           }
           story = Math.max(...tmp) // get maximum story
-          maxStory.push([date, story]);
+          maxStory.push([date, story]); //date format, number of maximum story
         }
       }
 
-      
       let index = 0;
       max_story = 0;
-      try{
-      index = bisect.left(maxStory, dateTime);
-      max_story = maxStory[index - 1][1]; // maximum story levels
-      } catch(error){ // bug
+      btw_max_story = 0;
+      try {
+        index = bisect.left(maxStory, dateTime);
+        
+        max_story = maxStory[index - 1][1]; // maximum story levels
+        if(index == 1){
+          btw_max_story = 0 - maxStory[index - 1][1]; 
+        } else {
+          btw_max_story = Math.abs(maxStory[index - 1][1]-maxStory[index][1]); //btw value of maximum story levels
+        }
+      } catch (error) { // bug 
         console.log(error)
       }
-      return max_story;
+      //console.log(max_story)
+      //console.log(btw_max_story)
+      return [max_story, btw_max_story];
     }
 
     function startTime2(ease, totalTime, timeTodo, dateScale) {
@@ -1333,49 +1341,100 @@
       );
 
 
+      let t_list =[];
+      let t_new_list = [];
+      
       function myEaseFunc(t) {
+        t_list.push(t)
+        
         dateTime = monthScale(t);
         // find maximum story level	
-        let story = getMaxStory(dateTime)        
-        if (story == 3) {
-          //new_t = (1 - Math.cos(Math.PI * t)) / 3; 
-          new_t = t*t*t;           				
-          console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime ,"| max story=", story, "\n");
-          return [new_t, story]
-        } else {
-          console.log("origin t=", t, "story from date time", dateTime , "| max story=", story, "\n");
-          return [t, story]
+        let [max_story, btw_max_story] = getMaxStory(dateTime);
+        
+        if(btw_max_story==0){ // sinout
+          new_t = Math.sin((Math.PI/2) * t);         
+          
+        }else if(btw_max_story==1) { // linear
+          new_t = t
+
+        } else if (btw_max_story==2) { // sinIn
+          new_t = 1 - Math.cos((Math.PI/2) * t);
+          //new_t = (1 - Math.cos(Math.PI * t)) / 3; SinInOut
+          
+        } else if (btw_max_story==3) { // CubicIn 
+          new_t = t * t * t; 
+          
         }
+        t_new_list.push(new_t)
+
+        var trace = {
+          x: t_list,
+          y: t_new_list,
+          mode: 'lines'          
+        };
+        
+        Plotly.newPlot('easeFunc', [trace], {title: 'Ease function graph'});
+        return [new_t, btw_max_story]
+        /*
+        if (max_story == 3) {
+          //new_t = (1 - Math.cos(Math.PI * t)) / 3; 
+          new_t = t * t * t;
+          console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime, "| max story=", max_story, "\n");          
+          return [new_t, max_story];
+        } else {
+          console.log("origin t=", t, "story from date time", dateTime, "| max story=", max_story, "\n");
+          return [t, max_story];
+        }*/
+
       }
 
-      function myTimer(t) {
-        //rescale_t = Math.acos(1 - 3 * t) / Math.PI;
-        rescale_t = Math.cbrt(t)
-        return rescale_t;
-      }
-
+      
       timer
         .transition()
         .duration(timeTodo)
-        .ease(myTimer)
+        .ease(easeFunc)
         .attr("T", totalTime);
 
+      let t_rescale_list = [];
+      
+      //https://bl.ocks.org/Kcnarf/9e4813ba03ef34beac6e
       svg
         .transition()
         .duration(timeTodo)
+        //.attr("delay", function(d,i){return 1000*i})
+        //.attr("duration", function(d,i){return 1000*(i+1)})
         .ease(myEaseFunc)
         .tween("time", () => {
           return function (value) {
-            [t, story] = value
-            dateTime = null
-            if (story == 3) { //rescale
-              //rescale_t = Math.acos(1 - 3 * t) / Math.PI;
-              rescale_t = Math.cbrt(t)
-              dateTime = monthScale(rescale_t);
-            } else {
-              dateTime = monthScale(t);
-            }
+            [t, btw_max_story] = value
+            
+            let t_rescale = 0;
+            if (btw_max_story == 0){
+              t_rescale = 2*Math.asin(t)/Math.PI;
 
+            } else if(btw_max_story == 1){
+              t_rescale = t;
+
+            } else if(btw_max_story == 2){
+              //t_rescale = Math.acos(1 - 3 * t) / Math.PI; rescale SinInOut
+              t_rescale = 2*Math.acos(1-t)/Math.PI;
+
+            } else if (btw_max_story == 3) { //rescale
+              
+              t_rescale = Math.cbrt(t)
+              
+            } 
+            t_rescale_list.push(t_rescale);
+
+            var trace = {      
+              x: t_list,
+              y: t_rescale_list,
+              mode: 'lines'          
+            };
+            
+            Plotly.newPlot('easeFunc2', [trace], {title: 'Tween graph'});
+
+            let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
             console.log("tween t=", t, "|rescale date=", dateTime);
           };
@@ -1433,13 +1492,13 @@
     .distortion(2);
     fisheye.focus([100,2000])
     */
-   function getDistance(center_x, center_y, x , y){
+    function getDistance(center_x, center_y, x, y) {
       return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
-   }
-   
-   function getCentroid(x_array, y_array){
+    }
 
-   }
+    function getCentroid(x_array, y_array) {
+
+    }
 
     // repeat every times
     function tweenYear(year) {
@@ -1463,61 +1522,63 @@
         .
          ]
       */
-      let dataset = getDataByMonth(dataArray, year);      
-        
-      let max_story = getMaxStory(year)
+      let dataset = getDataByMonth(dataArray, year);
+
+      let [max_story, btw_max_story] = getMaxStory(year);
 
       // calculate zoom center 
       let sum_x = 0;
       let sum_y = 0;
-      let count = 0      
+      let count = 0
       let radius = "0"
-      for( d of dataset){
-        if (max_story == 1 && d.story == 1){
+      for (d of dataset) {
+        if (max_story == 1 && d.story == 1) {
           sum_x += d.forward;
           sum_y += d.freq;
           ++count;
         }
       }
-      let center_x = 0; 
+      let center_x = 0;
       let center_y = 0;
-      if (count !=0){
-        center_x=sum_x/count;
-        center_y=sum_y/count;
-      
+      if (count != 0) {
+        center_x = sum_x / count;
+        center_y = sum_y / count;
+
         // calculate radius of zoom
         temp = [];
-        for( d of dataset){
-          if (max_story == 1 && d.story == 1){
+        for (d of dataset) {
+          if (max_story == 1 && d.story == 1) {
             temp.push(getDistance(x(center_x), y(center_y), x(d.forward), y(d.freq)));
           }
-        }      
+        }
         //radius = Math.max(...temp);        
         //radius = Math.averag(...temp);        
-       // radius = 0.5
-       let sum = temp.reduce((previous, current) => current += previous);
-       let avg = sum / temp.length;
-       radius = avg;
+        // radius = 0.5
+        let sum = temp.reduce((previous, current) => current += previous);
+        let avg = sum / temp.length;
+        radius = avg;
       }
 
-      
-      dd = new Date(2016, 0)
-      zoom = [{label: "#zoom", forward: center_x, freq: center_y, time: dd, trend: radius, story:1}];
-      dataset = zoom.concat(dataset)
+
+      //dd = new Date(2016, 0)
+      //zoom = [{ label: "#zoom", forward: center_x, freq: center_y, time: dd, trend: radius, story: 1 }];
+      //dataset = zoom.concat(dataset)
       //dataset.push({label: "#zoom", forward: center_x, freq: center_y, time: dd, trend: radius, story:1})
-            
+
       dot.data(dataset)
-      .each(function (d) {
-        //data ={x:d.forward, y:d.freq};
-        /*result = fisheye(data);        
-        d.forward = result.x;
-        d.freq = result.y;
-        */
-        //d.radius = parseFloat(d.trend);        
-        return d;
-        
-      })
-      .call(position);
+        .each(function (d) {
+          //data ={x:d.forward, y:d.freq};
+          /*result = fisheye(data);        
+          d.forward = result.x;
+          d.freq = result.y;
+          */
+          //d.radius = parseFloat(d.trend);        
+          return d;
+
+        })
+        .call(position);
+      
+      show_data(year, max_story, btw_max_story, dataset); //for debug onley
 
       //console.log('>>>',d3.select("#chartAside").html());	
       //d3.select("#my_dataviz").text( d3.select("#chartAside").html())	
