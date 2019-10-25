@@ -5,8 +5,8 @@
   var margin = { top: 10, bottom: 80, left: 120, right: 30 };
   // var svgWidth = document.getElementById('chartAside').clientWidth;
   // var svgHeight = svgWidth*0.6>700? 700: svgWidth*0.6;
-  var svgWidth = 850;
-  var svgHeight = 690;
+  var svgWidth = 1200;//850;
+  var svgHeight = 650;//690;
 
   var width = svgWidth - margin.left - margin.right;
   var height = svgHeight - margin.top - margin.bottom;
@@ -1316,12 +1316,12 @@
       btw_max_story = 0;
       try {
         index = bisect.left(maxStory, dateTime);
-        
+
         max_story = maxStory[index - 1][1]; // maximum story levels
-        if(index == 1){
-          btw_max_story = 0 - maxStory[index - 1][1]; 
+        if (index == 1) {
+          btw_max_story = 0 - maxStory[index - 1][1];
         } else {
-          btw_max_story = Math.abs(maxStory[index - 1][1]-maxStory[index][1]); //btw value of maximum story levels
+          btw_max_story = Math.abs(maxStory[index - 1][1] - maxStory[index][1]); //btw value of maximum story levels
         }
       } catch (error) { // bug 
         console.log(error)
@@ -1341,39 +1341,39 @@
       );
 
 
-      let t_list =[];
+      let t_list = [];
       let t_new_list = [];
-      
+
       function myEaseFunc(t) {
         t_list.push(t)
-        
+
         dateTime = monthScale(t);
         // find maximum story level	
         let [max_story, btw_max_story] = getMaxStory(dateTime);
-        
-        if(btw_max_story==0){ // sinout
-          new_t = Math.sin((Math.PI/2) * t);         
-          
-        }else if(btw_max_story==1) { // linear
+
+        if (btw_max_story == 0) { // sinout
+          new_t = Math.sin((Math.PI / 2) * t);
+
+        } else if (btw_max_story == 1) { // linear
           new_t = t
 
-        } else if (btw_max_story==2) { // sinIn
-          new_t = 1 - Math.cos((Math.PI/2) * t);
+        } else if (btw_max_story == 2) { // sinIn
+          new_t = 1 - Math.cos((Math.PI / 2) * t);
           //new_t = (1 - Math.cos(Math.PI * t)) / 3; SinInOut
-          
-        } else if (btw_max_story==3) { // CubicIn 
-          new_t = t * t * t; 
-          
+
+        } else if (btw_max_story == 3) { // CubicIn 
+          new_t = t * t * t;
+
         }
         t_new_list.push(new_t)
 
         var trace = {
           x: t_list,
           y: t_new_list,
-          mode: 'lines'          
+          mode: 'lines'
         };
-        
-        Plotly.newPlot('easeFunc', [trace], {title: 'Ease function graph'});
+
+        Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
         return [new_t, btw_max_story]
         /*
         if (max_story == 3) {
@@ -1388,7 +1388,7 @@
 
       }
 
-      
+
       timer
         .transition()
         .duration(timeTodo)
@@ -1396,7 +1396,7 @@
         .attr("T", totalTime);
 
       let t_rescale_list = [];
-      
+
       //https://bl.ocks.org/Kcnarf/9e4813ba03ef34beac6e
       svg
         .transition()
@@ -1407,32 +1407,32 @@
         .tween("time", () => {
           return function (value) {
             [t, btw_max_story] = value
-            
-            let t_rescale = 0;
-            if (btw_max_story == 0){
-              t_rescale = 2*Math.asin(t)/Math.PI;
 
-            } else if(btw_max_story == 1){
+            let t_rescale = 0;
+            if (btw_max_story == 0) {
+              t_rescale = 2 * Math.asin(t) / Math.PI;
+
+            } else if (btw_max_story == 1) {
               t_rescale = t;
 
-            } else if(btw_max_story == 2){
+            } else if (btw_max_story == 2) {
               //t_rescale = Math.acos(1 - 3 * t) / Math.PI; rescale SinInOut
-              t_rescale = 2*Math.acos(1-t)/Math.PI;
+              t_rescale = 2 * Math.acos(1 - t) / Math.PI;
 
             } else if (btw_max_story == 3) { //rescale
-              
+
               t_rescale = Math.cbrt(t)
-              
-            } 
+
+            }
             t_rescale_list.push(t_rescale);
 
-            var trace = {      
+            var trace = {
               x: t_list,
               y: t_rescale_list,
-              mode: 'lines'          
+              mode: 'lines'
             };
-            
-            Plotly.newPlot('easeFunc2', [trace], {title: 'Tween graph'});
+
+            Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
 
             let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
@@ -1577,7 +1577,7 @@
 
         })
         .call(position);
-      
+
       show_data(year, max_story, btw_max_story, dataset); //for debug onley
 
       //console.log('>>>',d3.select("#chartAside").html());	
