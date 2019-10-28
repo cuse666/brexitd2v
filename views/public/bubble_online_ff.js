@@ -2368,7 +2368,7 @@
     let headSvg = d3
       .select(".header")
       .append("svg")
-      .attr("width", 700)
+      .attr("width", 1050)
       .attr("height", 60)
       .style("position", "absolute");
 
@@ -2381,7 +2381,7 @@
     headSvg
       .append("image")
       .attr("xlink:href", "public/left_legend_2.svg")
-      .attr("x", 450)
+      .attr("x", 800)
       .attr("y", 0)
       // .attr('width', 400)
       .attr("height", 60);
