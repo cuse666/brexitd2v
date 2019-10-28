@@ -186,6 +186,7 @@
 
   let buttonSize = 40;
   let buttonPlay = true;
+  let properDateCheck = true;
   console.log("buttonPlay", buttonPlay);
   let videoYOffset = 30;
   let buttonXOffset = -15;
@@ -659,7 +660,7 @@
       .attr("data-label", d => d.label.slice(1))
       .text(d => twitterText[d.label.slice(1)])
       .style("fill-opacity", 0);
-    
+
     // for debug only
     //dd = new Date(2016, 0)
     //dataset.push({ label: "#centroid", forward: 0, freq: 0, time: dd, trend: "0", story: 1 })
@@ -918,8 +919,7 @@
       dot
         .attr("cx", d => x(d.forward + 1) + margin.left)
         .attr("cy", d => y(d.freq + 1) + margin.top)
-        .attr("r", d => {
-          let [max_story, _] = getMaxStory(d.time)
+        .attr("r", d => {          
           if (!isVisible(d)) {
             return 2;
           } else {
@@ -928,11 +928,22 @@
         })
         .style("fill", function (d) {
           let [max_story, _] = getMaxStory(d.time)
-          return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+          if (max_story !== 0){
+            return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+          }
+          else{
+            return "#FFFFFF";
+          }
         })
         .style("stroke", function (d) {
           let [max_story, _] = getMaxStory(d.time)
-          return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+          if (max_story !== 0){
+            return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+            //return color(d.trend); //always highlight
+          }
+          else{
+            return "#DCDCDC";
+          }
         })
         .style("opacity", 1)
         .style("display", function (d) {
@@ -1484,13 +1495,65 @@
       return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
     }
 
-    function getCentroid(x_array, y_array) {
+    function getTheHighlighted(dataset) {
+      let highlight = [];
+      for (d of dataset) {
+        if (max_story == d.story && max_story>=1) {
+          highlight.push(d);
+        }
+      }
+      console.log("highlight", highlight.length);
+      return highlight;
+    }
+    
+    let dataArrayDate = {};
+    for (d of dataArray) {
+        dataArrayDate[d.label] = d.value;
+     }
 
+    function getProperDate(year_month, highlight) {
+      let new_date = new Date(year_month);
+      let proper_date = new_date;
+      let temp_max_distance = 0;
+      for (let i = 1; i <= 20; i++) { // find proper day
+        new_date.setDate(i); //+1 days
+        // find center of new cx, cy for pause
+        let sum_x = 0;
+        let sum_y = 0;
+        let list_new_cx_cy = [];
+        for (d of highlight) { // #hashtag is highlighted          
+          let value = dataArrayDate[d.label]; //get #hashtag
+          let new_cx = findForwardByMonth(value, new_date);
+          let new_cy = findFreqByMonth(value, new_date);
+          console.log("hashtag", d.label, "generate day:", new_date, "new (cx,cy) =>", new_cx, ",", new_cy);//debug
+          sum_x += new_cx;
+          sum_y += new_cy;
+          list_new_cx_cy.push([new_cx, new_cy]);
+        }
+        // calculate center of #hashtag is highlighted  
+        let center_x = sum_x / highlight.length;
+        let center_y = sum_y / highlight.length;
+        console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
+        // maximum distance
+        temp = [];
+        for (point of list_new_cx_cy) {
+          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));          
+          temp.push(getDistance(center_x, center_y, point[0], point[1]));
+        }
+        max_distance = Math.max(...temp);
+        console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
+        if (max_distance > temp_max_distance) {
+          temp_max_distance = max_distance;
+          proper_date = new_date;
+        }
+        //list_max_distance[new_date] = max_distance
+      }
+      console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
+      return proper_date;
     }
 
-    var count_test = 0;
     // repeat every times
-    function tweenYear(year) {
+    function tweenYear(year_month_date) {
       // dataset format example 
       /*[ {label: "#abtv", 
         forward: 1.6105742383512545, 
@@ -1512,92 +1575,53 @@
          ]
       */
 
-      dataArrayDate ={};
-      for(d of dataArray){
-        dataArrayDate[d.label]=d.value;
-      }
+      
       //console.log(">> data Array date", dataArrayDate);
 
-      let dataset = getDataByMonth(dataArray, year);
+      let dataset = getDataByMonth(dataArray, year_month_date);
 
-      let [max_story, btw_max_story] = getMaxStory(year);
+      let [max_story, btw_max_story] = getMaxStory(year_month_date);
 
       // find #hashtag is highlighted 
-      let highlight = [];
-      for (d of dataset) {
-        if (max_story == d.story) {
-          highlight.push(d)
-        }
-      }
-      console.log("highlight", highlight.length)
+      let highlight = getTheHighlighted(dataset);
 
       // calculate proper center       
-      if (highlight.length >= 4) { //check  #hashtag is highlighted  is more than 4 times
-       /* let sum_x = 0;
-        let sum_y = 0;        
-        for (d of highlight) {          
-            sum_x += d.forward;
-            sum_y += d.freq;          
-        }
-        let center_x = sum_x / highlight.length;
-        let center_y = sum_y / highlight.length;
-        console.log("year=", year, " | center(x,y) >>", center_x, center_y );  
-        */
-       /*
-        
-        for (d of highlight) {
-           temp.push(getDistance(x(center_x), y(center_y), x(d.forward), y(d.freq)));          
-        }
-
-        radius = Math.max(...temp);
-        console.log("year=", year, " | maximum radius >>", radius );  
-*/
-
+      if (highlight.length >= 4 && properDateCheck==true) { //check  #hashtag is highlighted  is more than 4 times     
         // generate new days and new (cx, cy) for pause
-        list_max_distance = {};
-        new_date = new Date(year);
-
-        for(let i=1;i<=20;i++){ // find proper day
-          new_date.setDate( i );  //+1 days
-
-          // find center of new cx, cy for pause
-          let sum_x = 0;
-          let sum_y = 0;      
-          let list_new_cx_cy=[];  
-          for (d of highlight) { // #hashtag is highlighted          
-            let value = dataArrayDate[d.label]; //get #hashtag
-            let new_cx = findForwardByMonth(value, new_date);
-            let new_cy = findFreqByMonth(value, new_date);
-            console.log("hashtag", d.label, "generate day:",new_date ,"new (cx,cy) =>", new_cx,",", new_cy);
-
-            sum_x += new_cx;
-            sum_y += new_cy;      
-            list_new_cx_cy.push([new_cx,new_cy])    
-          }
-
-          // calculate center of #hashtag is highlighted  
-          let center_x = sum_x / highlight.length;
-          let center_y = sum_y / highlight.length;
-          console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y ); 
-
-          // maximum distance
-          temp=[];
-          for (point of list_new_cx_cy) {
-            //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));          
-            temp.push(getDistance(center_x, center_y, point[0], point[1]));          
-          }
-          max_distance = Math.max(...temp);
-          console.log("generate day:", new_date, " | maximum distance >>", max_distance );  
-
-          list_max_distance[new_date]=max_distance
-        }        
-        console.log("maximum distance >>", list_max_distance)
+        //list_max_distance = {};        
+        // change dataset
+        proper_date  = getProperDate(year_month_date, highlight);
+        dataset = getDataByMonth(dataArray, proper_date);
 
         // find date --> have maximum distance
-        
+
         // plot new cx ,cy
-        
+
+        let timeScale = d3
+        .scaleLinear()
+        .domain([timeline[0], timeline[timeline.length-1]])
+        .range([0 ,totalTime]);
+        // Change time
+        let currentTime= timeScale(proper_date);
+        setTime(currentTime);
+        __plotAll(dataset);
+
+        function myPause() {                         
+          buttonClickedHandler();//# stop
+          properDateCheck = false;
+          // resume
+          setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+        }
+  
+        myPause();
+
+      } else { // #hashtag is not highlighted  is more than 4 times
+        if(highlight.length < 4){
+          properDateCheck=true;
+        }        
+        __plotAll(dataset);
       }
+
      
 
       // for debug only
@@ -1606,79 +1630,34 @@
       //dataset = centroid.concat(dataset)
       //dataset.push({label: "#centroid", forward: center_x, freq: center_y, time: dd, trend: radius, story:1})
       // -----
-      
-
-      //let center_x = 0;
-      //let center_y = 0;
-      /*
-      if (count != 0) {
-        center_x = sum_x / count;
-        center_y = sum_y / count;
-
-        // calculate radius of zoom        
-         temp = [];
-        for (d of dataset) {
-          if (max_story == 1 && d.story == 1) {
-            temp.push(getDistance(x(center_x), y(center_y), x(d.forward), y(d.freq)));
-          }
-        }
-        //radius = Math.max(...temp);        
-        //radius = Math.averag(...temp);        
-        // radius = 0.5
-        let sum = temp.reduce((previous, current) => current += previous);
-        let avg = sum / temp.length;
-        radius = avg;
-      }*/
-
      
 
-      function myPause() {
-        buttonClickedHandler();//# stop
-
-        // my coding 
-        
-
-        setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+      function __plotAll(dataset) {
+        dot.data(dataset)
+          .call(position);
+        //show_data(year_month_date, max_story, btw_max_story, dataset); //for debug onley
+        //console.log('>>>',d3.select("#chartAside").html());	
+        //d3.select("#my_dataviz").text( d3.select("#chartAside").html())	
+        textDateLabel.data(dataset).call(textDateLabelPosition);
+        // updateShowupText(year, dataset, showupText, showupLifeCycle);
+        updateTraj(year_month_date);
+        horizontalCursor.data(dataset).call(horCursorPosition);
+        verticalCursor.data(dataset).call(verCursorPosition);
+        horizontalText.data(dataset).call(horTextPosition);
+        verticalText.data(dataset).call(verTextPosition);
+        textPosition(dataset);
+        if (year_month_date <= limitDate) {
+          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
+        }
+        else {
+          isAnimationFinished = true;
+          buttonPlay = false;
+          button.attr("xlink:href", `public/data/bubble/pause.svg`);
+          enableCursor();
+        }
+        let tmpYear = new Date(year_month_date);
+        updateVideoAnchor(tmpYear);
       }
-
-      /*
-      count_test++;      
-      if(count_test==100){
-        myPause();
-      }*/
-
-      dot.data(dataset)
-        /*.each(function (d) {         
-          return d;
-        })*/
-        .call(position);
-
-      show_data(year, max_story, btw_max_story, dataset); //for debug onley
-
-      //console.log('>>>',d3.select("#chartAside").html());	
-      //d3.select("#my_dataviz").text( d3.select("#chartAside").html())	
-      textDateLabel.data(dataset).call(textDateLabelPosition);
-
-      // updateShowupText(year, dataset, showupText, showupLifeCycle);
-
-      updateTraj(year);
-
-      horizontalCursor.data(dataset).call(horCursorPosition);
-      verticalCursor.data(dataset).call(verCursorPosition);
-      horizontalText.data(dataset).call(horTextPosition);
-      verticalText.data(dataset).call(verTextPosition);
-      textPosition(dataset);
-
-      if (year <= limitDate) {
-        monthText.text(year.getFullYear() + "/" + (year.getMonth() + 1));
-      } else {
-        isAnimationFinished = true;
-        buttonPlay = false;
-        button.attr("xlink:href", `public/data/bubble/pause.svg`);
-        enableCursor();
-      }
-      let tmpYear = new Date(year);
-      updateVideoAnchor(tmpYear);
     }
 
     // function updateShowupText(year, dataset, showupText, showupLifeCycle) {
@@ -2508,6 +2487,7 @@
     }
   });
 })();
+
 async function getExplanation() {
   let dataset = await d3.csv("public/data/hashtag_bubble_explanation.csv");
 
