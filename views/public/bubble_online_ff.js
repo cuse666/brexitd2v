@@ -186,7 +186,6 @@
 
   let buttonSize = 40;
   let buttonPlay = true;
-  console.log("buttonPlay", buttonPlay);
   let videoYOffset = 30;
   let buttonXOffset = -15;
 
@@ -934,7 +933,6 @@
           let [max_story, _] = getMaxStory(d.time)
           return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
         })
-        .style("opacity", 1)
         .style("display", function (d) {
           let selectedLabel = getSelectedLabel();
           if (
@@ -1079,7 +1077,6 @@
     function stop4aWhile() {
       setTimeout(() => {
         buttonPlay = false;
-        console.log("stop4aWhile", buttonPlay);
         button.attr("xlink:href", `public/data/bubble/pause.svg`);
         stopTime();
       }, 100);
@@ -1088,7 +1085,6 @@
 
     function buttonClickedHandler() {
       buttonPlay = !buttonPlay;
-      console.log("buttonClickedHandler", buttonPlay);
       button.attr(
         "xlink:href",
         d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
@@ -1129,7 +1125,6 @@
     }
 
     function sliderClickedHandler(event) {
-      console.log("sliderClickedHandler", buttonPlay)
       //let hyperParam = 0;
       stopTime();
 
@@ -1158,13 +1153,11 @@
     }
 
     function dragStartedHandler() {
-      console.log("dragStartedHandler", buttonPlay)
       button.attr("xlink:href", `public/data/bubble/pause.svg`);
       stopTime();
     }
 
     function draggedHandler() {
-      console.log("draggedHandler", buttonPlay)
       let offset = parseFloat(d3.select(".video-slider").attr("x"));
       let minCXPos = offset + anchorScale.domain()[0];
       let maxCXPos = offset + anchorScale.domain()[1];
@@ -1178,7 +1171,6 @@
     }
 
     function dragendedHandler() {
-      console.log("dragendedHandler", buttonPlay)
       let currentTime = getTime();
 
       buttonPlay = true;
@@ -1424,7 +1416,6 @@
 
             let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
-            console.log("tween t=", t, "|rescale date=", dateTime);
           };
 
         });
@@ -1529,7 +1520,6 @@
           highlight.push(d)
         }
       }
-      console.log("highlight", highlight.length)
 
       // calculate proper center       
       if (highlight.length >= 4) { //check  #hashtag is highlighted  is more than 4 times
@@ -1568,7 +1558,6 @@
             let value = dataArrayDate[d.label]; //get #hashtag
             let new_cx = findForwardByMonth(value, new_date);
             let new_cy = findFreqByMonth(value, new_date);
-            console.log("hashtag", d.label, "generate day:",new_date ,"new (cx,cy) =>", new_cx,",", new_cy);
 
             sum_x += new_cx;
             sum_y += new_cy;      
@@ -1578,7 +1567,6 @@
           // calculate center of #hashtag is highlighted  
           let center_x = sum_x / highlight.length;
           let center_y = sum_y / highlight.length;
-          console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y ); 
 
           // maximum distance
           temp=[];
@@ -1587,11 +1575,8 @@
             temp.push(getDistance(center_x, center_y, point[0], point[1]));          
           }
           max_distance = Math.max(...temp);
-          console.log("generate day:", new_date, " | maximum distance >>", max_distance );  
-
           list_max_distance[new_date]=max_distance
         }        
-        console.log("maximum distance >>", list_max_distance)
 
         // find date --> have maximum distance
         
@@ -1792,13 +1777,6 @@
         //     return 0.1;
         //   }
         // })
-        .style("opacity", function (d) {
-          if (d.forward > 0 && d.freq > 100) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
         .style("display", function (d) {
           if (!isVisible(d)) {
             return "none";
@@ -1995,7 +1973,7 @@
           })
           .transition()
           .duration(durationTime)
-          .attr("opacity", 1);
+          .style("opacity", 1);
 
         d3.selectAll(".dot")
           .filter(function (d, i) {
@@ -2003,7 +1981,7 @@
           })
           .transition()
           .duration(durationTime)
-          .attr("opacity", 0.1);
+          .style("opacity", 0.1);
 
         // d3.selectAll(".textLabel")
         //   .filter(function(d, i) {
@@ -2014,10 +1992,12 @@
         //   .text("");
 
         d3.selectAll(".textLabel")
-          // .filter(function(d, i) {
-          //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
-          // })
-          .text(d => twitterText[d.label.slice(1)]);
+        // .filter(function(d, i) {
+        //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
+        // })
+        .text(d => twitterText[d.label.slice(1)])
+        .transition()
+        .style("opacity", 1);
 
         // d3.selectAll(".textLabel")
         //   .filter(function(d, i) {
@@ -2037,7 +2017,8 @@
             (mouseoverDot === null || d.label.slice(1) !== mouseoverDot)
           );
         })
-        .attr("opacity", 0.1);
+        .transition()
+        .style("opacity", 0.1);
 
       d3.selectAll(".dot")
         .filter(function (d, i) {
@@ -2048,7 +2029,8 @@
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
         })
-        .attr("opacity", 1);
+        .transition()
+        .style("opacity", 1);
 
       d3.selectAll(".textLabel")
         .filter(function (d, i) {
@@ -2059,7 +2041,8 @@
             (mouseoverDot === null || d.label.slice(1) !== mouseoverDot)
           );
         })
-        .text("");
+        .transition()
+        .style("opacity", 0);
 
       d3.selectAll(".textLabel")
         .filter(function (d, i) {
@@ -2070,7 +2053,9 @@
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
         })
-        .text(d => twitterText[d.label.slice(1)]);
+        .text(d => twitterText[d.label.slice(1)])
+        .transition()
+        .style("opacity", 1);
     }
 
     function enableCursor() {
