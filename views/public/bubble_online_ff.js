@@ -609,6 +609,8 @@
     // Add a dot per state. Initialize the data at 1950, and set the colors.
     let startDate = new Date(2016, 0);
     let limitDate = new Date(2019, 4, 30, 23, 59, 59);
+    // let StopDate = limitDate
+    //console.log(limitDate)
     let endDate = new Date(2019, 5);
     // dataset format example
     /* {label: "#abtv", 
@@ -785,9 +787,11 @@
       .range([0, totalTime]);
 
     let { lifeCycle, lifeCycleGradient } = calcLifeCycle(labelSet);
+    //console.log(lifeCycle);
+    // console.log(lifeCycleGradient)
     let showupLifeCycle = calcShowup(lifeCycle);
     renderDownsideWithLifeCycle(lifeCycleGradient);
-
+    // console.log(lifeCycleGradient)
     initTime();
     startTime(easeFunc, totalTime, totalTime, dateScale);
     disableCursor();
@@ -835,6 +839,7 @@
       // console.log(lifeCycle);
 
       let lifeCycleGradient = transformLifeCycleToGradient(lifeCycle);
+      //console.log(lifeCycleGradient)
 
       return {
         lifeCycle,
@@ -872,6 +877,7 @@
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
+      //console.log(lifeCycle)
       let labels = Object.keys(lifeCycle);
 
       let gradient = {};
@@ -881,7 +887,6 @@
         gradient[label].push("to right");
 
         //console.log(lifeCycleOfLabel);
-
         for (let i = 1, len = lifeCycleOfLabel.length; i < len; i += 1) {
           let color = "";
           if (labelSet0.indexOf(label) !== -1) color = "#76a6ca"; // 留 Stay
@@ -889,14 +894,12 @@
           if (labelSet2.indexOf(label) !== -1) color = "#f1706f"; // 脱 Leave
 
           gradient[label].push(
-            `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) /
-              totalTime) * 100}%`
+            `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) / totalTime) * 100}%`
           );
           gradient[label].push(
             `${lifeCycleOfLabel[i][1] ? color : "white"} ${(dateScale(lifeCycleOfLabel[i][0]) / totalTime) * 100}%`
           );
         }
-
         gradient[label] = gradient[label].join(",");
       });
 
@@ -905,7 +908,7 @@
 
     function renderDownsideWithLifeCycle(lifeCycleGradient) {
       let labels = Object.keys(lifeCycleGradient);
-
+      
       labels.forEach(label => {
         d3.select(".downside")
           .select(`#lifeCycleItem-bar-${label}`)
@@ -1009,10 +1012,58 @@
         .text(d => parseInt(d.forward) + 1);
     }
 
+    function calcEarliestTime(selectedLabel){  //计算最早开始时间
+        let earliestTime  = 1, latestTime=0;
+        for(let i=0,len =selectedLabel.length;i<len;i++){
+          let progress = lifeCycleGradient[selectedLabel[i]]  //string类型
+          let arr = progress.split(",");  //按照逗号分开，分为很多段，第一段为"to right",第二段第一个如果为white,则第二个为起始位置，否则开始时间就是getTime()。最后一个如果颜色为white，则其为结束为止；否则，结束位置在时间条的最后
+          let beginnode = arr[1].split(" ");
+          let beginpos
+          if(beginnode[0] === "white")
+            beginpos = parseFloat(beginnode[1]) * 0.01
+          else
+            beginpos = 0
+          if(beginpos < earliestTime)
+            earliestTime = beginpos;  //更新最早开始时间
+
+          let endnode = arr[arr.length-1].split(" ");
+          let endpos
+          if(endnode[0] === "white")
+            endpos = parseFloat(endnode[1]) * 0.01
+          else 
+            endpos = 1
+          if(endpos > latestTime)
+            latestTime = endpos
+        } 
+        return {earliestTime,latestTime}
+    }
+
     function checkedHandler() {
       let selectedLabel = getSelectedLabel();
+      //console.log(selectedLabel)
       let currentTime = getTime();
+      // console.log(currentTime)
+      //改变currentTime为selectedLabel中最早出现的那个时刻！！
+      //包含的时序数据全部在lifeCycleGradient中
+      let {earliestTime,latestTime} = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      //console.log(earliestTime) //输出百分比
+
+      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      currentTime = earliestTime * totalTime - offset
+      let endTime = latestTime * totalTime - offset
+      // console.log(currentTime) //乘以总时间
+      
+      limitDate = dateScale.invert(endTime);  //结束时间
       let currentDate = dateScale.invert(currentTime);
+      // console.log(currentDate)  //开始时间
+      // console.log(limitDate)
+
+      // startDate = currentDate
+      // endDate = limitDate
+
+      updateVideoAnchor(currentDate)
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      setTime(currentTime) 
 
       updateMask(selectedLabel);
       updatePast(d3.select(this), currentDate);
@@ -1084,6 +1135,7 @@
     stop4aWhile();
 
     function buttonClickedHandler() {
+      // console.log(getTime())
       buttonPlay = !buttonPlay;
       button.attr(
         "xlink:href",
@@ -1655,6 +1707,8 @@
       textPosition(dataset);
 
       if (year <= limitDate) {
+        let tmpYear = new Date(year);
+        updateVideoAnchor(tmpYear);
         monthText.text(year.getFullYear() + "/" + (year.getMonth() + 1));
       } else {
         isAnimationFinished = true;
@@ -1662,8 +1716,7 @@
         button.attr("xlink:href", `public/data/bubble/pause.svg`);
         enableCursor();
       }
-      let tmpYear = new Date(year);
-      updateVideoAnchor(tmpYear);
+        
     }
 
     // function updateShowupText(year, dataset, showupText, showupLifeCycle) {
@@ -1727,6 +1780,7 @@
     }
 
     function updateVideoAnchor(date) {
+      // console.log(date)
       let width = d3.select(".video-slider").attr("width");
       let timeScale = d3
         .scaleTime()
@@ -1940,7 +1994,7 @@
         .attr("class", "lifeCycleRow")
         .attr("id", d => `lifeCycleRow-${d}`)
         .style("display", "none");
-
+      
       rows
         .append("div")
         .attr("class", "lifeCycleItem-label")
@@ -1961,7 +2015,7 @@
         .attr("height", `${slider.attr("height")}px`)
         .style("min-height", `${slider.attr("height")}px`)
         .style("border-radius", `${slider.attr("rx")}px`);
-      // .html("sdfadsf");
+        // .html("sdfadsf");
     }
 
     // 本函数在mouseover事件里调用 This function is called in the mouseover event
