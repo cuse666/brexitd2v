@@ -601,6 +601,7 @@
     });
 
     createDownsidePanel(labelSet0.concat(labelSet1, labelSet2));
+    createLevelGraph();
 
     var monthText = svg
       .append("g")
@@ -611,6 +612,8 @@
     // Add a dot per state. Initialize the data at 1950, and set the colors.
     let startDate = new Date(2016, 0);
     let limitDate = new Date(2019, 4, 30, 23, 59, 59);
+    // let StopDate = limitDate
+    //console.log(limitDate)
     let endDate = new Date(2019, 5);
     // dataset format example
     /* {label: "#abtv", 
@@ -787,9 +790,11 @@
       .range([0, totalTime]);
 
     let { lifeCycle, lifeCycleGradient } = calcLifeCycle(labelSet);
+    //console.log(lifeCycle);
+    // console.log(lifeCycleGradient)
     let showupLifeCycle = calcShowup(lifeCycle);
     renderDownsideWithLifeCycle(lifeCycleGradient);
-
+    // console.log(lifeCycleGradient)
     initTime();
     startTime(easeFunc, totalTime, totalTime, dateScale);
     disableCursor();
@@ -837,6 +842,7 @@
       // console.log(lifeCycle);
 
       let lifeCycleGradient = transformLifeCycleToGradient(lifeCycle);
+      //console.log(lifeCycleGradient)
 
       return {
         lifeCycle,
@@ -874,6 +880,7 @@
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
+      //console.log(lifeCycle)
       let labels = Object.keys(lifeCycle);
 
       let gradient = {};
@@ -883,7 +890,6 @@
         gradient[label].push("to right");
 
         //console.log(lifeCycleOfLabel);
-
         for (let i = 1, len = lifeCycleOfLabel.length; i < len; i += 1) {
           let color = "";
           if (labelSet0.indexOf(label) !== -1) color = "#76a6ca"; // 留 Stay
@@ -891,14 +897,12 @@
           if (labelSet2.indexOf(label) !== -1) color = "#f1706f"; // 脱 Leave
 
           gradient[label].push(
-            `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) /
-              totalTime) * 100}%`
+            `${lifeCycleOfLabel[i][1] ? "white" : color} ${(dateScale(lifeCycleOfLabel[i][0]) / totalTime) * 100}%`
           );
           gradient[label].push(
             `${lifeCycleOfLabel[i][1] ? color : "white"} ${(dateScale(lifeCycleOfLabel[i][0]) / totalTime) * 100}%`
           );
         }
-
         gradient[label] = gradient[label].join(",");
       });
 
@@ -907,7 +911,7 @@
 
     function renderDownsideWithLifeCycle(lifeCycleGradient) {
       let labels = Object.keys(lifeCycleGradient);
-
+      
       labels.forEach(label => {
         d3.select(".downside")
           .select(`#lifeCycleItem-bar-${label}`)
@@ -945,7 +949,6 @@
             return "#DCDCDC";
           }
         })
-        .style("opacity", 1)
         .style("display", function (d) {
           let selectedLabel = getSelectedLabel();
           if (
@@ -1022,10 +1025,58 @@
         .text(d => parseInt(d.forward) + 1);
     }
 
+    function calcEarliestTime(selectedLabel){  //计算最早开始时间
+        let earliestTime  = 1, latestTime=0;
+        for(let i=0,len =selectedLabel.length;i<len;i++){
+          let progress = lifeCycleGradient[selectedLabel[i]]  //string类型
+          let arr = progress.split(",");  //按照逗号分开，分为很多段，第一段为"to right",第二段第一个如果为white,则第二个为起始位置，否则开始时间就是getTime()。最后一个如果颜色为white，则其为结束为止；否则，结束位置在时间条的最后
+          let beginnode = arr[1].split(" ");
+          let beginpos
+          if(beginnode[0] === "white")
+            beginpos = parseFloat(beginnode[1]) * 0.01
+          else
+            beginpos = 0
+          if(beginpos < earliestTime)
+            earliestTime = beginpos;  //更新最早开始时间
+
+          let endnode = arr[arr.length-1].split(" ");
+          let endpos
+          if(endnode[0] === "white")
+            endpos = parseFloat(endnode[1]) * 0.01
+          else 
+            endpos = 1
+          if(endpos > latestTime)
+            latestTime = endpos
+        } 
+        return {earliestTime,latestTime}
+    }
+
     function checkedHandler() {
       let selectedLabel = getSelectedLabel();
+      //console.log(selectedLabel)
       let currentTime = getTime();
+      // console.log(currentTime)
+      //改变currentTime为selectedLabel中最早出现的那个时刻！！
+      //包含的时序数据全部在lifeCycleGradient中
+      let {earliestTime,latestTime} = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      //console.log(earliestTime) //输出百分比
+
+      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      currentTime = earliestTime * totalTime - offset
+      let endTime = latestTime * totalTime - offset
+      // console.log(currentTime) //乘以总时间
+      
+      limitDate = dateScale.invert(endTime);  //结束时间
       let currentDate = dateScale.invert(currentTime);
+      // console.log(currentDate)  //开始时间
+      // console.log(limitDate)
+
+      // startDate = currentDate
+      // endDate = limitDate
+
+      updateVideoAnchor(currentDate)
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      setTime(currentTime) 
 
       updateMask(selectedLabel);
       updatePast(d3.select(this), currentDate);
@@ -1090,7 +1141,6 @@
     function stop4aWhile() {
       setTimeout(() => {
         buttonPlay = false;
-        console.log("stop4aWhile", buttonPlay);
         button.attr("xlink:href", `public/data/bubble/pause.svg`);
         stopTime();
       }, 100);
@@ -1098,8 +1148,8 @@
     stop4aWhile();
 
     function buttonClickedHandler() {
+      // console.log(getTime())
       buttonPlay = !buttonPlay;
-      console.log("buttonClickedHandler", buttonPlay);
       button.attr(
         "xlink:href",
         d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
@@ -1140,7 +1190,6 @@
     }
 
     function sliderClickedHandler(event) {
-      console.log("sliderClickedHandler", buttonPlay)
       //let hyperParam = 0;
       stopTime();
 
@@ -1169,13 +1218,11 @@
     }
 
     function dragStartedHandler() {
-      console.log("dragStartedHandler", buttonPlay)
       button.attr("xlink:href", `public/data/bubble/pause.svg`);
       stopTime();
     }
 
     function draggedHandler() {
-      console.log("draggedHandler", buttonPlay)
       let offset = parseFloat(d3.select(".video-slider").attr("x"));
       let minCXPos = offset + anchorScale.domain()[0];
       let maxCXPos = offset + anchorScale.domain()[1];
@@ -1189,7 +1236,6 @@
     }
 
     function dragendedHandler() {
-      console.log("dragendedHandler", buttonPlay)
       let currentTime = getTime();
 
       buttonPlay = true;
@@ -1435,7 +1481,6 @@
 
             let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
-            console.log("tween t=", t, "|rescale date=", dateTime);
           };
 
         });
@@ -1721,6 +1766,7 @@
     }
 
     function updateVideoAnchor(date) {
+      // console.log(date)
       let width = d3.select(".video-slider").attr("width");
       let timeScale = d3
         .scaleTime()
@@ -1771,13 +1817,6 @@
         //     return 0.1;
         //   }
         // })
-        .style("opacity", function (d) {
-          if (d.forward > 0 && d.freq > 100) {
-            return 1;
-          } else {
-            return 0;
-          }
-        })
         .style("display", function (d) {
           if (!isVisible(d)) {
             return "none";
@@ -1941,7 +1980,7 @@
         .attr("class", "lifeCycleRow")
         .attr("id", d => `lifeCycleRow-${d}`)
         .style("display", "none");
-
+      
       rows
         .append("div")
         .attr("class", "lifeCycleItem-label")
@@ -1962,7 +2001,68 @@
         .attr("height", `${slider.attr("height")}px`)
         .style("min-height", `${slider.attr("height")}px`)
         .style("border-radius", `${slider.attr("rx")}px`);
-      // .html("sdfadsf");
+        // .html("sdfadsf");
+    }
+
+    function createLevelGraph(){
+
+      let LevelGraph=d3.select(".container")
+        .append("div")
+        .attr("class","LevelGraph");
+
+      let svg=LevelGraph.append("svg")
+        .attr("height","190px")
+        .attr("width","100%");
+
+      svg.append("text")
+        .attr("text-anchor","middle")
+        .attr("x","230px")
+        .attr("y","18px")
+        .style("width", "200px")
+        .style("height", "50px")
+        .style("font-family","SimSun")
+        .style("fill","#565656")
+        .style("font-weight","700")
+        .attr("font-size","18")
+        .text("Topic popularity");
+
+      const xScale=d3.scaleTime().domain([new Date(2016,1),new Date(2019,5)]).range([0,400]);
+      const xAxis=d3.axisBottom(xScale)
+        .ticks(d3.timeYear.every(1));
+      const yScale=d3.scaleLinear().domain([3,0]).range([0,140]);
+      let tick_offset=400;
+      const yAxis=d3.axisLeft(yScale)
+        .ticks(3)
+        .tickSize(6+tick_offset);
+
+      svg.append("g")
+        .attr("transform", `translate(20,170)`)
+        .call(xAxis)
+        .attr("class","axis");
+
+      svg.append("g")
+        .attr("transform", `translate(${20+tick_offset},30)`)
+        .call(yAxis)
+        .attr("class","axis");
+
+      let dataset=data.map(function(d){
+        let tmp=[];
+        for(let label in d){
+          if(label.substr(0,2)=="lv"){
+            tmp.push([label.substr(2),d[label]]);
+          }
+        }
+        return tmp;
+      });
+
+      let parseTime=d3.timeParse("%Y%m");
+      console.log(dataset);
+      let linePath=d3.line()
+        .x((d)=>xScale(parseTime(d[0]))).y((d)=>yScale(d[1]));
+      svg.selectAll("path")
+        .data(dataset)
+        .append("path")
+        .attr("d",linePath(dataset));
     }
 
     // 本函数在mouseover事件里调用 This function is called in the mouseover event
@@ -1974,7 +2074,7 @@
           })
           .transition()
           .duration(durationTime)
-          .attr("opacity", 1);
+          .style("opacity", 1);
 
         d3.selectAll(".dot")
           .filter(function (d, i) {
@@ -1982,7 +2082,7 @@
           })
           .transition()
           .duration(durationTime)
-          .attr("opacity", 0.1);
+          .style("opacity", 0.1);
 
         // d3.selectAll(".textLabel")
         //   .filter(function(d, i) {
@@ -1993,10 +2093,12 @@
         //   .text("");
 
         d3.selectAll(".textLabel")
-          // .filter(function(d, i) {
-          //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
-          // })
-          .text(d => twitterText[d.label.slice(1)]);
+        // .filter(function(d, i) {
+        //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
+        // })
+        .text(d => twitterText[d.label.slice(1)])
+        .transition()
+        .style("opacity", 1);
 
         // d3.selectAll(".textLabel")
         //   .filter(function(d, i) {
@@ -2016,7 +2118,8 @@
             (mouseoverDot === null || d.label.slice(1) !== mouseoverDot)
           );
         })
-        .attr("opacity", 0.1);
+        .transition()
+        .style("opacity", 0.1);
 
       d3.selectAll(".dot")
         .filter(function (d, i) {
@@ -2027,7 +2130,8 @@
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
         })
-        .attr("opacity", 1);
+        .transition()
+        .style("opacity", 1);
 
       d3.selectAll(".textLabel")
         .filter(function (d, i) {
@@ -2038,7 +2142,8 @@
             (mouseoverDot === null || d.label.slice(1) !== mouseoverDot)
           );
         })
-        .text("");
+        .transition()
+        .style("opacity", 0);
 
       d3.selectAll(".textLabel")
         .filter(function (d, i) {
@@ -2049,7 +2154,9 @@
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
         })
-        .text(d => twitterText[d.label.slice(1)]);
+        .text(d => twitterText[d.label.slice(1)])
+        .transition()
+        .style("opacity", 1);
     }
 
     function enableCursor() {
@@ -2347,7 +2454,7 @@
     let headSvg = d3
       .select(".header")
       .append("svg")
-      .attr("width", 700)
+      .attr("width", 1050)
       .attr("height", 60)
       .style("position", "absolute");
 
@@ -2360,7 +2467,7 @@
     headSvg
       .append("image")
       .attr("xlink:href", "public/left_legend_2.svg")
-      .attr("x", 450)
+      .attr("x", 800)
       .attr("y", 0)
       // .attr('width', 400)
       .attr("height", 60);
