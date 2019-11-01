@@ -599,6 +599,7 @@
     });
 
     createDownsidePanel(labelSet0.concat(labelSet1, labelSet2));
+    createLevelGraph();
 
     var monthText = svg
       .append("g")
@@ -1962,6 +1963,67 @@
         .style("min-height", `${slider.attr("height")}px`)
         .style("border-radius", `${slider.attr("rx")}px`);
       // .html("sdfadsf");
+    }
+
+    function createLevelGraph(){
+
+      let LevelGraph=d3.select(".container")
+        .append("div")
+        .attr("class","LevelGraph");
+
+      let svg=LevelGraph.append("svg")
+        .attr("height","190px")
+        .attr("width","100%");
+
+      svg.append("text")
+        .attr("text-anchor","middle")
+        .attr("x","230px")
+        .attr("y","18px")
+        .style("width", "200px")
+        .style("height", "50px")
+        .style("font-family","SimSun")
+        .style("fill","#565656")
+        .style("font-weight","700")
+        .attr("font-size","18")
+        .text("Topic popularity");
+
+      const xScale=d3.scaleTime().domain([new Date(2016,1),new Date(2019,5)]).range([0,400]);
+      const xAxis=d3.axisBottom(xScale)
+        .ticks(d3.timeYear.every(1));
+      const yScale=d3.scaleLinear().domain([3,0]).range([0,140]);
+      let tick_offset=400;
+      const yAxis=d3.axisLeft(yScale)
+        .ticks(3)
+        .tickSize(6+tick_offset);
+
+      svg.append("g")
+        .attr("transform", `translate(20,170)`)
+        .call(xAxis)
+        .attr("class","axis");
+
+      svg.append("g")
+        .attr("transform", `translate(${20+tick_offset},30)`)
+        .call(yAxis)
+        .attr("class","axis");
+
+      let dataset=data.map(function(d){
+        let tmp=[];
+        for(let label in d){
+          if(label.substr(0,2)=="lv"){
+            tmp.push([label.substr(2),d[label]]);
+          }
+        }
+        return tmp;
+      });
+
+      let parseTime=d3.timeParse("%Y%m");
+      console.log(dataset);
+      let linePath=d3.line()
+        .x((d)=>xScale(parseTime(d[0]))).y((d)=>yScale(d[1]));
+      svg.selectAll("path")
+        .data(dataset)
+        .append("path")
+        .attr("d",linePath(dataset));
     }
 
     // 本函数在mouseover事件里调用 This function is called in the mouseover event
