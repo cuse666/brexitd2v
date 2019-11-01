@@ -919,7 +919,7 @@
       dot
         .attr("cx", d => x(d.forward + 1) + margin.left)
         .attr("cy", d => y(d.freq + 1) + margin.top)
-        .attr("r", d => {          
+        .attr("r", d => {
           if (!isVisible(d)) {
             return 2;
           } else {
@@ -928,20 +928,20 @@
         })
         .style("fill", function (d) {
           let [max_story, _] = getMaxStory(d.time)
-          if (max_story !== 0){
+          if (max_story !== 0) {
             return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
           }
-          else{
+          else {
             return "#FFFFFF";
           }
         })
         .style("stroke", function (d) {
           let [max_story, _] = getMaxStory(d.time)
-          if (max_story !== 0){
+          if (max_story !== 0) {
             return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
             //return color(d.trend); //always highlight
           }
-          else{
+          else {
             return "#DCDCDC";
           }
         })
@@ -1498,18 +1498,18 @@
     function getTheHighlighted(dataset) {
       let highlight = [];
       for (d of dataset) {
-        if (max_story == d.story && max_story>=1) {
+        if (max_story == d.story && max_story >= 1) {
           highlight.push(d);
         }
       }
       console.log("highlight", highlight.length);
       return highlight;
     }
-    
+
     let dataArrayDate = {};
     for (d of dataArray) {
-        dataArrayDate[d.label] = d.value;
-     }
+      dataArrayDate[d.label] = d.value;
+    }
 
     function getProperDate(year_month, highlight) {
       let new_date = new Date(year_month);
@@ -1575,7 +1575,7 @@
          ]
       */
 
-      
+
       //console.log(">> data Array date", dataArrayDate);
 
       let dataset = getDataByMonth(dataArray, year_month_date);
@@ -1586,11 +1586,11 @@
       let highlight = getTheHighlighted(dataset);
 
       // calculate proper center       
-      if (highlight.length >= 4 && properDateCheck==true) { //check  #hashtag is highlighted  is more than 4 times     
+      if (highlight.length >= 4 && properDateCheck == true) { //check  #hashtag is highlighted  is more than 4 times     
         // generate new days and new (cx, cy) for pause
         //list_max_distance = {};        
         // change dataset
-        proper_date  = getProperDate(year_month_date, highlight);
+        proper_date = getProperDate(year_month_date, highlight);
         dataset = getDataByMonth(dataArray, proper_date);
 
         // find date --> have maximum distance
@@ -1598,31 +1598,31 @@
         // plot new cx ,cy
 
         let timeScale = d3
-        .scaleLinear()
-        .domain([timeline[0], timeline[timeline.length-1]])
-        .range([0 ,totalTime]);
+          .scaleLinear()
+          .domain([timeline[0], timeline[timeline.length - 1]])
+          .range([0, totalTime]);
         // Change time
-        let currentTime= timeScale(proper_date);
+        let currentTime = timeScale(proper_date);
         setTime(currentTime);
         __plotAll(dataset);
 
-        function myPause() {                         
+        function myPause() {
           buttonClickedHandler();//# stop
           properDateCheck = false;
           // resume
           setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
         }
-  
+
         myPause();
 
       } else { // #hashtag is not highlighted  is more than 4 times
-        if(highlight.length < 4){
-          properDateCheck=true;
-        }        
+        if (highlight.length < 4) {
+          properDateCheck = true;
+        }
         __plotAll(dataset);
       }
 
-     
+
 
       // for debug only
       //dd = new Date(2016, 0)      
@@ -1630,7 +1630,7 @@
       //dataset = centroid.concat(dataset)
       //dataset.push({label: "#centroid", forward: center_x, freq: center_y, time: dd, trend: radius, story:1})
       // -----
-     
+
 
       function __plotAll(dataset) {
         dot.data(dataset)
