@@ -1316,7 +1316,7 @@
       let label = d3.select(this).attr("data-label");
       levelPath
         .attr("opacity", 0.1)
-        .attr("stroke-width","2px");
+        .attr("stroke-width", "2px");
       highlightLevelLine(label);
       let selectedLabel = getSelectedLabel();
 
@@ -1353,7 +1353,7 @@
       let label = d3.select(this).attr("data-label");
       cancelHightlightLevelLine(label);
       let selectedLabel = getSelectedLabel();
-      for(let index in selectedLabel){
+      for (let index in selectedLabel) {
         highlightLevelLine(selectedLabel[index]);
       }
 
@@ -1380,9 +1380,7 @@
     }
 
     function mouseOverHandlerLevelGraph() {
-      if (!getSelectedLabel()) {
-        levelPath.attr("opacity", 0.1);
-      }
+      levelPath.attr("opacity", 0.1);
       let label = d3.select(this).attr("id").substr(16);
       highlightLevelLine(label);
       d3.select("#highlightTopic")
@@ -1400,13 +1398,17 @@
     }
 
     function mouseOutHandlerLevelGraph() {
-      if (!getSelectedLabel()) {
+      let selectedLabel = getSelectedLabel();
+      if (!selectedLabel) {
         levelPath.attr("opacity", 0.3);
       }
       let label = d3.select(this).attr("id").substr(16);
-        cancelHightlightLevelLine(label);
-        d3.select("#highlightTopic")
-          .text("");
+      cancelHightlightLevelLine(label);
+      for (let index in selectedLabel) {
+        highlightLevelLine(selectedLabel[index]);
+      }
+      d3.select("#highlightTopic")
+        .text("");
     }
 
     function initTime(totalTime, easeFunc) {
