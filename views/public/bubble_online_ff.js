@@ -2255,29 +2255,24 @@
           })
           .transition()
           .duration(durationTime)
-          .style("opacity", 0.2);
-
-        // d3.selectAll(".textLabel")
-        //   .filter(function(d, i) {
-        //     return (
-        //       mouseoverDot === null || d.label.slice(1) !== mouseoverDot
-        //     );
-        //   })
-        //   .text("");
+          .style("opacity", 0.1);
 
         d3.selectAll(".textLabel")
-          // .filter(function(d, i) {
-          //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
-          // })
-          .text(d => twitterText[d.label.slice(1)])
+          .filter(function (d, i) {
+            return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
+          })
           .transition()
+          .duration(durationTime)
           .style("opacity", 1);
 
-        // d3.selectAll(".textLabel")
-        //   .filter(function(d, i) {
-        //     return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
-        //   })
-        //   .text("");
+        d3.selectAll(".textLabel")
+          .filter(function (d, i) {
+            return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
+          })
+          // .text(d => twitterText[d.label.slice(1)])
+          .transition()
+          .duration(durationTime)
+          .style("opacity", 0.1);
 
         return;
       }
