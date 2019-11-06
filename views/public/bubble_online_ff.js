@@ -640,10 +640,7 @@
       .attr("class", "video-button")
       .attr("width", buttonSize)
       .attr("height", buttonSize)
-      .attr(
-        "xlink:href",
-        d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
-      )
+      .attr("xlink:href", `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`)
       .attr(
         "transform",
         `translate(${margin.left - buttonSize + buttonXOffset},${margin.top +
@@ -797,7 +794,7 @@
     // console.log(lifeCycleGradient)
     initTime();
     startTime(easeFunc, totalTime, totalTime, dateScale);
-    disableCursor();
+    //disableCursor();
 
     let checkboxs = d3.selectAll("div.labelRow input");
     let checkAll = d3.selectAll("input.input-all");
@@ -1521,7 +1518,7 @@
           mode: 'lines'
         };
 
-        Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
+        //Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
         return [new_t, btw_max_story]
         /*
         if (max_story == 3) {
@@ -1580,7 +1577,7 @@
               mode: 'lines'
             };
 
-            Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
+            //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
 
             let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
@@ -1672,7 +1669,7 @@
           let value = dataArrayDate[d.label]; //get #hashtag
           let new_cx = findForwardByMonth(value, new_date);
           let new_cy = findFreqByMonth(value, new_date);
-          console.log("hashtag", d.label, "generate day:", new_date, "new (cx,cy) =>", new_cx, ",", new_cy);//debug
+          //console.log("hashtag", d.label, "generate day:", new_date, "new (cx,cy) =>", new_cx, ",", new_cy);//debug
           sum_x += new_cx;
           sum_y += new_cy;
           list_new_cx_cy.push([new_cx, new_cy]);
@@ -1680,7 +1677,7 @@
         // calculate center of #hashtag is highlighted  
         let center_x = sum_x / highlight.length;
         let center_y = sum_y / highlight.length;
-        console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
+        // console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
         // maximum distance
         temp = [];
         for (point of list_new_cx_cy) {
@@ -1688,14 +1685,14 @@
           temp.push(getDistance(center_x, center_y, point[0], point[1]));
         }
         max_distance = Math.max(...temp);
-        console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
+        //console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
         if (max_distance > temp_max_distance) {
           temp_max_distance = max_distance;
           proper_date = new_date;
         }
         //list_max_distance[new_date] = max_distance
       }
-      console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
+      //console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
       return proper_date;
     }
 
@@ -1725,7 +1722,7 @@
 
       //console.log(">> data Array date", dataArrayDate);
 
-      let dataset = getDataByMonth(dataArray, year_month_date);
+      let dataset = getDataByMonth(dataArray, year_month_date);//获取每一帧所有bubble的位置及相关信息
 
       let [max_story, btw_max_story] = getMaxStory(year_month_date);
 
