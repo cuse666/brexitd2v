@@ -186,7 +186,7 @@
 
   let buttonSize = 40;
   let buttonPlay = true;
-  let properDateCheck = true;
+  let paused = false;
   let videoYOffset = 30;
   let buttonXOffset = -15;
 
@@ -1658,8 +1658,8 @@
       dataArrayDate[d.label] = d.value;
     }
 
-    function getProperDate(year_month, highlight) {
-      let new_date = new Date(year_month);
+    function getProperDate(year_month_date, highlight) {
+      let new_date = new Date(year_month_date);
       let proper_date = new_date;
       let temp_max_distance = 0;
       for (let i = 1; i <= 20; i++) { // find proper day
@@ -1732,44 +1732,67 @@
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
 
-      // calculate proper center       
-      if (highlight.length >= 4 && properDateCheck == true) { //check  #hashtag is highlighted  is more than 4 times     
+      // calculate proper center and pause
+
+      function myPause() {
+        buttonClickedHandler();//pause
+        //paused = true;
+        setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+        console.log('CALL MYPAUSE 10000');
+      }
+
+      
+      function myPause2() {
+        buttonClickedHandler();//pause
+        //paused = true;
+        setTimeout(function () { buttonClickedHandler(); }, 5000);// milli seconds
+        console.log('CALL MYPAUSE 5000');
+      }
+
+      function myNewDate() {
+
         // generate new days and new (cx, cy) for pause
-        //list_max_distance = {};        
+        // list_max_distance = {};        
         // change dataset
         proper_date = getProperDate(year_month_date, highlight);
         dataset = getDataByMonth(dataArray, proper_date);
 
         // find date --> have maximum distance
-
         // plot new cx ,cy
-
         let timeScale = d3
           .scaleLinear()
           .domain([timeline[0], timeline[timeline.length - 1]])
           .range([0, totalTime]);
+
         // Change time
         let currentTime = timeScale(proper_date);
         setTime(currentTime);
         __plotAll(dataset);
-
-        function myPause() {
-          buttonClickedHandler();//# stop
-          properDateCheck = false;
-          // resume
-          setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
-        }
-
-        myPause();
-
-      } else { // #hashtag is not highlighted  is more than 4 times
-        if (highlight.length < 4) {
-          properDateCheck = true;
-        }
-        __plotAll(dataset);
       }
 
-
+      //check  #hashtag is highlighted  is more than 4 times
+      if (highlight.length >= 4 && paused == false) {
+        __plotAll(dataset);
+        myNewDate();
+        myPause();
+        paused = true;
+        __plotAll(dataset);
+      }
+      else if (highlight.length >= 4 && paused == true) {
+        __plotAll(dataset);
+        myNewDate();
+        myPause2();
+        paused = false;
+        __plotAll(dataset);
+      }
+      else {
+        //check that pause the highlight.length is change from over 4 to under 4
+        if (highlight.length < 4) {
+          paused = false;
+        }
+        //!highlight.length >= 4 && paused == false
+        __plotAll(dataset);
+      }
 
       // for debug only
       //dd = new Date(2016, 0)      
