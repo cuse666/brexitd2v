@@ -1754,10 +1754,10 @@
 
         // find date --> have maximum distance
         // plot new cx ,cy
-        let timeScale = d3 // can change time scale here (may be use to adjust the time for slow motion)
-          .scaleLinear()
-          .domain([timeline[0], timeline[timeline.length - 1]])
-          .range([0, totalTime]);
+        //let timeScale = d3 // can change time scale here (may be use to adjust the time for slow motion)
+        //  .scaleLinear()
+        //  .domain([timeline[0], timeline[timeline.length - 1]])
+        //  .range([0, totalTime]);
 
         // Change time
         // let currentTime = timeScale(proper_date);
