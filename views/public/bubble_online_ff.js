@@ -1732,6 +1732,15 @@
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
       let formatTime=d3.timeFormat("%B %d, %Y");
+      // // calculate proper center and pause
+
+      // function myPause() {
+      //   buttonClickedHandler();//pause
+      //   //paused = true;
+      //   setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+      //   console.log('CALL MYPAUSE 10000');
+      // }
+
       function myNewDate() {
 
         // generate new days and new (cx, cy) for pause
@@ -1745,7 +1754,7 @@
 
         // find date --> have maximum distance
         // plot new cx ,cy
-        let timeScale = d3
+        let timeScale = d3 // can change time scale here (may be use to adjust the time for slow motion)
           .scaleLinear()
           .domain([timeline[0], timeline[timeline.length - 1]])
           .range([0, totalTime]);
