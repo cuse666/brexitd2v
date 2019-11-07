@@ -639,10 +639,7 @@
       .attr("class", "video-button")
       .attr("width", buttonSize)
       .attr("height", buttonSize)
-      .attr(
-        "xlink:href",
-        d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
-      )
+      .attr("xlink:href", `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`)
       .attr(
         "transform",
         `translate(${margin.left - buttonSize + buttonXOffset},${margin.top +
@@ -796,7 +793,7 @@
     // console.log(lifeCycleGradient)
     initTime();
     startTime(easeFunc, totalTime, totalTime, dateScale);
-    disableCursor();
+    //disableCursor();
 
     let checkboxs = d3.selectAll("div.labelRow input");
     let checkAll = d3.selectAll("input.input-all");
@@ -1520,7 +1517,7 @@
           mode: 'lines'
         };
 
-        Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
+        //Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
         return [new_t, btw_max_story]
         /*
         if (max_story == 3) {
@@ -1579,7 +1576,7 @@
               mode: 'lines'
             };
 
-            Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
+            //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
 
             let dateTime = monthScale(t_rescale);
             tweenYear(dateTime);
@@ -1699,6 +1696,7 @@
     }
 
     let lastProperDate;
+    let paused = false;
     // repeat every times
     function tweenYear(year_month_date) {
       // dataset format example 
@@ -1725,31 +1723,31 @@
 
       //console.log(">> data Array date", dataArrayDate);
 
-      let dataset = getDataByMonth(dataArray, year_month_date);
+      let dataset = getDataByMonth(dataArray, year_month_date);//获取每一帧所有bubble的位置及相关信息
 
       let [max_story, btw_max_story] = getMaxStory(year_month_date);
 
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
-      let formatTime=d3.timeFormat("%B %d, %Y");
+      let formatTime = d3.timeFormat("%B %d, %Y");
       // // calculate proper center and pause
 
-      // function myPause() {
-      //   buttonClickedHandler();//pause
-      //   //paused = true;
-      //   setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
-      //   console.log('CALL MYPAUSE 10000');
-      // }
+      function myPause() {
+        buttonClickedHandler();//pause
+        paused = true;
+        //paused = true;
+        //setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+        console.log('CALL MYPAUSE 10000');
+      }
+
+      proper_date = getProperDate(year_month_date, highlight);
+      if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
+        proper_date = lastProperDate;
+      } else {
+        paused = false;
+      }
 
       function myNewDate() {
-
-        // generate new days and new (cx, cy) for pause
-        // list_max_distance = {};        
-        // change dataset
-        proper_date = getProperDate(year_month_date, highlight);
-        if(lastProperDate!=null&&formatTime(lastProperDate)==formatTime(proper_date)){
-          proper_date=lastProperDate;
-        }
         dataset = getDataByMonth(dataArray, proper_date);
 
         // find date --> have maximum distance
@@ -1762,15 +1760,16 @@
         // Change time
         // let currentTime = timeScale(proper_date);
         // setTime(currentTime);
-        __plotAll(dataset,proper_date);
+        __plotAll(dataset, proper_date);
       }
 
       //check  #hashtag is highlighted  is more than 4 times
-      if (highlight.length >= 4) {
+      if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         myNewDate();
+        myPause();
       }
       else {
-        __plotAll(dataset);
+        __plotAll(dataset, proper_date);
       }
 
       // for debug only
@@ -1781,7 +1780,7 @@
       // -----
 
 
-      function __plotAll(dataset,proper_date) {
+      function __plotAll(dataset, proper_date) {
         dot.data(dataset)
           .call(position);
         //show_data(year_month_date, max_story, btw_max_story, dataset); //for debug onley
@@ -1806,7 +1805,7 @@
         }
         let tmpYear = new Date(year_month_date);
         updateVideoAnchor(tmpYear);
-        lastProperDate=proper_date;
+        lastProperDate = proper_date;
       }
     }
 
@@ -2258,29 +2257,24 @@
           })
           .transition()
           .duration(durationTime)
-          .style("opacity", 0.2);
-
-        // d3.selectAll(".textLabel")
-        //   .filter(function(d, i) {
-        //     return (
-        //       mouseoverDot === null || d.label.slice(1) !== mouseoverDot
-        //     );
-        //   })
-        //   .text("");
+          .style("opacity", 0.1);
 
         d3.selectAll(".textLabel")
-          // .filter(function(d, i) {
-          //   return mouseoverDot !== null && d.label.slice(1) === mouseoverDot;
-          // })
-          .text(d => twitterText[d.label.slice(1)])
+          .filter(function (d, i) {
+            return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
+          })
           .transition()
+          .duration(durationTime)
           .style("opacity", 1);
 
-        // d3.selectAll(".textLabel")
-        //   .filter(function(d, i) {
-        //     return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
-        //   })
-        //   .text("");
+        d3.selectAll(".textLabel")
+          .filter(function (d, i) {
+            return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
+          })
+          // .text(d => twitterText[d.label.slice(1)])
+          .transition()
+          .duration(durationTime)
+          .style("opacity", 0.1);
 
         return;
       }
