@@ -186,7 +186,6 @@
 
   let buttonSize = 40;
   let buttonPlay = true;
-  let properDateCheck = true;
   let videoYOffset = 30;
   let buttonXOffset = -15;
 
@@ -1655,8 +1654,8 @@
       dataArrayDate[d.label] = d.value;
     }
 
-    function getProperDate(year_month, highlight) {
-      let new_date = new Date(year_month);
+    function getProperDate(year_month_date, highlight) {
+      let new_date = new Date(year_month_date);
       let proper_date = new_date;
       let temp_max_distance = 0;
       for (let i = 1; i <= 20; i++) { // find proper day
@@ -1677,7 +1676,7 @@
         // calculate center of #hashtag is highlighted  
         let center_x = sum_x / highlight.length;
         let center_y = sum_y / highlight.length;
-        // console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
+        //console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
         // maximum distance
         temp = [];
         for (point of list_new_cx_cy) {
@@ -1696,6 +1695,7 @@
       return proper_date;
     }
 
+    let lastProperDate;
     // repeat every times
     function tweenYear(year_month_date) {
       // dataset format example 
@@ -1728,45 +1728,47 @@
 
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
+      let formatTime=d3.timeFormat("%B %d, %Y");
+      // // calculate proper center and pause
 
-      // calculate proper center       
-      if (highlight.length >= 4 && properDateCheck == true) { //check  #hashtag is highlighted  is more than 4 times     
+      // function myPause() {
+      //   buttonClickedHandler();//pause
+      //   //paused = true;
+      //   setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
+      //   console.log('CALL MYPAUSE 10000');
+      // }
+
+      function myNewDate() {
+
         // generate new days and new (cx, cy) for pause
-        //list_max_distance = {};        
+        // list_max_distance = {};        
         // change dataset
         proper_date = getProperDate(year_month_date, highlight);
+        if(lastProperDate!=null&&formatTime(lastProperDate)==formatTime(proper_date)){
+          proper_date=lastProperDate;
+        }
         dataset = getDataByMonth(dataArray, proper_date);
 
         // find date --> have maximum distance
-
         // plot new cx ,cy
-
-        let timeScale = d3
+        let timeScale = d3 // can change time scale here (may be use to adjust the time for slow motion)
           .scaleLinear()
           .domain([timeline[0], timeline[timeline.length - 1]])
           .range([0, totalTime]);
+
         // Change time
-        let currentTime = timeScale(proper_date);
-        setTime(currentTime);
-        __plotAll(dataset);
-
-        function myPause() {
-          buttonClickedHandler();//# stop
-          properDateCheck = false;
-          // resume
-          setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
-        }
-
-        myPause();
-
-      } else { // #hashtag is not highlighted  is more than 4 times
-        if (highlight.length < 4) {
-          properDateCheck = true;
-        }
-        __plotAll(dataset);
+        // let currentTime = timeScale(proper_date);
+        // setTime(currentTime);
+        __plotAll(dataset,proper_date);
       }
 
-
+      //check  #hashtag is highlighted  is more than 4 times
+      if (highlight.length >= 4) {
+        myNewDate();
+      }
+      else {
+        __plotAll(dataset);
+      }
 
       // for debug only
       //dd = new Date(2016, 0)      
@@ -1776,7 +1778,7 @@
       // -----
 
 
-      function __plotAll(dataset) {
+      function __plotAll(dataset,proper_date) {
         dot.data(dataset)
           .call(position);
         //show_data(year_month_date, max_story, btw_max_story, dataset); //for debug onley
@@ -1801,6 +1803,7 @@
         }
         let tmpYear = new Date(year_month_date);
         updateVideoAnchor(tmpYear);
+        lastProperDate=proper_date;
       }
     }
 
