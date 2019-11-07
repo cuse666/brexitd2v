@@ -1741,14 +1741,6 @@
         console.log('CALL MYPAUSE 10000');
       }
 
-      
-      function myPause2() {
-        buttonClickedHandler();//pause
-        //paused = true;
-        setTimeout(function () { buttonClickedHandler(); }, 5000);// milli seconds
-        console.log('CALL MYPAUSE 5000');
-      }
-
       function myNewDate() {
 
         // generate new days and new (cx, cy) for pause
@@ -1759,7 +1751,7 @@
 
         // find date --> have maximum distance
         // plot new cx ,cy
-        let timeScale = d3
+        let timeScale = d3 // can change time scale here (may be use to adjust the time for slow motion)
           .scaleLinear()
           .domain([timeline[0], timeline[timeline.length - 1]])
           .range([0, totalTime]);
@@ -1776,13 +1768,6 @@
         myNewDate();
         myPause();
         paused = true;
-        __plotAll(dataset);
-      }
-      else if (highlight.length >= 4 && paused == true) {
-        __plotAll(dataset);
-        myNewDate();
-        myPause2();
-        paused = false;
         __plotAll(dataset);
       }
       else {
