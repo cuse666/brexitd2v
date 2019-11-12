@@ -2315,7 +2315,7 @@
       }
 
       dots
-        .filter(function (d, i) {
+        .filter(function (d, i) {//未被选则的，鼠标没有悬停的所有话题
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -2324,10 +2324,31 @@
           );
         })
         .transition()
-        .style("opacity", 0.1);
+        .style("opacity", 0.1)
+        .style("fill", function (d) {
+          if (d.story >= max_story) {
+            switch (classifyTopic(d.label.substr(1))) {
+              case 0:
+                return "rgb(27, 106, 165)";
+              case 1:
+                return "#b2b2b2";
+              case 2:
+                return "rgb(232, 17, 15)";
+            }
+          } else {
+            return "#FFFFFF";
+          }
+        })
+        .style("stroke", function (d) {
+          if (d.story >= max_story) {
+            return color(d.trend);
+          } else {
+            return "#DCDCDC";
+          }
+        });
 
       dots
-        .filter(function (d, i) {
+        .filter(function (d, i) {//鼠标悬停的话题
           return (
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
@@ -2336,7 +2357,7 @@
         .style("opacity", 1);
 
       dots
-        .filter(function (d, i) {
+        .filter(function (d, i) {//被选择的所有话题
           return (
             selectedLabel.findIndex(
               label => label === d3.select(this).attr("data-label")
@@ -2355,14 +2376,14 @@
               case 2:
                 return "rgb(232, 17, 15)";
             }
-          }else{
+          } else {
             return "#FFFFFF";
           }
         })
         .style("stroke", function (d) {
           if (d.story >= max_story) {
             return color(d.trend);
-          }else{
+          } else {
             return "#DCDCDC";
           }
         });
