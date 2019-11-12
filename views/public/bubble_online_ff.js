@@ -918,6 +918,9 @@
     }
 
     function position(dot) {
+      let currentTime = d3.select(".dot").data()[0].time;
+      let [max_story, _] = getMaxStory(currentTime);
+      let selectedLabel = getSelectedLabel();
       dot
         .attr("cx", d => x(d.forward + 1) + margin.left)
         .attr("cy", d => y(d.freq + 1) + margin.top)
@@ -929,18 +932,20 @@
           }
         })
         .style("fill", function (d) {
-          let [max_story, _] = getMaxStory(d.time)
-          if (max_story !== 0) {
-            return max_story == d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+          if (max_story == 0 && selectedLabel.length) {
+            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+          } else if (max_story !== 0) {
+            return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
           }
           else {
             return "#FFFFFF";
           }
         })
         .style("stroke", function (d) {
-          let [max_story, _] = getMaxStory(d.time)
-          if (max_story !== 0) {
-            return max_story == d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+          if (max_story == 0 && selectedLabel.length) {
+            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+          } else if (max_story !== 0) {
+            return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
             //return color(d.trend); //always highlight
           }
           else {
@@ -948,7 +953,6 @@
           }
         })
         .style("display", function (d) {
-          let selectedLabel = getSelectedLabel();
           if (
             !isVisible(d) &&
             selectedLabel.findIndex(label => label === d.label.slice(1)) === -1
@@ -1064,8 +1068,10 @@
     }
 
     let selectedLabelHis = [];
+    let needUpdateMaxStory = false;
 
     function checkedHandler() {
+      needUpdateMaxStory = true;
       let selectedLabel = getSelectedLabel();
       let selectingLabel;
       let needHighlight;
@@ -1133,6 +1139,7 @@
     }
 
     function checkedAllHandler() {
+      needUpdateMaxStory = true;
       let checkboxs = d3.selectAll("div input.input-all");
       checkboxs.each(() => {
         let checkbox = d3.select(this);
@@ -1437,13 +1444,21 @@
 
     var maxStory = []
     function getMaxStory(dateTime) {
-      if (maxStory.length == 0) { //find maximum story levels
+      let selectedLabel = getSelectedLabel();
+      if (maxStory.length == 0 || needUpdateMaxStory) { //find maximum story levels
+        maxStory = [];
         let timeline = generateTimeline(dataArray);
+        let selectedLabelDataArray;
+        if (selectedLabel.length != 0) {
+          selectedLabelDataArray = dataArray.filter((d) => getSelectedLabel().includes(d.label.substr(1)));
+        } else {
+          selectedLabelDataArray = dataArray;
+        }
         for (date of timeline) {
           // row --> [date, cx, cy, trend]
           //let date = row[0]
           let tmp = []
-          for (data of dataArray) { //select all hashtag
+          for (data of selectedLabelDataArray) { //select all hashtag
             let value = data.value;
             let index = bisect.left(value, date);
             let now = value[index];
@@ -1453,25 +1468,22 @@
           story = Math.max(...tmp) // get maximum story
           maxStory.push([date, story]); //date format, number of maximum story
         }
+        needUpdateMaxStory = false;
       }
-
       let index = 0;
       max_story = 0;
       btw_max_story = 0;
-      try {
-        index = bisect.left(maxStory, dateTime);
 
-        max_story = maxStory[index - 1][1]; // maximum story levels
-        if (index == 1) {
-          btw_max_story = 0 - maxStory[index - 1][1];
-        } else {
-          btw_max_story = Math.abs(maxStory[index - 1][1] - maxStory[index][1]); //btw value of maximum story levels
-        }
-      } catch (error) { // bug 
-        console.log(error)
+      index = bisect.left(maxStory, dateTime);
+      max_story = maxStory[index - 1][1]; // maximum story levels
+
+      if (index == 1) {
+        btw_max_story = 0 - maxStory[index - 1][1];
+      } else {
+        btw_max_story = Math.abs(maxStory[index - 1][1] - maxStory[index][1]); //btw value of maximum story levels
       }
-      //console.log(max_story)
-      //console.log(btw_max_story)
+      // console.log(max_story)
+      // console.log(btw_max_story)
       return [max_story, btw_max_story];
     }
 
@@ -1680,7 +1692,7 @@
         // maximum distance
         temp = [];
         for (point of list_new_cx_cy) {
-          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));          
+          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1]))); 
           temp.push(getDistance(center_x, center_y, point[0], point[1]));
         }
         max_distance = Math.max(...temp);
@@ -1737,7 +1749,6 @@
         paused = true;
         //paused = true;
         //setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
-        console.log('CALL MYPAUSE 10000');
       }
 
       proper_date = getProperDate(year_month_date, highlight);
@@ -2242,16 +2253,40 @@
 
     // 本函数在mouseover事件里调用 This function is called in the mouseover event
     function updateMask(selectedLabel) {
+      let currentTime = d3.select(".dot").data()[0].time;
+      let [max_story, _] = getMaxStory(currentTime);
+      dots = d3.selectAll(".dot");
       if (selectedLabel.length === 0) {
-        d3.selectAll(".dot")
+        dots
           .filter(function (d, i) {
             return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
           })
           .transition()
           .duration(durationTime)
-          .style("opacity", 1);
+          .style("opacity", 1)
+          .style("fill", function (d) {
+            if (max_story == 0 && selectedLabel.length) {
+              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            } else if (max_story !== 0) {
+              return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+            }
+            else {
+              return "#FFFFFF";
+            }
+          })
+          .style("stroke", function (d) {
+            if (max_story == 0 && selectedLabel.length) {
+              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            } else if (max_story !== 0) {
+              return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+              //return color(d.trend); //always highlight
+            }
+            else {
+              return "#DCDCDC";
+            }
+          });
 
-        d3.selectAll(".dot")
+        dots
           .filter(function (d, i) {
             return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
           })
@@ -2279,7 +2314,7 @@
         return;
       }
 
-      d3.selectAll(".dot")
+      dots
         .filter(function (d, i) {
           return (
             selectedLabel.findIndex(
@@ -2291,17 +2326,46 @@
         .transition()
         .style("opacity", 0.1);
 
-      d3.selectAll(".dot")
+      dots
         .filter(function (d, i) {
           return (
-            selectedLabel.findIndex(
-              label => label === d3.select(this).attr("data-label")
-            ) >= 0 ||
             (mouseoverDot !== null && d.label.slice(1) === mouseoverDot)
           );
         })
         .transition()
         .style("opacity", 1);
+
+      dots
+        .filter(function (d, i) {
+          return (
+            selectedLabel.findIndex(
+              label => label === d3.select(this).attr("data-label")
+            ) >= 0
+          );
+        })
+        .transition()
+        .style("opacity", 1)
+        .style("fill", function (d) {
+          if (d.story >= max_story) {
+            switch (classifyTopic(d.label.substr(1))) {
+              case 0:
+                return "rgb(27, 106, 165)";
+              case 1:
+                return "#b2b2b2";
+              case 2:
+                return "rgb(232, 17, 15)";
+            }
+          }else{
+            return "#FFFFFF";
+          }
+        })
+        .style("stroke", function (d) {
+          if (d.story >= max_story) {
+            return color(d.trend);
+          }else{
+            return "#DCDCDC";
+          }
+        });
 
       d3.selectAll(".textLabel")
         .filter(function (d, i) {
