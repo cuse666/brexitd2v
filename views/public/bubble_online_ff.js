@@ -1636,7 +1636,28 @@
     fisheye.focus([100,2000])
     */
     function getDistance(center_x, center_y, x, y) {
-      return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+      //return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
+      //console.log(Math.abs((center_x - x) + (center_y - y)))
+      return (Math.abs((center_x - x) + (center_y - y)));
+      
+    }
+
+    let tempx_centerx_pow2 = [];
+    let sum_tempx_centerx_pow2 = 0;
+
+    function getSD(x, center_x) {
+      tempx_centerx_pow2.push(Math.pow(x - center_x, 2));
+
+      add = (a, b) =>
+        a + b
+
+      sum_tempx_centerx_pow2 = tempx_centerx_pow2.reduce(add)
+
+      sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
+
+      z = (x - center_x) / sd
+
+      return z;
     }
 
     function getTheHighlighted(dataset) {
@@ -1656,8 +1677,17 @@
 
     function getProperDate(year_month_date, highlight) {
       let new_date = new Date(year_month_date);
+console.log('#new_date', new_date); //Feb 01-29 (based on the data)
       let proper_date = new_date;
       let temp_max_distance = 0;
+      let monthly_temp_max_distance = 0;
+      let last_z = [];
+      let temp_max_z = 0;
+      let temp_min_z = 0;
+      let max_distance = 0;
+      let monthly_max_distance = [];
+      let list_a_month_max_distance = [];
+      let month_max = 0;
       for (let i = 1; i <= 20; i++) { // find proper day
         new_date.setDate(i); //+1 days
         // find center of new cx, cy for pause
@@ -1668,7 +1698,7 @@
           let value = dataArrayDate[d.label]; //get #hashtag
           let new_cx = findForwardByMonth(value, new_date);
           let new_cy = findFreqByMonth(value, new_date);
-          //console.log("hashtag", d.label, "generate day:", new_date, "new (cx,cy) =>", new_cx, ",", new_cy);//debug
+          //console.log("hashtag", d.label, "new date:", new_date, "new (cx,cy) =>", new_cx, ",", new_cy);//debug
           sum_x += new_cx;
           sum_y += new_cy;
           list_new_cx_cy.push([new_cx, new_cy]);
@@ -1676,23 +1706,86 @@
         // calculate center of #hashtag is highlighted  
         let center_x = sum_x / highlight.length;
         let center_y = sum_y / highlight.length;
-        //console.log("new center of generate day:", new_date, " | center(x,y) >>", center_x, center_y);//debug
+        //console.log("new center of new date:", new_date, " | center(x,y) >>", center_x, ",", center_y);//debug
         // maximum distance
+
         temp = [];
         for (point of list_new_cx_cy) {
-          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));          
+          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));     
+          //console.log("point(0,1)", point[0], ",", point[1], " | center(x,y) >>", center_x, ",", center_y);//debug     
           temp.push(getDistance(center_x, center_y, point[0], point[1]));
+
+          //console.log('tempdistance', temp)
+          console.log('##new_date', new_date); //generate small new date (28 days) of each 01-29
         }
-        max_distance = Math.max(...temp);
-        //console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
-        if (max_distance > temp_max_distance) {
-          temp_max_distance = max_distance;
-          proper_date = new_date;
+
+        /*temp_z = [];
+        for (point of list_new_cx_cy) {
+          temp_z.push(getSD(point[0], center_x));
+          //console.log('call temp_sd in loop', temp_sd);
         }
-        //list_max_distance[new_date] = max_distance
+
+        last_z.push(temp_z[temp_z.length - 1]);*/
+        //console.log('call last_sd out loop', last_sd);
+
+        /*max_sd = Math.max(...last_sd);
+        console.log("new date:", new_date, " | maximum last SD >>", max_sd);//debug
+        if (max_sd > temp_max_sd) {
+        temp_max_sd = max_sd;
+        proper_date = new_date;*/
+
+        /*min_z = Math.min(...last_z);
+        console.log("call new date:", new_date, " | minimum last SD >>", min_z);//debug
+        if (min_z < temp_min_z) {
+          temp_min_z = min_z;
+          proper_date1 = new_date;
+        }*/
+
+
+
       }
-      //console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
+      max_distance = Math.max(...temp); //max distance of each date (28 days) in a month (per frame)
+      console.log("new date:", new_date, " | maximum (each date) distance / frame >>", max_distance);//debug
+      if (max_distance > temp_max_distance) {
+        temp_max_distance = max_distance; //max distance of a month (per frame)
+        proper_date = new_date;
+      }
+
+
+      //a_month_max_distance = temp_max_distance
+      //list_a_month_max_distance.push(a_month_max_distance)
+      //console.log('a_month_max_distance', a_month_max_distance) 
+      //console.log('list_a_month_max_distance', list_a_month_max_distance) 
+      //max distance of a month (per frame)
+      console.log("proper_date=", proper_date, " | maximum (a month) distance / frame >>", temp_max_distance);//debug
+
+/*
+      if (month_max > temp_max_distance) {
+        month_max
+        proper_date = new_date;
+      } else{
+        month_max = temp_max_distance
+      }*/
+
+      
+
+      //console.log("proper_date=", proper_date, "maximum distance >>", max_sd);//debug
+      //console.log("call proper_date=", proper_date, "minimum distance >>", min_z);//debug
+
+      /*console.log('proper_date1', proper_date1)
+      console.log('proper_date2', proper_date2)*/
       return proper_date;
+    }
+
+
+    function findMaxOfTheMonth(temp_max_distance){
+      if (month_max > temp_max_distance) {
+        month_max
+        proper_date = new_date;
+      } else{
+        month_max = temp_max_distance
+      }
+      console.log("proper_date=", proper_date, " | maximum (a month) distance all frame >>", month_max);//debug
     }
 
     let lastProperDate;
@@ -1732,12 +1825,19 @@
       let formatTime = d3.timeFormat("%B %d, %Y");
       // // calculate proper center and pause
 
-      function myPause() {
+      /*function myPause(timePause) {
         buttonClickedHandler();//pause
         paused = true;
-        //paused = true;
-        //setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
-        console.log('CALL MYPAUSE 10000');
+        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
+        console.log('CALL MYPAUSE', timePause);
+      }*/
+
+      function myPause(timePause) {
+        timePause = 10000;
+        buttonClickedHandler();//pause
+        paused = true;
+        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
+        console.log('#CALL MYPAUSE', timePause);
       }
 
       proper_date = getProperDate(year_month_date, highlight);
@@ -1765,8 +1865,9 @@
 
       //check  #hashtag is highlighted  is more than 4 times
       if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
+        timePause = highlight.length * 0.6 * 1000
         myNewDate();
-        myPause();
+        myPause(timePause);
       }
       else {
         __plotAll(dataset, proper_date);
@@ -1778,7 +1879,6 @@
       //dataset = centroid.concat(dataset)
       //dataset.push({label: "#centroid", forward: center_x, freq: center_y, time: dd, trend: radius, story:1})
       // -----
-
 
       function __plotAll(dataset, proper_date) {
         dot.data(dataset)
