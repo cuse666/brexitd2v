@@ -931,7 +931,17 @@
             return r(d.trend);
           }
         })
-        .style("fill", function (d) {
+        .style("display", function (d) {
+          if (
+            !isVisible(d) &&
+            selectedLabel.findIndex(label => label === d.label.slice(1)) === -1
+          ) {
+            return "none";
+          }
+        });
+
+      if (selectedLabel.length === 0) {
+        dot.style("fill", function (d) {
           if (max_story == 0 && selectedLabel.length) {
             return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
           } else if (max_story !== 0) {
@@ -941,25 +951,18 @@
             return "#FFFFFF";
           }
         })
-        .style("stroke", function (d) {
-          if (max_story == 0 && selectedLabel.length) {
-            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
-          } else if (max_story !== 0) {
-            return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
-            //return color(d.trend); //always highlight
-          }
-          else {
-            return "#DCDCDC";
-          }
-        })
-        .style("display", function (d) {
-          if (
-            !isVisible(d) &&
-            selectedLabel.findIndex(label => label === d.label.slice(1)) === -1
-          ) {
-            return "none";
-          }
-        });
+          .style("stroke", function (d) {
+            if (max_story == 0 && selectedLabel.length) {
+              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            } else if (max_story !== 0) {
+              return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+              //return color(d.trend); //always highlight
+            }
+            else {
+              return "#DCDCDC";
+            }
+          });
+      }
     }
 
     function textDateLabelPosition(textDateLabel) {
