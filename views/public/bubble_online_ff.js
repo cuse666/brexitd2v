@@ -17,6 +17,31 @@
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
+  let options = d3.select("#rightAside")
+    .append("div")
+    .attr("class", "options")
+    .style("position", "absolute")
+    .style("left", `${svgWidth + 460}px`);
+
+  options.append("h2")
+    .text("Advanced Setting")
+    .style("font-family", "Helvetica");
+
+  let option_showPast = options.append("div");
+
+  let option_showPast_input = option_showPast.append("input")
+    .attr("type", "checkbox")
+    .attr("class", "squared")
+    .attr("id", "showPast_input");
+
+  option_showPast.append("label")
+    .html("Show Past")
+    .attr("for", "showPast_input")
+    .attr("id", "showPast")
+    .style("font-family", "Helvetica")
+    .style("margin-left", "15px")
+    .style("display", "none");
+
   // scale
   var y = d3
     .scaleLinear()
@@ -800,6 +825,7 @@
     let checkboxLabels = d3.selectAll("div.labelRow label");
 
     // 绑定监听 Binding bubbles monitoring 
+    option_showPast_input.on("change", showPastCheckedHandler);
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -1073,11 +1099,26 @@
     let selectedLabelHis = [];
     let needUpdateMaxStory = false;
 
+    function showPastCheckedHandler() {
+      let currentTime = getTime();
+      let currentDate = dateScale.invert(currentTime);
+      updateTraj(currentDate);
+    }
+
     function checkedHandler() {
       needUpdateMaxStory = true;
       let selectedLabel = getSelectedLabel();
       let selectingLabel;
       let needHighlight;
+
+      if (selectedLabel.length) {
+        d3.select("#showPast")
+          .style("display", "inline");
+      } else {
+        d3.select("#showPast")
+          .style("display", "none");
+      }
+
       if (selectedLabelHis.length == 0) {
         selectingLabel = selectedLabel[0];
         selectedLabelHis = selectedLabel;
@@ -1203,6 +1244,14 @@
         for (let index in selectingLabel) {
           cancelHightlightLevelLine(selectingLabel[index]);
         }
+      }
+
+      if (selectedLabel.length) {
+        d3.select("#showPast")
+          .style("display", "inline");
+      } else {
+        d3.select("#showPast")
+          .style("display", "none");
       }
     }
 
@@ -2738,7 +2787,7 @@
       let targetPastLine = pastLine[label];
 
       // if input is unchecked, we just disable all of them
-      if (!selector.property("checked")) {
+      if (!option_showPast_input.property("checked") || !selector.property("checked")) {
         targetPastCircle["ele"].selectAll("circle").classed("disabled", true);
         // targetPastLine["ele"].selectAll("line")
         //           .classed("disabled", true);
