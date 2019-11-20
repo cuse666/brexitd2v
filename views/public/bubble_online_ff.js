@@ -1651,7 +1651,7 @@
       //return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
       //console.log(Math.abs((center_x - x) + (center_y - y)))
       return (Math.abs((center_x - x) + (center_y - y)));
-      
+
     }
 
     let tempx_centerx_pow2 = [];
@@ -1689,9 +1689,16 @@
 
     function getProperDate(year_month_date, highlight) {
       let new_date = new Date(year_month_date);
-console.log('#new_date', new_date); //Feb 01-29 (based on the data)
+      console.log('#new_date', new_date); //Feb 01-29 (based on the data)
       let proper_date = new_date;
       let temp_max_distance = 0;
+      let max_distance_1 = 0;
+      let temp_max_distance_1 = 0;
+      let max_distance_2 = 0;
+      let temp_max_distance_2 = 0;
+      let temp_max_distance_x = 0;
+      let max_distance_3 = 0;
+      let temp_max_distance_3 = 0;
       let monthly_temp_max_distance = 0;
       let last_z = [];
       let temp_max_z = 0;
@@ -1700,6 +1707,9 @@ console.log('#new_date', new_date); //Feb 01-29 (based on the data)
       let monthly_max_distance = [];
       let list_a_month_max_distance = [];
       let month_max = 0;
+      let temp1 = [];
+      let temp2 = [];
+      let temp3 = [];
       for (let i = 1; i <= 20; i++) { // find proper day
         new_date.setDate(i); //+1 days
         // find center of new cx, cy for pause
@@ -1722,15 +1732,30 @@ console.log('#new_date', new_date); //Feb 01-29 (based on the data)
         // maximum distance
 
         temp = [];
-        for (point of list_new_cx_cy) {
-          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1])));     
+        for (point of list_new_cx_cy) {   
           //console.log("point(0,1)", point[0], ",", point[1], " | center(x,y) >>", center_x, ",", center_y);//debug     
-          temp.push(getDistance(center_x, center_y, point[0], point[1]));
+          temp.push(getDistance(center_x, center_y, point[0], point[1])); //center x, center y, x, y pass through getDistance()
 
-          //console.log('tempdistance', temp)
-          console.log('##new_date', new_date); //generate small new date (28 days) of each 01-29
+          console.log('temp', temp)
+
+          max_distance_1 = Math.max(...temp); 
+          if (max_distance_1 > temp_max_distance_1) {
+            temp_max_distance_1 = max_distance_1;
+            proper_date = new_date;
+          }
+          //console.log("new date_1:", new_date, " | maximum (each date) distance_1 / frame >>", max_distance_1);//debug
+          console.log("maximum (each date) distance_1 / frame >>", max_distance_1);//debug
         }
+        temp1.push(max_distance_1)
+        console.log('temp1', temp1);
 
+        max_distance_2 = Math.max(...temp1); //max distance of each date (28 days) in a month (per frame)
+        if (max_distance_2 > temp_max_distance_2) {
+          temp_max_distance_2 = max_distance_2; //max distance of a month (per frame)
+          proper_date = new_date;
+        }
+        //console.log("maximum (each date) distance_2 / frame >>", max_distance_2);//debug
+        
         /*temp_z = [];
         for (point of list_new_cx_cy) {
           temp_z.push(getSD(point[0], center_x));
@@ -1752,34 +1777,39 @@ console.log('#new_date', new_date); //Feb 01-29 (based on the data)
           temp_min_z = min_z;
           proper_date1 = new_date;
         }*/
-
-
-
       }
-      max_distance = Math.max(...temp); //max distance of each date (28 days) in a month (per frame)
-      console.log("new date:", new_date, " | maximum (each date) distance / frame >>", max_distance);//debug
-      if (max_distance > temp_max_distance) {
-        temp_max_distance = max_distance; //max distance of a month (per frame)
+      console.log("maximum (each date) distance_2 / frame >>", temp_max_distance_2);//debug
+      //temp2.push(max_distance_2)
+      //console.log('temp2', temp2);
+          
+      //max_distance_3 = Math.max(...temp2); //max distance of each date (28 days) in a month (per frame)
+      max_distance_3 = temp_max_distance_2
+      if (max_distance_3 > temp_max_distance_3) {
+        temp_max_distance_3 = max_distance_3; //max distance of a month (per frame)
         proper_date = new_date;
       }
+      console.log("maximum (each date) distance_3 / frame >>", max_distance_3);//debug
 
+      //temp3.push(max_distance_3)
+      //console.log('temp3', temp3);
 
       //a_month_max_distance = temp_max_distance
       //list_a_month_max_distance.push(a_month_max_distance)
       //console.log('a_month_max_distance', a_month_max_distance) 
       //console.log('list_a_month_max_distance', list_a_month_max_distance) 
       //max distance of a month (per frame)
-      console.log("proper_date=", proper_date, " | maximum (a month) distance / frame >>", temp_max_distance);//debug
 
-/*
-      if (month_max > temp_max_distance) {
-        month_max
-        proper_date = new_date;
-      } else{
-        month_max = temp_max_distance
-      }*/
+      //console.log("proper_date=", proper_date, " | maximum (a month) distance / frame >>", temp_max_distance);//debug
 
-      
+      /*
+            if (month_max > temp_max_distance) {
+              month_max
+              proper_date = new_date;
+            } else{
+              month_max = temp_max_distance
+            }*/
+
+
 
       //console.log("proper_date=", proper_date, "maximum distance >>", max_sd);//debug
       //console.log("call proper_date=", proper_date, "minimum distance >>", min_z);//debug
@@ -1787,17 +1817,6 @@ console.log('#new_date', new_date); //Feb 01-29 (based on the data)
       /*console.log('proper_date1', proper_date1)
       console.log('proper_date2', proper_date2)*/
       return proper_date;
-    }
-
-
-    function findMaxOfTheMonth(temp_max_distance){
-      if (month_max > temp_max_distance) {
-        month_max
-        proper_date = new_date;
-      } else{
-        month_max = temp_max_distance
-      }
-      console.log("proper_date=", proper_date, " | maximum (a month) distance all frame >>", month_max);//debug
     }
 
     let lastProperDate;
