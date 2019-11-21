@@ -17,6 +17,31 @@
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
+  let options = d3.select("#rightAside")
+    .append("div")
+    .attr("class", "options")
+    .style("position", "absolute")
+    .style("left", `${svgWidth + 460}px`);
+
+  options.append("h2")
+    .text("Advanced Setting")
+    .style("font-family", "Helvetica");
+
+  let option_showPast = options.append("div");
+
+  let option_showPast_input = option_showPast.append("input")
+    .attr("type", "checkbox")
+    .attr("class", "squared")
+    .attr("id", "showPast_input");
+
+  option_showPast.append("label")
+    .html("Show Past")
+    .attr("for", "showPast_input")
+    .attr("id", "showPast")
+    .style("font-family", "Helvetica")
+    .style("margin-left", "15px")
+    .style("display", "none");
+
   // scale
   var y = d3
     .scaleLinear()
@@ -800,6 +825,7 @@
     let checkboxLabels = d3.selectAll("div.labelRow label");
 
     // 绑定监听 Binding bubbles monitoring 
+    option_showPast_input.on("change", showPastCheckedHandler);
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -931,7 +957,17 @@
             return r(d.trend);
           }
         })
-        .style("fill", function (d) {
+        .style("display", function (d) {
+          if (
+            !isVisible(d) &&
+            selectedLabel.findIndex(label => label === d.label.slice(1)) === -1
+          ) {
+            return "none";
+          }
+        });
+
+      if (selectedLabel.length === 0) {
+        dot.style("fill", function (d) {
           if (max_story == 0 && selectedLabel.length) {
             return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
           } else if (max_story !== 0) {
@@ -941,25 +977,18 @@
             return "#FFFFFF";
           }
         })
-        .style("stroke", function (d) {
-          if (max_story == 0 && selectedLabel.length) {
-            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
-          } else if (max_story !== 0) {
-            return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
-            //return color(d.trend); //always highlight
-          }
-          else {
-            return "#DCDCDC";
-          }
-        })
-        .style("display", function (d) {
-          if (
-            !isVisible(d) &&
-            selectedLabel.findIndex(label => label === d.label.slice(1)) === -1
-          ) {
-            return "none";
-          }
-        });
+          .style("stroke", function (d) {
+            if (max_story == 0 && selectedLabel.length) {
+              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            } else if (max_story !== 0) {
+              return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+              //return color(d.trend); //always highlight
+            }
+            else {
+              return "#DCDCDC";
+            }
+          });
+      }
     }
 
     function textDateLabelPosition(textDateLabel) {
@@ -1070,11 +1099,26 @@
     let selectedLabelHis = [];
     let needUpdateMaxStory = false;
 
+    function showPastCheckedHandler() {
+      let currentTime = getTime();
+      let currentDate = dateScale.invert(currentTime);
+      updateTraj(currentDate);
+    }
+
     function checkedHandler() {
       needUpdateMaxStory = true;
       let selectedLabel = getSelectedLabel();
       let selectingLabel;
       let needHighlight;
+
+      if (selectedLabel.length) {
+        d3.select("#showPast")
+          .style("display", "inline");
+      } else {
+        d3.select("#showPast")
+          .style("display", "none");
+      }
+
       if (selectedLabelHis.length == 0) {
         selectingLabel = selectedLabel[0];
         selectedLabelHis = selectedLabel;
@@ -1200,6 +1244,14 @@
         for (let index in selectingLabel) {
           cancelHightlightLevelLine(selectingLabel[index]);
         }
+      }
+
+      if (selectedLabel.length) {
+        d3.select("#showPast")
+          .style("display", "inline");
+      } else {
+        d3.select("#showPast")
+          .style("display", "none");
       }
     }
 
@@ -1687,36 +1739,41 @@
       dataArrayDate[d.label] = d.value;
     }
 
+    let tempx_centerx_pow2 = [];
+    let sum_tempx_centerx_pow2 = 0;
+
+    function getSD(x, center_x) {
+      tempx_centerx_pow2.push(Math.pow(x - center_x, 2));
+
+      let add = (a, b) =>
+        a + b
+
+      sum_tempx_centerx_pow2 = tempx_centerx_pow2.reduce(add)
+
+      sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
+
+      //z = (x - center_x) / sd
+
+      //return z;
+      return sd;
+    }
+
     function getProperDate(year_month_date, highlight) {
       let new_date = new Date(year_month_date);
-      console.log('#new_date', new_date); //Feb 01-29 (based on the data)
-      let proper_date = new_date;
+      let proper_date;
       let temp_max_distance = 0;
-      let max_distance_1 = 0;
-      let temp_max_distance_1 = 0;
-      let max_distance_2 = 0;
-      let temp_max_distance_2 = 0;
-      let temp_max_distance_x = 0;
-      let max_distance_3 = 0;
-      let temp_max_distance_3 = 0;
-      let monthly_temp_max_distance = 0;
-      let last_z = [];
-      let temp_max_z = 0;
-      let temp_min_z = 0;
-      let max_distance = 0;
-      let monthly_max_distance = [];
-      let list_a_month_max_distance = [];
-      let month_max = 0;
-      let temp1 = [];
-      let temp2 = [];
-      let temp3 = [];
-      for (let i = 1; i <= 20; i++) { // find proper day
+      let MonthOfDate = new Date(year_month_date);
+      MonthOfDate.setDate(33);//将月份变成下个月第一天
+      MonthOfDate.setDate(0);//将月份变成上个月最后一天
+      let DaysOfTheMonth = MonthOfDate.getDate();
+      // console.log(DaysOfTheMonth);
+      for (let i = 1; i <= DaysOfTheMonth; i++) { // find proper day
         new_date.setDate(i); //+1 days
         // find center of new cx, cy for pause
         let sum_x = 0;
         let sum_y = 0;
         let list_new_cx_cy = [];
-        for (d of highlight) { // #hashtag is highlighted          
+        for (d of highlight) { // #hashtag is highlighted5
           let value = dataArrayDate[d.label]; //get #hashtag
           let new_cx = findForwardByMonth(value, new_date);
           let new_cy = findFreqByMonth(value, new_date);
@@ -1732,29 +1789,15 @@
         // maximum distance
 
         temp = [];
-        for (point of list_new_cx_cy) {   
-          //console.log("point(0,1)", point[0], ",", point[1], " | center(x,y) >>", center_x, ",", center_y);//debug     
-          temp.push(getDistance(center_x, center_y, point[0], point[1])); //center x, center y, x, y pass through getDistance()
-
-          console.log('temp', temp)
-
-          max_distance_1 = Math.max(...temp); 
-          if (max_distance_1 > temp_max_distance_1) {
-            temp_max_distance_1 = max_distance_1;
-            proper_date = new_date;
-          }
-          //console.log("new date_1:", new_date, " | maximum (each date) distance_1 / frame >>", max_distance_1);//debug
-          console.log("maximum (each date) distance_1 / frame >>", temp_max_distance_1, 'proper_date', proper_date);//debug
-
-          temp1.push({max_distance_1, proper_date})
-          console.log('temp1', temp1);
+        for (point of list_new_cx_cy) {
+          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          // temp.push(getSD(point[0], center_x));
         }
-        
-
-        max_distance_2 = Math.max(...temp1); //max distance of each date (28 days) in a month (per frame)
-        if (max_distance_2 > temp_max_distance_2) {
-          temp_max_distance_2 = max_distance_2; //max distance of a month (per frame)
-          proper_date = new_date;
+        max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
+        //console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
+        if (max_distance > temp_max_distance) {
+          temp_max_distance = max_distance;
+          proper_date = new_date.toString();
         }
         //console.log("maximum (each date) distance_2 / frame >>", max_distance_2);//debug
         
@@ -1790,38 +1833,12 @@
         temp_max_distance_3 = max_distance_3; //max distance of a month (per frame)
         proper_date = new_date;
       }
-      console.log("maximum (each date) distance_3 / frame >>", max_distance_3);//debug
-
-      //temp3.push(max_distance_3)
-      //console.log('temp3', temp3);
-
-      //a_month_max_distance = temp_max_distance
-      //list_a_month_max_distance.push(a_month_max_distance)
-      //console.log('a_month_max_distance', a_month_max_distance) 
-      //console.log('list_a_month_max_distance', list_a_month_max_distance) 
-      //max distance of a month (per frame)
-
-      //console.log("proper_date=", proper_date, " | maximum (a month) distance / frame >>", temp_max_distance);//debug
-
-      /*
-            if (month_max > temp_max_distance) {
-              month_max
-              proper_date = new_date;
-            } else{
-              month_max = temp_max_distance
-            }*/
-
-
-
-      //console.log("proper_date=", proper_date, "maximum distance >>", max_sd);//debug
-      //console.log("call proper_date=", proper_date, "minimum distance >>", min_z);//debug
-
-      /*console.log('proper_date1', proper_date1)
-      console.log('proper_date2', proper_date2)*/
-      return proper_date;
+      //console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
+      return new Date(proper_date);
     }
 
     let lastProperDate;
+    let proper_date;
     let paused = false;
     // repeat every times
     function tweenYear(year_month_date) {
@@ -1855,7 +1872,8 @@
 
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
-      let formatTime = d3.timeFormat("%B %d, %Y");
+      let formatTime = d3.timeFormat("%B %d %Y");
+      let formatTime2 = d3.timeFormat("%B %Y");
       // // calculate proper center and pause
 
       /*function myPause(timePause) {
@@ -1873,7 +1891,11 @@
         console.log('#CALL MYPAUSE', timePause);
       }
 
-      proper_date = getProperDate(year_month_date, highlight);
+      if (lastProperDate == null) {
+        proper_date = getProperDate(year_month_date, highlight);
+      }else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+        proper_date = getProperDate(year_month_date, highlight);
+      }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
         proper_date = lastProperDate;
       } else {
@@ -2857,7 +2879,7 @@
       let targetPastLine = pastLine[label];
 
       // if input is unchecked, we just disable all of them
-      if (!selector.property("checked")) {
+      if (!option_showPast_input.property("checked") || !selector.property("checked")) {
         targetPastCircle["ele"].selectAll("circle").classed("disabled", true);
         // targetPastLine["ele"].selectAll("line")
         //           .classed("disabled", true);
