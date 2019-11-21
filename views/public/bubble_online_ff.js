@@ -1744,10 +1744,12 @@
             proper_date = new_date;
           }
           //console.log("new date_1:", new_date, " | maximum (each date) distance_1 / frame >>", max_distance_1);//debug
-          console.log("maximum (each date) distance_1 / frame >>", max_distance_1);//debug
+          console.log("maximum (each date) distance_1 / frame >>", temp_max_distance_1, 'proper_date', proper_date);//debug
+
+          temp1.push({max_distance_1, proper_date})
+          console.log('temp1', temp1);
         }
-        temp1.push(max_distance_1)
-        console.log('temp1', temp1);
+        
 
         max_distance_2 = Math.max(...temp1); //max distance of each date (28 days) in a month (per frame)
         if (max_distance_2 > temp_max_distance_2) {
@@ -1778,7 +1780,7 @@
           proper_date1 = new_date;
         }*/
       }
-      console.log("maximum (each date) distance_2 / frame >>", temp_max_distance_2);//debug
+      console.log("maximum (each date) distance_2 / frame >>", temp_max_distance_2, 'proper_date', proper_date);//debug
       //temp2.push(max_distance_2)
       //console.log('temp2', temp2);
           
