@@ -1706,24 +1706,6 @@
 
     }
 
-    let tempx_centerx_pow2 = [];
-    let sum_tempx_centerx_pow2 = 0;
-
-    function getSD(x, center_x) {
-      tempx_centerx_pow2.push(Math.pow(x - center_x, 2));
-
-      add = (a, b) =>
-        a + b
-
-      sum_tempx_centerx_pow2 = tempx_centerx_pow2.reduce(add)
-
-      sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
-
-      z = (x - center_x) / sd
-
-      return z;
-    }
-
     function getTheHighlighted(dataset) {
       let highlight = [];
       for (d of dataset) {
@@ -1752,9 +1734,9 @@
 
       sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
 
-      //z = (x - center_x) / sd
+      // z = (x - center_x) / sd
 
-      //return z;
+      // return Math.abs(z);
       return sd;
     }
 
@@ -1799,41 +1781,8 @@
           temp_max_distance = max_distance;
           proper_date = new_date.toString();
         }
-        //console.log("maximum (each date) distance_2 / frame >>", max_distance_2);//debug
-        
-        /*temp_z = [];
-        for (point of list_new_cx_cy) {
-          temp_z.push(getSD(point[0], center_x));
-          //console.log('call temp_sd in loop', temp_sd);
-        }
-
-        last_z.push(temp_z[temp_z.length - 1]);*/
-        //console.log('call last_sd out loop', last_sd);
-
-        /*max_sd = Math.max(...last_sd);
-        console.log("new date:", new_date, " | maximum last SD >>", max_sd);//debug
-        if (max_sd > temp_max_sd) {
-        temp_max_sd = max_sd;
-        proper_date = new_date;*/
-
-        /*min_z = Math.min(...last_z);
-        console.log("call new date:", new_date, " | minimum last SD >>", min_z);//debug
-        if (min_z < temp_min_z) {
-          temp_min_z = min_z;
-          proper_date1 = new_date;
-        }*/
       }
-      console.log("maximum (each date) distance_2 / frame >>", temp_max_distance_2, 'proper_date', proper_date);//debug
-      //temp2.push(max_distance_2)
-      //console.log('temp2', temp2);
-          
-      //max_distance_3 = Math.max(...temp2); //max distance of each date (28 days) in a month (per frame)
-      max_distance_3 = temp_max_distance_2
-      if (max_distance_3 > temp_max_distance_3) {
-        temp_max_distance_3 = max_distance_3; //max distance of a month (per frame)
-        proper_date = new_date;
-      }
-      //console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
+
       return new Date(proper_date);
     }
 
@@ -1887,13 +1836,24 @@
         timePause = 10000;
         buttonClickedHandler();//pause
         paused = true;
-        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
-        console.log('#CALL MYPAUSE', timePause);
+        //setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
+      }
+
+      function __isValidDate(date) {
+        if (Object.prototype.toString.call(date) === "[object Date]") {
+          if (isNaN(date.getTime())) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
       }
 
       if (lastProperDate == null) {
         proper_date = getProperDate(year_month_date, highlight);
-      }else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+      } else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
         proper_date = getProperDate(year_month_date, highlight);
       }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
@@ -1901,7 +1861,7 @@
       } else {
         paused = false;
       }
-
+      
       function myNewDate() {
         dataset = getDataByMonth(dataArray, proper_date);
 
