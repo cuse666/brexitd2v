@@ -1718,17 +1718,41 @@
       dataArrayDate[d.label] = d.value;
     }
 
+    let tempx_centerx_pow2 = [];
+    let sum_tempx_centerx_pow2 = 0;
+
+    function getSD(x, center_x) {
+      tempx_centerx_pow2.push(Math.pow(x - center_x, 2));
+
+      let add = (a, b) =>
+        a + b
+
+      sum_tempx_centerx_pow2 = tempx_centerx_pow2.reduce(add)
+
+      sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
+
+      //z = (x - center_x) / sd
+
+      //return z;
+      return sd;
+    }
+
     function getProperDate(year_month_date, highlight) {
       let new_date = new Date(year_month_date);
-      let proper_date = new_date;
+      let proper_date;
       let temp_max_distance = 0;
-      for (let i = 1; i <= 20; i++) { // find proper day
+      let MonthOfDate = new Date(year_month_date);
+      MonthOfDate.setDate(33);//将月份变成下个月第一天
+      MonthOfDate.setDate(0);//将月份变成上个月最后一天
+      let DaysOfTheMonth = MonthOfDate.getDate();
+      // console.log(DaysOfTheMonth);
+      for (let i = 1; i <= DaysOfTheMonth; i++) { // find proper day
         new_date.setDate(i); //+1 days
         // find center of new cx, cy for pause
         let sum_x = 0;
         let sum_y = 0;
         let list_new_cx_cy = [];
-        for (d of highlight) { // #hashtag is highlighted          
+        for (d of highlight) { // #hashtag is highlighted5
           let value = dataArrayDate[d.label]; //get #hashtag
           let new_cx = findForwardByMonth(value, new_date);
           let new_cy = findFreqByMonth(value, new_date);
@@ -1744,22 +1768,23 @@
         // maximum distance
         temp = [];
         for (point of list_new_cx_cy) {
-          //temp.push(getDistance(x(center_x), y(center_y), x(point[0]), y(point[1]))); 
-          temp.push(getDistance(center_x, center_y, point[0], point[1]));
+          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          // temp.push(getSD(point[0], center_x));
         }
-        max_distance = Math.max(...temp);
+        max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
         //console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
         if (max_distance > temp_max_distance) {
           temp_max_distance = max_distance;
-          proper_date = new_date;
+          proper_date = new_date.toString();
         }
         //list_max_distance[new_date] = max_distance
       }
       //console.log("proper_date=", proper_date, "maximum distance >>", temp_max_distance);//debug
-      return proper_date;
+      return new Date(proper_date);
     }
 
     let lastProperDate;
+    let proper_date;
     let paused = false;
     // repeat every times
     function tweenYear(year_month_date) {
@@ -1793,7 +1818,8 @@
 
       // find #hashtag is highlighted 
       let highlight = getTheHighlighted(dataset);
-      let formatTime = d3.timeFormat("%B %d, %Y");
+      let formatTime = d3.timeFormat("%B %d %Y");
+      let formatTime2 = d3.timeFormat("%B %Y");
       // // calculate proper center and pause
 
       function myPause() {
@@ -1803,7 +1829,11 @@
         //setTimeout(function () { buttonClickedHandler(); }, 10000);// milli seconds
       }
 
-      proper_date = getProperDate(year_month_date, highlight);
+      if (lastProperDate == null) {
+        proper_date = getProperDate(year_month_date, highlight);
+      }else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+        proper_date = getProperDate(year_month_date, highlight);
+      }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
         proper_date = lastProperDate;
       } else {
