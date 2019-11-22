@@ -1650,7 +1650,6 @@
 
     }
 
-
     function startTime(ease, totalTime, timeTodo, dateScale) {
       timer
         .transition()
@@ -1699,12 +1698,6 @@
     .distortion(2);
     fisheye.focus([100,2000])
     */
-    function getDistance(center_x, center_y, x, y) {
-      //return Math.sqrt((center_x - x) ** 2 + (center_y - y) ** 2);
-      //console.log(Math.abs((center_x - x) + (center_y - y)))
-      return (Math.abs((center_x - x) + (center_y - y)));
-
-    }
 
     function getTheHighlighted(dataset) {
       let highlight = [];
@@ -1721,10 +1714,15 @@
       dataArrayDate[d.label] = d.value;
     }
 
+    function getDistance(center_x, center_y, x, y) {
+      return (Math.abs((center_x - x) + (center_y - y)));
+    }
+
+    /*
     let tempx_centerx_pow2 = [];
     let sum_tempx_centerx_pow2 = 0;
 
-    function getSD(x, center_x) {
+    function getDistribution(x, center_x, n) {
       tempx_centerx_pow2.push(Math.pow(x - center_x, 2));
 
       let add = (a, b) =>
@@ -1734,12 +1732,14 @@
 
       sd = Math.sqrt(sum_tempx_centerx_pow2 / (tempx_centerx_pow2.length - 1))
 
-      z = (x - center_x) / sd
+      z = (x - center_x) / (sd/Math.sqrt(n));
 
-      return Math.abs(z);
-      //return z;
-      //return sd;
-    }
+      p = 0.005 + (0.0005 - 0.005) * z;
+
+      p = p/(p-1);
+
+      return Math.abs(p);
+    }*/
 
     function getProperDate(year_month_date, highlight) {
       let new_date = new Date(year_month_date);
@@ -1770,24 +1770,14 @@
         let center_x = sum_x / highlight.length;
         let center_y = sum_y / highlight.length;
         //console.log("new center of new date:", new_date, " | center(x,y) >>", center_x, ",", center_y);//debug
-        // maximum distance
 
         temp = [];
         for (point of list_new_cx_cy) {
-          //temp.push(getDistance(center_x, center_y, point[0], point[1])); 
-          temp.push(getSD(point[0], center_x));
+          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          //temp.push(getDistribution(point[0], center_x, list_new_cx_cy.length));
         }
 
-        /*min_distance = Math.min(...temp);//得到每个月高亮气泡和中心点的最远距离
-        console.log("generate day:", new_date, " | minimum distance >>", min_distance);//debug
-        if (temp_min_distance == 0){
-          temp_min_distance = min_distance;
-          proper_date = new_date.toString();
-        }
-        else if (temp_min_distance > min_distance) {
-          temp_min_distance = min_distance;
-          proper_date = new_date.toString();
-        }*/
+        // find maximum distance
         max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
         console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
         if (max_distance > temp_max_distance) {
@@ -1821,9 +1811,7 @@
         .
         .
         .
-         ]
-      */
-
+         ]*/
 
       //console.log(">> data Array date", dataArrayDate);
 
@@ -1854,7 +1842,7 @@
 
       if (lastProperDate == null) {
         proper_date = getProperDate(year_month_date, highlight);
-      }else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+      } else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
         proper_date = getProperDate(year_month_date, highlight);
       }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
