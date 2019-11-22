@@ -1772,7 +1772,7 @@
 
         temp = [];
         for (point of list_new_cx_cy) {
-          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          temp.push(getDistance(center_x, center_y, point[0], point[1]));
           // temp.push(getSD(point[0], center_x));
         }
         max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
@@ -1839,21 +1839,9 @@
         //setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
       }
 
-      function __isValidDate(date) {
-        if (Object.prototype.toString.call(date) === "[object Date]") {
-          if (isNaN(date.getTime())) {
-            return false;
-          } else {
-            return true;
-          }
-        } else {
-          return false;
-        }
-      }
-
-      if (lastProperDate == null) {
+      if (lastProperDate == null && highlight.length >= 4) {//获取首次暂停时间
         proper_date = getProperDate(year_month_date, highlight);
-      } else if (formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+      } else if (lastProperDate != null && highlight.length >= 4 && formatTime2(lastProperDate) != formatTime2(year_month_date)) {
         proper_date = getProperDate(year_month_date, highlight);
       }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
@@ -1861,7 +1849,7 @@
       } else {
         paused = false;
       }
-      
+
       function myNewDate() {
         dataset = getDataByMonth(dataArray, proper_date);
 
