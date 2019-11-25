@@ -888,12 +888,19 @@
       let result = [];
 
       let visible = isVisible(data[0]);
+    
       result.push([data[0].time, visible]);
-      for (let i = 1, len = data.length; i < len; i += 1) {
+      let flag = false;
+      for (let i = 1, len = data.length; i < len; i += 1) { //没有考虑到remain  和 leave 全为 true的情况
         if (isVisible(data[i]) !== visible) {
+          flag = true;
           visible = !visible;
           result.push([data[i].time, visible]);
         }
+      }
+
+      if(flag === false){ //全为true 比如 "leave"和"remain"
+        result.push([data[data.length-1].time, false]);
       }
 
       return result;
@@ -904,7 +911,6 @@
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
-      //console.log(lifeCycle)
       let labels = Object.keys(lifeCycle);
 
       let gradient = {};
@@ -1057,6 +1063,7 @@
     }
 
     function calcEarliestTime(selectedLabel) {  //计算最早开始时间
+
       let earliestTime = 1, latestTime = 0;
       for (let i = 0, len = selectedLabel.length; i < len; i++) {
         let progress = lifeCycleGradient[selectedLabel[i]]  //string类型
@@ -1143,6 +1150,10 @@
       //改变currentTime为selectedLabel中最早出现的那个时刻！！
       //包含的时序数据全部在lifeCycleGradient中
       let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      if(selectedLabelHis.length == 0){
+          earliestTime = 0;
+          latestTime = 1
+      }
       //console.log(earliestTime) //输出百分比
 
       let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
@@ -1213,9 +1224,35 @@
         }
       });
 
-      let currentTime = getTime();
-      let currentDate = dateScale.invert(currentTime);
+      // let currentTime = getTime();
+      // let currentDate = dateScale.invert(currentTime);
       let selectedLabel = getSelectedLabel();
+
+      //**************************************************************************************************** */
+      let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      if(selectedLabel.length == 0){
+          earliestTime = 0;
+          latestTime = 1
+      }
+      //console.log(earliestTime) //输出百分比
+
+      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      currentTime = earliestTime * totalTime - offset
+      let endTime = latestTime * totalTime - offset
+      // console.log(currentTime) //乘以总时间
+
+      limitDate = dateScale.invert(endTime);  //结束时间
+      let currentDate = dateScale.invert(currentTime);
+      // console.log(currentDate)  //开始时间
+      // console.log(limitDate)
+
+      // startDate = currentDate
+      // endDate = limitDate
+
+      updateVideoAnchor(currentDate)
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      setTime(currentTime)
+      //**************************************************************************************************** */
       updateMask(selectedLabel);
       labelSet.forEach(label =>
         updatePast(d3.select(`#input-${label}`), currentDate)
