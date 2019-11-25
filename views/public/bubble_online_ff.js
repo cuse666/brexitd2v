@@ -1836,8 +1836,19 @@
         timePause = 5000;
         buttonClickedHandler();//pause
         paused = true;
-        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
-        console.log('#CALL MYPAUSE', timePause);
+        //setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
+      }
+
+      function __isValidDate(date) {
+        if (Object.prototype.toString.call(date) === "[object Date]") {
+          if (isNaN(date.getTime())) {
+            return false;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
       }
 
       if (lastProperDate == null) {
@@ -1850,7 +1861,7 @@
       } else {
         paused = false;
       }
-
+      
       function myNewDate() {
         dataset = getDataByMonth(dataArray, proper_date);
 
