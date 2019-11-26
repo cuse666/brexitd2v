@@ -888,7 +888,7 @@
       let result = [];
 
       let visible = isVisible(data[0]);
-    
+
       result.push([data[0].time, visible]);
       let flag = false;
       for (let i = 1, len = data.length; i < len; i += 1) { //没有考虑到remain  和 leave 全为 true的情况
@@ -899,8 +899,8 @@
         }
       }
 
-      if(flag === false){ //全为true 比如 "leave"和"remain"
-        result.push([data[data.length-1].time, false]);
+      if (flag === false) { //全为true 比如 "leave"和"remain"
+        result.push([data[data.length - 1].time, false]);
       }
 
       return result;
@@ -1150,9 +1150,9 @@
       //改变currentTime为selectedLabel中最早出现的那个时刻！！
       //包含的时序数据全部在lifeCycleGradient中
       let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
-      if(selectedLabelHis.length == 0){
-          earliestTime = 0;
-          latestTime = 1
+      if (selectedLabelHis.length == 0) {
+        earliestTime = 0;
+        latestTime = 1
       }
       //console.log(earliestTime) //输出百分比
 
@@ -1229,9 +1229,9 @@
 
       //**************************************************************************************************** */
       let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
-      if(selectedLabel.length == 0){
-          earliestTime = 0;
-          latestTime = 1
+      if (selectedLabel.length == 0) {
+        earliestTime = 0;
+        latestTime = 1
       }
       //console.log(earliestTime) //输出百分比
 
@@ -1314,11 +1314,11 @@
         if (isAnimationFinished) { //运行结束
           let selectedLabel = getSelectedLabel();
           //***************************************************************************************************** */
-          if(selectedLabel.length != 0){  
+          if (selectedLabel.length != 0) {
             let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
-            if(selectedLabel.length == 0){
-                earliestTime = 0;
-                latestTime = 1
+            if (selectedLabel.length == 0) {
+              earliestTime = 0;
+              latestTime = 1
             }
 
             let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
@@ -1338,12 +1338,12 @@
               d => `public/data/bubble/pause.svg`
             );
             //***************************************************************************************************** */
-          }else{    //没有选中任何标签
+          } else {    //没有选中任何标签
             resetTime();
             startTime(easeFunc, totalTime, totalTime, dateScale);
             disableCursor();
           }
-          
+
           isAnimationFinished = false;
         } else {  //没有运行结束
           let timeTodo = totalTime - getTime();
@@ -1379,7 +1379,7 @@
       let minCXPos = offset + anchorScale.domain()[0]; //120
       let maxCXPos = offset + anchorScale.domain()[1]; //1170 = 120 + 1050
       //let currentCXPos = Math.max(minCXPos, d3.event.x + hyperParam);
-      let currentCXPos = Math.max(minCXPos, d3.event.x-20);
+      let currentCXPos = Math.max(minCXPos, d3.event.x - 20);
       currentCXPos = Math.min(maxCXPos, currentCXPos);
 
       let anchor = d3.select(".video-anchor");
@@ -1838,7 +1838,7 @@
 
         temp = [];
         for (point of list_new_cx_cy) {
-          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          temp.push(getDistance(center_x, center_y, point[0], point[1]));
           // temp.push(getSD(point[0], center_x));
         }
         max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
@@ -1880,13 +1880,21 @@
 
 
       //console.log(">> data Array date", dataArrayDate);
+      let selectedLabelDataArray;
+      let selectedLabel = getSelectedLabel();
+      if (selectedLabel.length != 0) {
+        selectedLabelDataArray = dataArray.filter((d) => getSelectedLabel().includes(d.label.substr(1)));
+      } else {
+        selectedLabelDataArray = dataArray;
+      }
 
       let dataset = getDataByMonth(dataArray, year_month_date);//获取每一帧所有bubble的位置及相关信息
+      let datasetSelected = getDataByMonth(selectedLabelDataArray, year_month_date);//获取每一帧已选话题bubble的位置及相关信息
 
       let [max_story, btw_max_story] = getMaxStory(year_month_date);
 
       // find #hashtag is highlighted 
-      let highlight = getTheHighlighted(dataset);
+      let highlight = getTheHighlighted(datasetSelected);
       let formatTime = d3.timeFormat("%B %d %Y");
       let formatTime2 = d3.timeFormat("%B %Y");
       // // calculate proper center and pause
@@ -1919,7 +1927,7 @@
       } else {
         paused = false;
       }
-      
+
       function myNewDate() {
         dataset = getDataByMonth(dataArray, proper_date);
 
@@ -1933,7 +1941,7 @@
         // Change time
         // let currentTime = timeScale(proper_date);
         // setTime(currentTime);
-        if(!isAnimationFinished)
+        if (!isAnimationFinished)
           __plotAll(dataset, proper_date);
       }
 
@@ -1946,7 +1954,7 @@
         myPause(timePause);
       }
       else {
-        if(!isAnimationFinished)
+        if (!isAnimationFinished)
           __plotAll(dataset, proper_date);
       }
 
