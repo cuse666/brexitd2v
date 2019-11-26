@@ -1306,6 +1306,7 @@
         "xlink:href",
         d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
       );
+      console.log(getTime())
       if (!buttonPlay) {
         stopTime();
         enableCursor();
@@ -1777,6 +1778,7 @@
           highlight.push(d);
         }
       }
+      console.log(max_story)
       return highlight;
     }
 
@@ -1889,18 +1891,10 @@
       let formatTime2 = d3.timeFormat("%B %Y");
       // // calculate proper center and pause
 
-      /*function myPause(timePause) {
-        buttonClickedHandler();//pause
-        paused = true;
-        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
-        console.log('CALL MYPAUSE', timePause);
-      }*/
-
       function myPause(timePause) {
         timePause = 10000;
         buttonClickedHandler();//pause
         paused = true;
-        //setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
       }
 
       function __isValidDate(date) {
@@ -1947,6 +1941,8 @@
       if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
+        console.log(highlight.length) // 15!
+        console.log("I am here")
         myPause(timePause);
       }
       else {
