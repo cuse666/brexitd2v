@@ -1898,7 +1898,7 @@
       // // calculate proper center and pause
 
       function myPause(timePause) {
-        timePause = 5000;
+        //timePause = 5000;
         buttonClickedHandler();//pause
         paused = true;
         setTimeout(function () { buttonClickedHandler() }, timePause);
