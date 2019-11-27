@@ -1901,6 +1901,7 @@
         timePause = 10000;
         buttonClickedHandler();//pause
         paused = true;
+        setTimeout(function () { buttonClickedHandler() }, timePause);
       }
 
       function __isValidDate(date) {
@@ -1947,8 +1948,6 @@
       if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
-        console.log(highlight.length) // 15!
-        console.log("I am here")
         myPause(timePause);
       }
       else {
