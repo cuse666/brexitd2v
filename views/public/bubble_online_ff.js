@@ -888,12 +888,19 @@
       let result = [];
 
       let visible = isVisible(data[0]);
+
       result.push([data[0].time, visible]);
-      for (let i = 1, len = data.length; i < len; i += 1) {
+      let flag = false;
+      for (let i = 1, len = data.length; i < len; i += 1) { //没有考虑到remain  和 leave 全为 true的情况
         if (isVisible(data[i]) !== visible) {
+          flag = true;
           visible = !visible;
           result.push([data[i].time, visible]);
         }
+      }
+
+      if (flag === false) { //全为true 比如 "leave"和"remain"
+        result.push([data[data.length - 1].time, false]);
       }
 
       return result;
@@ -904,7 +911,6 @@
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
-      //console.log(lifeCycle)
       let labels = Object.keys(lifeCycle);
 
       let gradient = {};
@@ -1057,6 +1063,7 @@
     }
 
     function calcEarliestTime(selectedLabel) {  //计算最早开始时间
+
       let earliestTime = 1, latestTime = 0;
       for (let i = 0, len = selectedLabel.length; i < len; i++) {
         let progress = lifeCycleGradient[selectedLabel[i]]  //string类型
@@ -1143,6 +1150,10 @@
       //改变currentTime为selectedLabel中最早出现的那个时刻！！
       //包含的时序数据全部在lifeCycleGradient中
       let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      if (selectedLabelHis.length == 0) {
+        earliestTime = 0;
+        latestTime = 1
+      }
       //console.log(earliestTime) //输出百分比
 
       let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
@@ -1153,7 +1164,6 @@
       limitDate = dateScale.invert(endTime);  //结束时间
       let currentDate = dateScale.invert(currentTime);
       // console.log(currentDate)  //开始时间
-      // console.log(limitDate)
 
       // startDate = currentDate
       // endDate = limitDate
@@ -1213,9 +1223,34 @@
         }
       });
 
-      let currentTime = getTime();
-      let currentDate = dateScale.invert(currentTime);
+      // let currentTime = getTime();
+      // let currentDate = dateScale.invert(currentTime);
       let selectedLabel = getSelectedLabel();
+
+      //**************************************************************************************************** */
+      let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+      if (selectedLabel.length == 0) {
+        earliestTime = 0;
+        latestTime = 1
+      }
+      //console.log(earliestTime) //输出百分比
+
+      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      currentTime = earliestTime * totalTime - offset
+      let endTime = latestTime * totalTime - offset
+      // console.log(currentTime) //乘以总时间
+
+      limitDate = dateScale.invert(endTime);  //结束时间
+      let currentDate = dateScale.invert(currentTime);
+      // console.log(currentDate)  //开始时间
+
+      // startDate = currentDate
+      // endDate = limitDate
+
+      updateVideoAnchor(currentDate)
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      setTime(currentTime)
+      //**************************************************************************************************** */
       updateMask(selectedLabel);
       labelSet.forEach(label =>
         updatePast(d3.select(`#input-${label}`), currentDate)
@@ -1271,16 +1306,46 @@
         "xlink:href",
         d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
       );
+      console.log(getTime())
       if (!buttonPlay) {
         stopTime();
         enableCursor();
-      } else {
-        if (isAnimationFinished) {
-          resetTime();
-          startTime(easeFunc, totalTime, totalTime, dateScale);
-          disableCursor();
+      } else {  //buttonPlay === true
+        if (isAnimationFinished) { //运行结束
+          let selectedLabel = getSelectedLabel();
+          //***************************************************************************************************** */
+          if (selectedLabel.length != 0) {
+            let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
+            if (selectedLabel.length == 0) {
+              earliestTime = 0;
+              latestTime = 1
+            }
+
+            let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+            currentTime = earliestTime * totalTime - offset
+            let endTime = latestTime * totalTime - offset
+
+            limitDate = dateScale.invert(endTime);  //结束时间
+            let currentDate = dateScale.invert(currentTime);
+
+            updateVideoAnchor(currentDate)
+            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+            setTime(currentTime)
+
+            buttonPlay = !buttonPlay;
+            button.attr(
+              "xlink:href",
+              d => `public/data/bubble/pause.svg`
+            );
+            //***************************************************************************************************** */
+          } else {    //没有选中任何标签
+            resetTime();
+            startTime(easeFunc, totalTime, totalTime, dateScale);
+            disableCursor();
+          }
+
           isAnimationFinished = false;
-        } else {
+        } else {  //没有运行结束
           let timeTodo = totalTime - getTime();
           //startTime(easeFunc, totalTime, timeTodo, dateScale);          
           startTime2(easeFunc, totalTime, timeTodo, dateScale);
@@ -1310,11 +1375,11 @@
       //let hyperParam = 0;
       stopTime();
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x"));
-      let minCXPos = offset + anchorScale.domain()[0];
-      let maxCXPos = offset + anchorScale.domain()[1];
+      let offset = parseFloat(d3.select(".video-slider").attr("x")); // 120
+      let minCXPos = offset + anchorScale.domain()[0]; //120
+      let maxCXPos = offset + anchorScale.domain()[1]; //1170 = 120 + 1050
       //let currentCXPos = Math.max(minCXPos, d3.event.x + hyperParam);
-      let currentCXPos = Math.max(minCXPos, d3.event.x);
+      let currentCXPos = Math.max(minCXPos, d3.event.x - 20);
       currentCXPos = Math.min(maxCXPos, currentCXPos);
 
       let anchor = d3.select(".video-anchor");
@@ -1706,6 +1771,7 @@
           highlight.push(d);
         }
       }
+      console.log(max_story)
       return highlight;
     }
 
@@ -1814,29 +1880,29 @@
          ]*/
 
       //console.log(">> data Array date", dataArrayDate);
+      let selectedLabelDataArray;
+      let selectedLabel = getSelectedLabel();
+      if (selectedLabel.length != 0) {
+        selectedLabelDataArray = dataArray.filter((d) => getSelectedLabel().includes(d.label.substr(1)));
+      } else {
+        selectedLabelDataArray = dataArray;
+      }
 
       let dataset = getDataByMonth(dataArray, year_month_date);//获取每一帧所有bubble的位置及相关信息
+      let datasetSelected = getDataByMonth(selectedLabelDataArray, year_month_date);//获取每一帧已选话题bubble的位置及相关信息
 
       let [max_story, btw_max_story] = getMaxStory(year_month_date);
 
       // find #hashtag is highlighted 
-      let highlight = getTheHighlighted(dataset);
+      let highlight = getTheHighlighted(datasetSelected);
       let formatTime = d3.timeFormat("%B %d %Y");
       let formatTime2 = d3.timeFormat("%B %Y");
       // // calculate proper center and pause
-
-      /*function myPause(timePause) {
-        buttonClickedHandler();//pause
-        paused = true;
-        setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
-        console.log('CALL MYPAUSE', timePause);
-      }*/
 
       function myPause(timePause) {
         timePause = 5000;
         buttonClickedHandler();//pause
         paused = true;
-        //setTimeout(function () { buttonClickedHandler(); }, timePause);// milli seconds
       }
 
       if (lastProperDate == null && highlight.length >= 4) {//获取首次暂停时间
@@ -1863,17 +1929,21 @@
         // Change time
         // let currentTime = timeScale(proper_date);
         // setTime(currentTime);
-        __plotAll(dataset, proper_date);
+        if (!isAnimationFinished)
+          __plotAll(dataset, proper_date);
       }
 
       //check  #hashtag is highlighted  is more than 4 times
       if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
+        console.log(highlight.length) // 15!
+        console.log("I am here")
         myPause(timePause);
       }
       else {
-        __plotAll(dataset, proper_date);
+        if (!isAnimationFinished)
+          __plotAll(dataset, proper_date);
       }
 
       // for debug only
@@ -1902,8 +1972,9 @@
         }
         else {
           isAnimationFinished = true;
-          buttonPlay = false;
-          button.attr("xlink:href", `public/data/bubble/pause.svg`);
+          // buttonPlay = false; //没有真正停止
+          // button.attr("xlink:href", `public/data/bubble/pause.svg`);
+          buttonClickedHandler();
           enableCursor();
         }
         let tmpYear = new Date(year_month_date);
