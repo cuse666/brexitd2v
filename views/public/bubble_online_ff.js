@@ -1306,7 +1306,6 @@
         "xlink:href",
         d => `public/data/bubble/${buttonPlay ? "play" : "pause"}.svg`
       );
-      console.log(getTime())
       if (!buttonPlay) {
         stopTime();
         enableCursor();
@@ -1778,7 +1777,6 @@
           highlight.push(d);
         }
       }
-      console.log(max_story)
       return highlight;
     }
 
