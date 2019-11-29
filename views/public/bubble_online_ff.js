@@ -1606,59 +1606,57 @@
     function startTime2(ease, totalTime, timeTodo, dateScale) {
 
 
-      let monthScale = d3.interpolateDate(
-        //dateScale.invert(totalTime - timeTodo),              
-        dateScale.invert(getTime()),
-        endDate
-      );
+      let monthScale = d3.scaleLinear()
+        .domain([0, 1])
+        .range([dateScale.invert(getTime()), endDate]);
 
 
       let t_list = [];
       let t_new_list = [];
 
-      function myEaseFunc(t) {
-        t_list.push(t)
+      // function myEaseFunc(t) {
+      //   t_list.push(t)
 
-        dateTime = monthScale(t);
-        // find maximum story level	
-        let [max_story, btw_max_story] = getMaxStory(dateTime);
+      //   dateTime = monthScale(t);
+      //   // find maximum story level	
+      //   let [max_story, btw_max_story] = getMaxStory(dateTime);
 
-        if (btw_max_story == 0) { // sinout
-          new_t = Math.sin((Math.PI / 2) * t);
+      //   if (btw_max_story == 0) { // sinout
+      //     new_t = Math.sin((Math.PI / 2) * t);
 
-        } else if (btw_max_story == 1) { // linear
-          new_t = t
+      //   } else if (btw_max_story == 1) { // linear
+      //     new_t = t
 
-        } else if (btw_max_story == 2) { // sinIn
-          new_t = 1 - Math.cos((Math.PI / 2) * t);
-          //new_t = (1 - Math.cos(Math.PI * t)) / 3; SinInOut
+      //   } else if (btw_max_story == 2) { // sinIn
+      //     new_t = 1 - Math.cos((Math.PI / 2) * t);
+      //     //new_t = (1 - Math.cos(Math.PI * t)) / 3; SinInOut
 
-        } else if (btw_max_story == 3) { // CubicIn 
-          new_t = t * t * t;
+      //   } else if (btw_max_story == 3) { // CubicIn 
+      //     new_t = t * t * t;
 
-        }
-        t_new_list.push(new_t)
+      //   }
+      //   t_new_list.push(new_t)
 
-        var trace = {
-          x: t_list,
-          y: t_new_list,
-          mode: 'lines'
-        };
+      //   var trace = {
+      //     x: t_list,
+      //     y: t_new_list,
+      //     mode: 'lines'
+      //   };
 
-        //Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
-        return [new_t, btw_max_story]
-        /*
-        if (max_story == 3) {
-          //new_t = (1 - Math.cos(Math.PI * t)) / 3; 
-          new_t = t * t * t;
-          console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime, "| max story=", max_story, "\n");          
-          return [new_t, max_story];
-        } else {
-          console.log("origin t=", t, "story from date time", dateTime, "| max story=", max_story, "\n");
-          return [t, max_story];
-        }*/
+      //   //Plotly.newPlot('easeFunc', [trace], { title: 'Ease function graph' });
+      //   return [new_t, btw_max_story]
+      //   /*
+      //   if (max_story == 3) {
+      //     //new_t = (1 - Math.cos(Math.PI * t)) / 3; 
+      //     new_t = t * t * t;
+      //     console.log("origin t=", t, ">> slow t=", new_t, "story from date time", dateTime, "| max story=", max_story, "\n");          
+      //     return [new_t, max_story];
+      //   } else {
+      //     console.log("origin t=", t, "story from date time", dateTime, "| max story=", max_story, "\n");
+      //     return [t, max_story];
+      //   }*/
 
-      }
+      // }
 
 
       timer
@@ -1668,48 +1666,41 @@
         .attr("T", totalTime);
 
       let t_rescale_list = [];
-
       //https://bl.ocks.org/Kcnarf/9e4813ba03ef34beac6e
       svg
         .transition()
         .duration(timeTodo)
         //.attr("delay", function(d,i){return 1000*i})
         //.attr("duration", function(d,i){return 1000*(i+1)})
-        .ease(myEaseFunc)
+        .ease(d3.easeLinear)
         .tween("time", () => {
-          return function (value) {
-            [t, btw_max_story] = value
-
-            let t_rescale = 0;
-            if (btw_max_story == 0) {
-              t_rescale = 2 * Math.asin(t) / Math.PI;
-
-            } else if (btw_max_story == 1) {
-              t_rescale = t;
-
-            } else if (btw_max_story == 2) {
-              //t_rescale = Math.acos(1 - 3 * t) / Math.PI; rescale SinInOut
-              t_rescale = 2 * Math.acos(1 - t) / Math.PI;
-
-            } else if (btw_max_story == 3) { //rescale
-
-              t_rescale = Math.cbrt(t)
-
+          return function (t) {
+            let new_t;
+            let dateTime = monthScale(t);
+            let [max_story, btw_max_story] = getMaxStory(dateTime);
+            if (btw_max_story != 0) {
+              let firstDayOfMonth = new Date(dateTime.getTime());
+              firstDayOfMonth.setDate(1);
+              firstDayOfMonth.setHours(0,0,0,0);
+              let lastDayOfMonth = new Date(dateTime.getTime());
+              lastDayOfMonth.setDate(33);
+              lastDayOfMonth.setDate(0);
+              lastDayOfMonth.setHours(23,59,59,999);
+              let scale = d3.scaleLinear();
+              let t_FirstDayOfMonth = monthScale.invert(firstDayOfMonth);
+              let t_LastDayOfMonth = monthScale.invert(lastDayOfMonth);
+              scale.domain([t_FirstDayOfMonth, t_LastDayOfMonth])
+                .range([0, 1]);
+              new_t = scale.invert(d3.easePolyInOut(scale(t), btw_max_story));
+            } else {
+              new_t = t;
             }
-            t_rescale_list.push(t_rescale);
 
-            var trace = {
-              x: t_list,
-              y: t_rescale_list,
-              mode: 'lines'
-            };
+            dateTime = monthScale(new_t);
+            tweenYear(dateTime);
 
             //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
-
-            let dateTime = monthScale(t_rescale);
-            tweenYear(dateTime);
           };
-
         });
 
     }
@@ -1837,13 +1828,13 @@
 
         temp = [];
         for (point of list_new_cx_cy) {
-          temp.push(getDistance(center_x, center_y, point[0], point[1])); 
+          temp.push(getDistance(center_x, center_y, point[0], point[1]));
           //temp.push(getDistribution(point[0], center_x, list_new_cx_cy.length));
         }
 
         // find maximum distance
         max_distance = Math.max(...temp);//得到每个月高亮气泡和中心点的最远距离
-        console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
+        //console.log("generate day:", new_date, " | maximum distance >>", max_distance);//debug
         if (max_distance > temp_max_distance) {
           temp_max_distance = max_distance;
           proper_date = new_date.toString();
