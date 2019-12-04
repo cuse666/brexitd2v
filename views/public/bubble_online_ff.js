@@ -972,29 +972,28 @@
           }
         });
 
-      if (selectedLabel.length === 0) {
-        dot.style("fill", function (d) {
+      dot.style("fill", function (d) {
+        if (max_story == 0 && selectedLabel.length) {
+          return color(d.trend);
+        } else if (max_story !== 0) {
+          return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+        }
+        else {
+          return "#FFFFFF";
+        }
+      })
+        .style("stroke", function (d) {
           if (max_story == 0 && selectedLabel.length) {
-            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            return color(d.trend);
           } else if (max_story !== 0) {
-            return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+            return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+            //return color(d.trend); //always highlight
           }
           else {
-            return "#FFFFFF";
+            return "#DCDCDC";
           }
-        })
-          .style("stroke", function (d) {
-            if (max_story == 0 && selectedLabel.length) {
-              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
-            } else if (max_story !== 0) {
-              return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
-              //return color(d.trend); //always highlight
-            }
-            else {
-              return "#DCDCDC";
-            }
-          });
-      }
+        });
+
     }
 
     function textDateLabelPosition(textDateLabel) {
@@ -1587,8 +1586,8 @@
         needUpdateMaxStory = false;
       }
       let index = 0;
-      max_story = 0;
-      btw_max_story = 0;
+      let max_story = 0;
+      let btw_max_story = 0;
 
       index = bisect.left(maxStory, dateTime);
       max_story = maxStory[index - 1][1]; // maximum story levels
@@ -1681,11 +1680,11 @@
             if (btw_max_story != 0) {
               let firstDayOfMonth = new Date(dateTime.getTime());
               firstDayOfMonth.setDate(1);
-              firstDayOfMonth.setHours(0,0,0,0);
+              firstDayOfMonth.setHours(0, 0, 0, 0);
               let lastDayOfMonth = new Date(dateTime.getTime());
               lastDayOfMonth.setDate(33);
               lastDayOfMonth.setDate(0);
-              lastDayOfMonth.setHours(23,59,59,999);
+              lastDayOfMonth.setHours(23, 59, 59, 999);
               let scale = d3.scaleLinear();
               let t_FirstDayOfMonth = monthScale.invert(firstDayOfMonth);
               let t_LastDayOfMonth = monthScale.invert(lastDayOfMonth);
@@ -1756,8 +1755,12 @@
 
     function getTheHighlighted(dataset) {
       let highlight = [];
+      let selectedLabel = getSelectedLabel();
       for (d of dataset) {
-        if (max_story == d.story && max_story >= 1) {
+        let [max_story] = getMaxStory(d.time);
+        if (selectedLabel.length && d.story >= max_story) {
+          highlight.push(d);
+        } else if (max_story == d.story && max_story >= 1) {
           highlight.push(d);
         }
       }
