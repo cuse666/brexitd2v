@@ -42,6 +42,29 @@
     .style("margin-left", "15px")
     .style("display", "none");
 
+  let option_fontSize = options.append("div");
+  option_fontSize.append("p")
+    .text("Reset Font Size: ")
+    .style("font-weight","bold");
+  let option_fontSize_input = option_fontSize.append("input")
+    .attr("type", "number")
+    .attr("id", "option_fontSize")
+    .attr("min", 0)
+    .attr("max", 40)
+    .attr("value",20)
+    .attr("placeholder", "20(default)");
+  option_fontSize.append("p")
+    .style("display", "inline")
+    .text(" px");
+  let option_fontSize_button = option_fontSize.append("input")
+    .attr("type", "button")
+    .attr("value", "Apply")
+    .style("display", "block")
+    .style("margin-top", "10px");
+  option_fontSize.append("p")
+    .text("(Also try scroll up and down when hover on a bubble.)")
+    .style("width","150px");
+
   // scale
   var y = d3
     .scaleLinear()
@@ -826,6 +849,7 @@
 
     // 绑定监听 Binding bubbles monitoring 
     option_showPast_input.on("change", showPastCheckedHandler);
+    option_fontSize_button.on("click", fontApplyButtonClickedHandler);
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -839,8 +863,10 @@
     );
     text.on("mouseover", mouseOverHandler);
     text.on("mouseout", mouseOutHandler);
+    text.on("wheel", mouseWheelHandler);
     dot.on("mouseover", mouseOverHandler);
     dot.on("mouseout", mouseOutHandler);
+    dot.on("wheel", mouseWheelHandler);
     levelPath.on("mouseover", mouseOverHandlerLevelGraph);
     levelPath.on("mouseout", mouseOutHandlerLevelGraph);
     document.onkeydown = keyDownHandler;
@@ -1109,6 +1135,10 @@
       let currentTime = getTime();
       let currentDate = dateScale.invert(currentTime);
       updateTraj(currentDate);
+    }
+
+    function fontApplyButtonClickedHandler() {
+      text.style("font-size", option_fontSize_input.property("value"));
     }
 
     function checkedHandler() {
@@ -1495,6 +1525,20 @@
           .selectAll("text")
           .style("display", "block");
       }
+    }
+
+    function mouseWheelHandler() {
+      let direction = d3.event.wheelDelta < 0 ? 'down' : 'up';
+      let label = d3.select(this).attr("data-label");
+      let overText = text.filter((d) => { return d.label.substr(1) == label });
+      let fontSize = overText.style("font-size");
+      fontSize = Number(fontSize.substring(0, fontSize.length - 2));
+      if (direction === "up") {
+        fontSize = fontSize + 1;
+      } else {
+        fontSize = fontSize - 1;
+      }
+      overText.style("font-size", fontSize);
     }
 
     function mouseOverHandlerLevelGraph() {
