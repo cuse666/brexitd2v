@@ -11,13 +11,57 @@
   var width = svgWidth - margin.left - margin.right;
   var height = svgHeight - margin.top - margin.bottom;
 
+  let timeout = null
   var svg = d3
     .select("#chartAside")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
-  let options = d3.select("#rightAside")
+  function dragmove(d) {
+    d3.select(this)
+      .attr("y", d3.event.y)
+      .attr("x", d3.event.x)
+  }
+
+  var drag = d3.drag()
+    .on("drag", dragmove);
+
+  var myText = svg.append("text")
+    .attr("x", 800)
+    .attr("y", 100)
+    .attr("id", "draggable")
+    .text("请拖动我！")
+    .attr("font-size", 20)
+    .attr("fill", "black")
+    .call(drag)
+
+  d3.select("#comment").on("input", changeText)
+  d3.select("#fontsize").on("input", changeSize)
+  d3.select("#fontcolor").on("input", changeColor)
+
+  function changeColor() {
+    myText.attr("fill", this.value)
+  }
+  function changeSize() {
+    myText.attr("font-size", String(this.value))
+  }
+
+  function changeText() {
+    myText.text(this.value)
+  }
+
+
+  function dragmove(d) {
+    d3.select(this)
+      .attr("y", d3.event.y)
+      .attr("x", d3.event.x)
+  }
+
+  var drag = d3.drag()
+    .on("drag", dragmove);
+
+  let options = d3.select("#rightrightAside")
     .append("div")
     .attr("class", "options")
     .style("position", "absolute")
@@ -291,6 +335,14 @@
     .attr("cx", margin.left)
     .attr("cy", margin.top + height + videoYOffset + buttonSize / 2)
     .attr("r", anchorRadius);
+  let anchortext = svg.append("text")
+                        .attr("class", "anchor-text")
+                        .text("2016/1")
+                        .attr("x",margin.left-20)
+                        .attr("y", margin.top + height + videoYOffset + buttonSize / 2 - 10)
+                        .attr("font-size", 15)
+                        .attr("fill", "black")
+                        .attr("opacity","0")
 
   svg
     .append("g")
@@ -1157,7 +1209,7 @@
       //console.log(earliestTime) //输出百分比
 
       let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
-      currentTime = earliestTime * totalTime - offset
+      currentTime = earliestTime * totalTime
       let endTime = latestTime * totalTime - offset
       // console.log(currentTime) //乘以总时间
 
@@ -1236,7 +1288,7 @@
       //console.log(earliestTime) //输出百分比
 
       let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
-      currentTime = earliestTime * totalTime - offset
+      currentTime = earliestTime * totalTime
       let endTime = latestTime * totalTime - offset
       // console.log(currentTime) //乘以总时间
 
@@ -1301,6 +1353,9 @@
 
     function buttonClickedHandler() {
       // console.log(getTime())
+      if(timeout!=null){
+        clearTimeout(timeout)
+      }
       buttonPlay = !buttonPlay;
       button.attr(
         "xlink:href",
@@ -1315,13 +1370,9 @@
           //***************************************************************************************************** */
           if (selectedLabel.length != 0) {
             let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
-            if (selectedLabel.length == 0) {
-              earliestTime = 0;
-              latestTime = 1
-            }
 
             let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
-            currentTime = earliestTime * totalTime - offset
+            currentTime = earliestTime * totalTime 
             let endTime = latestTime * totalTime - offset
 
             limitDate = dateScale.invert(endTime);  //结束时间
@@ -1337,7 +1388,7 @@
               d => `public/data/bubble/pause.svg`
             );
             //***************************************************************************************************** */
-          } else {    //没有选中任何标签
+          } else {    //运行结束，没有选中任何标签
             resetTime();
             startTime(easeFunc, totalTime, totalTime, dateScale);
             disableCursor();
@@ -1371,6 +1422,11 @@
     }
 
     function sliderClickedHandler(event) {
+      if(timeout!=null){
+        clearTimeout(timeout)
+      }
+      if(isAnimationFinished)
+        isAnimationFinished = false
       //let hyperParam = 0;
       stopTime();
 
@@ -1383,9 +1439,13 @@
 
       let anchor = d3.select(".video-anchor");
       anchor.attr("cx", currentCXPos);
+      anchortext.attr("x", currentCXPos-20).attr("opacity","0");
 
       let currentTime = anchorScale(currentCXPos - offset);
       setTime(currentTime);
+      
+      let currentDate = dateScale.invert(currentTime);
+      anchortext.text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
 
       startTime(easeFunc, totalTime, totalTime - currentTime, dateScale);
       buttonPlay = true;
@@ -1399,11 +1459,26 @@
     }
 
     function dragStartedHandler() {
+      let currentDate = dateScale.invert(getTime());
+
+      let offset = parseFloat(d3.select(".video-slider").attr("x"));
+      let minCXPos = offset + anchorScale.domain()[0];
+      let maxCXPos = offset + anchorScale.domain()[1];
+      let currentCXPos = Math.max(minCXPos, d3.event.x);
+      currentCXPos = Math.min(maxCXPos, currentCXPos);
+      
+      anchortext.attr("x", currentCXPos-20)
+      anchortext.text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
+                .attr("opacity","1")
       button.attr("xlink:href", `public/data/bubble/pause.svg`);
       stopTime();
     }
 
     function draggedHandler() {
+      if(timeout!=null){  //清楚设置的延时
+        clearTimeout(timeout)
+      }
+
       let offset = parseFloat(d3.select(".video-slider").attr("x"));
       let minCXPos = offset + anchorScale.domain()[0];
       let maxCXPos = offset + anchorScale.domain()[1];
@@ -1413,10 +1488,22 @@
       d3.select(this).attr("cx", currentCXPos);
 
       let currentTime = anchorScale(currentCXPos - offset);
+      // formatTime(currentTime)
       setTime(currentTime);
+
+      //添加一个随anchor移动的文本框，显示日期
+      let currentDate = dateScale.invert(currentTime);
+      // console.log(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
+      // anchor.
+      anchortext.attr("x", currentCXPos-20)
+                .text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
     }
 
     function dragendedHandler() {
+      anchortext.attr("opacity","0")
+      if(isAnimationFinished)
+        isAnimationFinished = false
+
       let currentTime = getTime();
 
       buttonPlay = true;
@@ -1681,11 +1768,11 @@
             if (btw_max_story != 0) {
               let firstDayOfMonth = new Date(dateTime.getTime());
               firstDayOfMonth.setDate(1);
-              firstDayOfMonth.setHours(0,0,0,0);
+              firstDayOfMonth.setHours(0, 0, 0, 0);
               let lastDayOfMonth = new Date(dateTime.getTime());
               lastDayOfMonth.setDate(33);
               lastDayOfMonth.setDate(0);
-              lastDayOfMonth.setHours(23,59,59,999);
+              lastDayOfMonth.setHours(23, 59, 59, 999);
               let scale = d3.scaleLinear();
               let t_FirstDayOfMonth = monthScale.invert(firstDayOfMonth);
               let t_LastDayOfMonth = monthScale.invert(lastDayOfMonth);
@@ -1889,10 +1976,10 @@
       // // calculate proper center and pause
 
       function myPause(timePause) {
-        //timePause = 5000;
+        // timePause = 5000;
         buttonClickedHandler();//pause
         paused = true;
-        setTimeout(function () { buttonClickedHandler() }, timePause);
+        timeout = setTimeout(function () { buttonClickedHandler() }, timePause);
       }
 
       if (lastProperDate == null && highlight.length >= 4) {//获取首次暂停时间
@@ -1919,7 +2006,7 @@
         // Change time
         // let currentTime = timeScale(proper_date);
         // setTime(currentTime);
-        if (!isAnimationFinished)
+        // if (!isAnimationFinished)
           __plotAll(dataset, proper_date);
       }
 
@@ -1930,7 +2017,7 @@
         myPause(timePause);
       }
       else {
-        if (!isAnimationFinished)
+        // if (!isAnimationFinished)
           __plotAll(dataset, proper_date);
       }
 

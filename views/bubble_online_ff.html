@@ -21,6 +21,12 @@
       padding: 0;
     }
 
+    #draggable {
+      text-anchor: start;
+      cursor: move;
+      text-anchor: middle;
+    }
+
     #main {
       padding: 10px 20px;
       width: 1660px;
@@ -32,6 +38,11 @@
      padding:10px 4%;
     }
     } */
+    #inputArea {
+      width: 130px;
+      height: 50px;
+      position: absolute;
+    }
 
     .textLabel {
       font-size: 1vw;
@@ -126,7 +137,8 @@
       border: 0;
       vertical-align: top;
       /* position: relative; */
-      grid-template-columns: 1200px 1fr; /*the selection panel position*/
+      grid-template-columns: 1200px 1fr;
+      /*the selection panel position*/
     }
 
     /* 右侧条形图视图宽度 Right bar view width */
@@ -135,6 +147,12 @@
       grid-template-rows: repeat(3);
       max-width: 410px;
       padding-bottom: 45px;
+    }
+
+    #rightrightAside {
+      display: grid;
+      grid-template-columns: 300px;
+      position: absolute;
     }
 
     svg {
@@ -703,8 +721,10 @@
 </head>
 
 <body>
+
+
   <div id='main'>
-    <div class="title">How did the British discuss brexit</div>
+    <!-- <div class="title">How did the British discuss brexit</div> -->
     <div class="heading">
       <div class="header"></div>
       <div class="aside-title">The most popular hashtag on<br />Brexit topic</div>
@@ -714,11 +734,18 @@
       <div id="rightAside"></div>
       <!-- <div id="my_dataviz"></div> -->
     </div>
+    <div id="rightrightAside">
+      <div id="inputArea">
+        <input type="text" id="comment" value="请在此处输入文本">
+        <input type="number" id="fontsize" value="20">
+        <input type="color" id="fontcolor">
+      </div>
+    </div>
     <!-- for testing only-->
     <div>
       <!--show easeFunc-->
-      <div id="easeFunc">    </div>
-      <div id="easeFunc2">    </div>
+      <div id="easeFunc"> </div>
+      <div id="easeFunc2"> </div>
       <div>
         <!--show maximum story-->
         <table id='tb1' border=1></table>
@@ -727,11 +754,10 @@
         <!--show dataset-->
         <table id='tb2' border=1></table>
       </div>
-      
     </div>
     <!-- -->
-
   </div>
+
   <script src="public/d3.min.js"></script>
   <script src="public/fisheye.js"></script>
   <!--For test only--->
