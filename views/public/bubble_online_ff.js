@@ -1990,9 +1990,9 @@
         setTimeout(function () { buttonClickedHandler() }, timePause);
       }
 
-      if (lastProperDate == null && highlight.length >= 4) {//获取首次暂停时间
+      if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
         proper_date = getProperDate(year_month_date, highlight);
-      } else if (lastProperDate != null && highlight.length >= 4 && formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+      } else if (lastProperDate != null && highlight.length >= threshhold && formatTime2(lastProperDate) != formatTime2(year_month_date)) {
         proper_date = getProperDate(year_month_date, highlight);
       }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
@@ -2018,7 +2018,9 @@
           __plotAll(dataset, proper_date);
       }
 
-
+      // console.log("highlight: " + highlight.length);
+      // console.log(threshhold);
+      // console.log("paused: " + paused);
       if (enablePause && highlight.length >= threshhold && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
