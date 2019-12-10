@@ -27,13 +27,12 @@
     .text("Advanced Setting")
     .style("font-family", "Helvetica");
 
+  //显示气泡路径开关
   let option_showPast = options.append("div");
-
   let option_showPast_input = option_showPast.append("input")
     .attr("type", "checkbox")
     .attr("class", "squared")
     .attr("id", "showPast_input");
-
   option_showPast.append("label")
     .html("Show Past")
     .attr("for", "showPast_input")
@@ -42,16 +41,17 @@
     .style("margin-left", "15px")
     .style("display", "none");
 
+  //调整字体大小功能
   let option_fontSize = options.append("div");
   option_fontSize.append("p")
     .text("Reset Font Size: ")
-    .style("font-weight","bold");
+    .style("font-weight", "bold");
   let option_fontSize_input = option_fontSize.append("input")
     .attr("type", "number")
     .attr("id", "option_fontSize")
     .attr("min", 0)
     .attr("max", 40)
-    .attr("value",20)
+    .attr("value", 20)
     .attr("placeholder", "20(default)");
   option_fontSize.append("p")
     .style("display", "inline")
@@ -63,7 +63,53 @@
     .style("margin-top", "10px");
   option_fontSize.append("p")
     .text("(Also try scroll up and down when hover on a bubble.)")
-    .style("width","150px");
+    .style("width", "150px");
+
+  //暂停相关设置
+  let option_pauseSetting = options.append("div");
+  let enablePause = true;
+  let threshhold = 4;
+  option_pauseSetting.append("p")
+    .text("Pause Setting: ")
+    .style("font-weight", "bold");
+  let option_pauseSetting_enablePause = option_pauseSetting.append("input")
+    .attr("type", "checkbox")
+    .attr("class", "squared")
+    .attr("id", "enablePause_input")
+    .attr("checked", true);
+  option_pauseSetting.append("label")
+    .html("Enable Pause")
+    .attr("for", "enablePause_input")
+    .attr("id", "enablePause")
+    .style("font-family", "Helvetica");
+  let option_pauseSetting_threshhold = option_pauseSetting.append("div")
+    .attr("class", "option_pauseSetting_threshhold");
+  option_pauseSetting_threshhold.append("p")
+    .style("width", "150px")
+    .text("Number Of Highlighted bubbles: ");
+  let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
+    .attr("type", "number")
+    .attr("value", "4")
+    .attr("min", "1")
+    .attr("max", "7")
+    .attr("placeholder", "4(default)");
+  function enablePauseCheckedHandler() {
+    if (this.checked) {
+      option_pauseSetting_threshhold.style("display", "contents");
+      enablePause = true;
+    } else {
+      option_pauseSetting_threshhold.style("display", "none");
+      enablePause = false;
+    }
+  }
+  function threshholdChangedHandler() {
+    let inputNumber = Number(option_pauseSetting_input.property("value"));
+    if (inputNumber > 0) {
+      threshhold = option_pauseSetting_input.property("value");
+    } else {
+      threshhold = 4;
+    }
+  }
 
   // scale
   var y = d3
@@ -850,6 +896,8 @@
     // 绑定监听 Binding bubbles monitoring 
     option_showPast_input.on("change", showPastCheckedHandler);
     option_fontSize_button.on("click", fontApplyButtonClickedHandler);
+    option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
+    option_pauseSetting_input.on("change", threshholdChangedHandler);
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -1970,8 +2018,8 @@
           __plotAll(dataset, proper_date);
       }
 
-      //check  #hashtag is highlighted  is more than 4 times
-      if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
+
+      if (enablePause && highlight.length >= threshhold && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
         myPause(timePause);
