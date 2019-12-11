@@ -27,21 +27,6 @@
     .text("Advanced Setting")
     .style("font-family", "Helvetica");
 
-  let option_showPast = options.append("div");
-
-  let option_showPast_input = option_showPast.append("input")
-    .attr("type", "checkbox")
-    .attr("class", "squared")
-    .attr("id", "showPast_input");
-
-  option_showPast.append("label")
-    .html("Show Past")
-    .attr("for", "showPast_input")
-    .attr("id", "showPast")
-    .style("font-family", "Helvetica")
-    .style("margin-left", "15px")
-    .style("display", "none");
-
   // scale
   var y = d3
     .scaleLinear()
@@ -780,6 +765,117 @@
       .attr("id", d => `textDateLabel-${d.label.slice(1)}`)
       .style("display", "none");
 
+    //显示气泡路径开关
+    let option_showPast = options.append("div");
+    let option_showPast_input = option_showPast.append("input")
+      .attr("type", "checkbox")
+      .attr("class", "squared")
+      .attr("id", "showPast_input");
+    option_showPast.append("label")
+      .html("Show Past")
+      .attr("for", "showPast_input")
+      .attr("id", "showPast")
+      .style("font-family", "Helvetica")
+      .style("margin-left", "15px")
+      .style("display", "none");
+
+    //调整字体大小功能
+    let option_fontSize = options.append("div");
+    option_fontSize.append("p")
+      .text("Reset Font Size: ")
+      .style("font-weight", "bold");
+    let option_fontSize_input = option_fontSize.append("input")
+      .attr("type", "number")
+      .attr("id", "option_fontSize")
+      .attr("min", 0)
+      .attr("max", 40)
+      .attr("value", 20)
+      .attr("placeholder", "20(default)");
+    option_fontSize.append("p")
+      .style("display", "inline")
+      .text(" px");
+    let option_fontSize_button = option_fontSize.append("input")
+      .attr("type", "button")
+      .attr("value", "Apply")
+      .style("display", "block")
+      .style("margin-top", "10px");
+    option_fontSize.append("p")
+      .text("(Also try scroll up and down when hover on a bubble.)")
+      .style("width", "150px");
+
+    //暂停相关设置
+    let option_pauseSetting = options.append("div");
+    let enablePause = true;
+    let threshhold = 4;
+    option_pauseSetting.append("p")
+      .text("Pause Setting: ")
+      .style("font-weight", "bold");
+    let option_pauseSetting_enablePause = option_pauseSetting.append("input")
+      .attr("type", "checkbox")
+      .attr("class", "squared")
+      .attr("id", "enablePause_input")
+      .attr("checked", true);
+    option_pauseSetting.append("label")
+      .html("Enable Pause")
+      .attr("for", "enablePause_input")
+      .attr("id", "enablePause")
+      .style("font-family", "Helvetica");
+    let option_pauseSetting_threshhold = option_pauseSetting.append("div")
+      .attr("class", "option_pauseSetting_threshhold");
+    option_pauseSetting_threshhold.append("p")
+      .style("width", "150px")
+      .text("Number Of Highlighted bubbles: ");
+    let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
+      .attr("type", "number")
+      .attr("value", "4")
+      .attr("min", "1")
+      .attr("max", "7")
+      .attr("placeholder", "4(default)");
+    function enablePauseCheckedHandler() {
+      if (this.checked) {
+        option_pauseSetting_threshhold.style("display", "contents");
+        enablePause = true;
+      } else {
+        option_pauseSetting_threshhold.style("display", "none");
+        enablePause = false;
+      }
+    }
+    function threshholdChangedHandler() {
+      let inputNumber = Number(option_pauseSetting_input.property("value"));
+      if (inputNumber > 0) {
+        threshhold = option_pauseSetting_input.property("value");
+      } else {
+        threshhold = 4;
+      }
+    }
+
+    //突出显示彩色气泡开关
+    let option_highlightColoredBubbles = options.append("div");
+    let highlightColoredBubble = false;
+    option_highlightColoredBubbles.append("p")
+      .text("Highlight Colored Bubbles: ")
+      .style("font-weight", "bold");
+    let option_highlightColoredBubbles_input = option_highlightColoredBubbles.append("input")
+      .attr("type", "checkbox")
+      .attr("class", "squared")
+      .attr("id", "enableHighlightColoredBubbles_input");
+    option_highlightColoredBubbles.append("label")
+      .html("Enable")
+      .attr("for", "enableHighlightColoredBubbles_input")
+      .attr("id", "enableHighlightColoredBubbles")
+      .style("font-family", "Helvetica");
+    function enableHighlightColoredBubblesHandler() {
+      if (this.checked) {
+        highlightColoredBubble = true;
+        let selectedLabel = getSelectedLabel();
+        updateMask(selectedLabel);
+      } else {
+        highlightColoredBubble = false;
+        let selectedLabel = getSelectedLabel();
+        updateMask(selectedLabel);
+      }
+    }
+
     let mouseoverDot = null;
     let isKeyUp = true;
     let isAnimationFinished = false;
@@ -826,6 +922,10 @@
 
     // 绑定监听 Binding bubbles monitoring 
     option_showPast_input.on("change", showPastCheckedHandler);
+    option_fontSize_button.on("click", fontApplyButtonClickedHandler);
+    option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
+    option_pauseSetting_input.on("change", threshholdChangedHandler);
+    option_highlightColoredBubbles_input.on("change", enableHighlightColoredBubblesHandler)
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -839,8 +939,10 @@
     );
     text.on("mouseover", mouseOverHandler);
     text.on("mouseout", mouseOutHandler);
+    text.on("wheel", mouseWheelHandler);
     dot.on("mouseover", mouseOverHandler);
     dot.on("mouseout", mouseOutHandler);
+    dot.on("wheel", mouseWheelHandler);
     levelPath.on("mouseover", mouseOverHandlerLevelGraph);
     levelPath.on("mouseout", mouseOutHandlerLevelGraph);
     document.onkeydown = keyDownHandler;
@@ -972,29 +1074,28 @@
           }
         });
 
-      if (selectedLabel.length === 0) {
-        dot.style("fill", function (d) {
+      dot.style("fill", function (d) {
+        if (max_story == 0 && selectedLabel.length) {
+          return color(d.trend);
+        } else if (max_story !== 0) {
+          return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+        }
+        else {
+          return "#FFFFFF";
+        }
+      })
+        .style("stroke", function (d) {
           if (max_story == 0 && selectedLabel.length) {
-            return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
+            return color(d.trend);
           } else if (max_story !== 0) {
-            return max_story <= d.story ? color(d.trend) : "#FFFFFF"; //T Highligh:F No Highlight
+            return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
+            //return color(d.trend); //always highlight
           }
           else {
-            return "#FFFFFF";
+            return "#DCDCDC";
           }
-        })
-          .style("stroke", function (d) {
-            if (max_story == 0 && selectedLabel.length) {
-              return selectedLabel.includes(d.label.substr(1)) ? color(d.trend) : "#FFFFFF";
-            } else if (max_story !== 0) {
-              return max_story <= d.story ? color(d.trend) : "#DCDCDC"; //T Highligh:F No Highlight
-              //return color(d.trend); //always highlight
-            }
-            else {
-              return "#DCDCDC";
-            }
-          });
-      }
+        });
+
     }
 
     function textDateLabelPosition(textDateLabel) {
@@ -1110,6 +1211,10 @@
       let currentTime = getTime();
       let currentDate = dateScale.invert(currentTime);
       updateTraj(currentDate);
+    }
+
+    function fontApplyButtonClickedHandler() {
+      text.style("font-size", option_fontSize_input.property("value"));
     }
 
     function checkedHandler() {
@@ -1498,6 +1603,20 @@
       }
     }
 
+    function mouseWheelHandler() {
+      let direction = d3.event.wheelDelta < 0 ? 'down' : 'up';
+      let label = d3.select(this).attr("data-label");
+      let overText = text.filter((d) => { return d.label.substr(1) == label });
+      let fontSize = overText.style("font-size");
+      fontSize = Number(fontSize.substring(0, fontSize.length - 2));
+      if (direction === "up") {
+        fontSize = fontSize + 1;
+      } else {
+        fontSize = fontSize - 1;
+      }
+      overText.style("font-size", fontSize);
+    }
+
     function mouseOverHandlerLevelGraph() {
       levelPath.attr("opacity", 0.1);
       let label = d3.select(this).attr("id").substr(16);
@@ -1587,8 +1706,8 @@
         needUpdateMaxStory = false;
       }
       let index = 0;
-      max_story = 0;
-      btw_max_story = 0;
+      let max_story = 0;
+      let btw_max_story = 0;
 
       index = bisect.left(maxStory, dateTime);
       max_story = maxStory[index - 1][1]; // maximum story levels
@@ -1681,11 +1800,11 @@
             if (btw_max_story != 0) {
               let firstDayOfMonth = new Date(dateTime.getTime());
               firstDayOfMonth.setDate(1);
-              firstDayOfMonth.setHours(0,0,0,0);
+              firstDayOfMonth.setHours(0, 0, 0, 0);
               let lastDayOfMonth = new Date(dateTime.getTime());
               lastDayOfMonth.setDate(33);
               lastDayOfMonth.setDate(0);
-              lastDayOfMonth.setHours(23,59,59,999);
+              lastDayOfMonth.setHours(23, 59, 59, 999);
               let scale = d3.scaleLinear();
               let t_FirstDayOfMonth = monthScale.invert(firstDayOfMonth);
               let t_LastDayOfMonth = monthScale.invert(lastDayOfMonth);
@@ -1756,8 +1875,12 @@
 
     function getTheHighlighted(dataset) {
       let highlight = [];
+      let selectedLabel = getSelectedLabel();
       for (d of dataset) {
-        if (max_story == d.story && max_story >= 1) {
+        let [max_story] = getMaxStory(d.time);
+        if (selectedLabel.length && d.story >= max_story) {
+          highlight.push(d);
+        } else if (max_story == d.story && max_story >= 1) {
           highlight.push(d);
         }
       }
@@ -1895,9 +2018,9 @@
         setTimeout(function () { buttonClickedHandler() }, timePause);
       }
 
-      if (lastProperDate == null && highlight.length >= 4) {//获取首次暂停时间
+      if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
         proper_date = getProperDate(year_month_date, highlight);
-      } else if (lastProperDate != null && highlight.length >= 4 && formatTime2(lastProperDate) != formatTime2(year_month_date)) {
+      } else if (lastProperDate != null && highlight.length >= threshhold && formatTime2(lastProperDate) != formatTime2(year_month_date)) {
         proper_date = getProperDate(year_month_date, highlight);
       }
       if (lastProperDate != null && formatTime(lastProperDate) == formatTime(proper_date)) {
@@ -1923,8 +2046,10 @@
           __plotAll(dataset, proper_date);
       }
 
-      //check  #hashtag is highlighted  is more than 4 times
-      if (highlight.length >= 4 && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
+      // console.log("highlight: " + highlight.length);
+      // console.log(threshhold);
+      // console.log("paused: " + paused);
+      if (enablePause && highlight.length >= threshhold && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
         timePause = highlight.length * 0.6 * 1000
         myNewDate();
         myPause(timePause);
@@ -2049,21 +2174,14 @@
     function textPosition(textData) {
       text.data(textData).each(function (d) {
         d.width = this.getBBox().width;
-        d.forward = d.forward;
-        d.freq = d.freq;
         d.x = x(d.forward + 1) + margin.left;
         d.y = y(d.freq + 1) + margin.top;
         d.r = r(d.trend);
         d.height = this.getBBox().height;
       });
 
-      var labels = d3
-        .labeler()
-        .label(textData)
-        .anchor(textData)
-        .width(width)
-        .height(height)
-        .start(0);
+      let [max_story] = getMaxStory(textData[0].time);
+      let selectedLabel = getSelectedLabel();
 
       text
         .attr("x", function (d) {
@@ -2076,18 +2194,27 @@
         .style("fill", function (d) {
           return "#242424";
         })
-        // .attr('fill-opacity',function(d){
-        //   if(d.forward>50&&d.freq>1400){
-        //     return 1;
-        //   }else{
-        //     return 0.1;
-        //   }
-        // })
         .style("display", function (d) {
           if (!isVisible(d)) {
             return "none";
           }
         });
+
+      if (highlightColoredBubble) {
+        text.style('opacity', function (d) {
+          if (selectedLabel.length) {
+            if (selectedLabel.includes(d.label.slice(1))) {
+              return 1;
+            } else {
+              return 0;
+            }
+          } else if (d.story < max_story || d.story == 0) {
+            return 0.1;
+          } else {
+            return 1;
+          }
+        })
+      }
     }
 
     function createAsidePanel(labelSet, idName) {
@@ -2407,6 +2534,7 @@
       let currentTime = d3.select(".dot").data()[0].time;
       let [max_story, _] = getMaxStory(currentTime);
       dots = d3.selectAll(".dot");
+      labels = d3.selectAll(".textLabel");
       if (selectedLabel.length === 0) {
         dots
           .filter(function (d, i) {
@@ -2445,22 +2573,54 @@
           .duration(durationTime)
           .style("opacity", 0.1);
 
-        d3.selectAll(".textLabel")
-          .filter(function (d, i) {
-            return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
-          })
-          .transition()
-          .duration(durationTime)
-          .style("opacity", 1);
+        if (highlightColoredBubble) {
+          if (mouseoverDot !== null) {
+            labels.filter((d) => {
+              return d.label.slice(1) === mouseoverDot;
+            })
+              .transition()
+              .duration(durationTime)
+              .style("opacity", 1);
 
-        d3.selectAll(".textLabel")
-          .filter(function (d, i) {
-            return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
-          })
-          // .text(d => twitterText[d.label.slice(1)])
-          .transition()
-          .duration(durationTime)
-          .style("opacity", 0.1);
+            labels.filter((d) => {
+              return d.label.slice(1) !== mouseoverDot;
+            })
+              .transition()
+              .duration(durationTime)
+              .style("opacity", 0.1);
+          } else {
+            labels.filter((d) => {
+              return d.story != 0 && d.story == max_story;
+            })
+              .transition()
+              .duration(durationTime)
+              .style("opacity", 1);
+
+            labels.filter((d) => {
+              return d.story == 0 || d.story < max_story;
+            })
+              .transition()
+              .duration(durationTime)
+              .style("opacity", 0.1);
+          }
+        } else {
+          d3.selectAll(".textLabel")
+            .filter(function (d, i) {
+              return mouseoverDot === null || d.label.slice(1) === mouseoverDot;
+            })
+            .transition()
+            .duration(durationTime)
+            .style("opacity", 1);
+
+          d3.selectAll(".textLabel")
+            .filter(function (d, i) {
+              return mouseoverDot !== null && d.label.slice(1) !== mouseoverDot;
+            })
+            // .text(d => twitterText[d.label.slice(1)])
+            .transition()
+            .duration(durationTime)
+            .style("opacity", 0.1);
+        }
 
         return;
       }
@@ -2539,7 +2699,7 @@
           }
         });
 
-      d3.selectAll(".textLabel")
+      labels
         .filter(function (d, i) {
           return (
             selectedLabel.findIndex(
@@ -2551,7 +2711,7 @@
         .transition()
         .style("opacity", 0);
 
-      d3.selectAll(".textLabel")
+      labels
         .filter(function (d, i) {
           return (
             selectedLabel.findIndex(
