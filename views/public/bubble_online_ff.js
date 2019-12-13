@@ -855,6 +855,7 @@
       } else {
         threshhold = 4;
       }
+      console.log("123");
     }
     function threshholdInputHandler() {
       let inputNumber = Number(option_pauseSetting_input.property("value"));
@@ -1243,16 +1244,19 @@
           .style("display", "inline");
         if (selectedLabel.length < 2) {
           document.getElementById("option_pauseSetting_input").value = 2;
+          threshhold = 2;
           option_pauseSetting_msg.style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          threshhold = selectedLabel.length;
           if (option_pauseSetting_msg.style("display") == "contents") {
             option_pauseSetting_msg.style("display", "none");
             document.getElementById("option_pauseSetting_content").style.display = "contents";
           }
         } else {
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          threshhold = maxHighlightBubbles;
           if (option_pauseSetting_msg.style("display") == "contents") {
             option_pauseSetting_msg.style("display", "none");
             document.getElementById("option_pauseSetting_content").style.display = "contents";
@@ -1262,6 +1266,7 @@
         d3.select("#showPast")
           .style("display", "none");
         document.getElementById("option_pauseSetting_input").value = 4;
+        threshhold = 4;
         option_pauseSetting_msg.style("display", "none");
         document.getElementById("option_pauseSetting_content").style.display = "contents";
       }
@@ -1426,14 +1431,17 @@
           .style("display", "inline");
         if (selectedLabel.length > maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          threshhold = maxHighlightBubbles;
           option_pauseSetting_msg.style("display", "none");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
         } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          threshhold = selectedLabel.length;
           option_pauseSetting_msg.style("display", "none");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
         } else {
           document.getElementById("option_pauseSetting_input").value = 2;
+          threshhold = 2;
           option_pauseSetting_msg.style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         }
@@ -1441,6 +1449,7 @@
         d3.select("#showPast")
           .style("display", "none");
         document.getElementById("option_pauseSetting_input").value = 4;
+        threshhold = 4;
       }
     }
 
@@ -2065,6 +2074,7 @@
         buttonClickedHandler();//pause
         paused = true;
         setTimeout(function () { buttonClickedHandler() }, timePause);
+        console.log("paused");
       }
 
       if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
