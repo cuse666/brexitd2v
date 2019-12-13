@@ -807,28 +807,36 @@
     let option_pauseSetting = options.append("div");
     let enablePause = true;
     let threshhold = 4;
+    let maxHighlightBubbles = 7;
     option_pauseSetting.append("p")
       .text("Pause Setting: ")
       .style("font-weight", "bold");
-    let option_pauseSetting_enablePause = option_pauseSetting.append("input")
+    let option_pauseSetting_msg = option_pauseSetting.append("p")
+      .html("(Pause function requires at least 2 topics to be selected.)")
+      .style("display", "none");
+    let option_pauseSetting_content = option_pauseSetting.append("div")
+      .attr("id", "option_pauseSetting_content");
+    let option_pauseSetting_enablePause = option_pauseSetting_content.append("input")
       .attr("type", "checkbox")
       .attr("class", "squared")
       .attr("id", "enablePause_input")
       .attr("checked", true);
-    option_pauseSetting.append("label")
+    option_pauseSetting_content.append("label")
       .html("Enable Pause")
       .attr("for", "enablePause_input")
       .attr("id", "enablePause")
-      .style("font-family", "Helvetica");
-    let option_pauseSetting_threshhold = option_pauseSetting.append("div")
+      .style("font-family", "Helvetica")
+      .style("display", "block");
+    let option_pauseSetting_threshhold = option_pauseSetting_content.append("div")
       .attr("class", "option_pauseSetting_threshhold");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
       .text("Number Of Highlighted bubbles: ");
     let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
       .attr("type", "number")
+      .attr("id", "option_pauseSetting_input")
       .attr("value", "4")
-      .attr("min", "1")
+      .attr("min", "2")
       .attr("max", "7")
       .attr("placeholder", "4(default)");
     function enablePauseCheckedHandler() {
@@ -846,6 +854,13 @@
         threshhold = option_pauseSetting_input.property("value");
       } else {
         threshhold = 4;
+      }
+      console.log("123");
+    }
+    function threshholdInputHandler() {
+      let inputNumber = Number(option_pauseSetting_input.property("value"));
+      if (inputNumber > maxHighlightBubbles) {
+        document.getElementById("option_pauseSetting_input").value = 7;
       }
     }
 
@@ -925,6 +940,7 @@
     option_fontSize_button.on("click", fontApplyButtonClickedHandler);
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
     option_pauseSetting_input.on("change", threshholdChangedHandler);
+    option_pauseSetting_input.on("input", threshholdInputHandler);
     option_highlightColoredBubbles_input.on("change", enableHighlightColoredBubblesHandler)
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
@@ -1226,9 +1242,33 @@
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
+        if (selectedLabel.length < 2) {
+          document.getElementById("option_pauseSetting_input").value = 2;
+          threshhold = 2;
+          option_pauseSetting_msg.style("display", "contents");
+          document.getElementById("option_pauseSetting_content").style.display = "none";
+        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
+          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          threshhold = selectedLabel.length;
+          if (option_pauseSetting_msg.style("display") == "contents") {
+            option_pauseSetting_msg.style("display", "none");
+            document.getElementById("option_pauseSetting_content").style.display = "contents";
+          }
+        } else {
+          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          threshhold = maxHighlightBubbles;
+          if (option_pauseSetting_msg.style("display") == "contents") {
+            option_pauseSetting_msg.style("display", "none");
+            document.getElementById("option_pauseSetting_content").style.display = "contents";
+          }
+        }
       } else {
         d3.select("#showPast")
           .style("display", "none");
+        document.getElementById("option_pauseSetting_input").value = 4;
+        threshhold = 4;
+        option_pauseSetting_msg.style("display", "none");
+        document.getElementById("option_pauseSetting_content").style.display = "contents";
       }
 
       if (selectedLabelHis.length == 0) {
@@ -1249,7 +1289,7 @@
       } else {
         cancelHightlightLevelLine(selectingLabel);
       }
-      //console.log(selectedLabel)
+
       let currentTime = getTime();
       // console.log(currentTime)
       //改变currentTime为selectedLabel中最早出现的那个时刻！！
@@ -1389,9 +1429,27 @@
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
+        if (selectedLabel.length > maxHighlightBubbles) {
+          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          threshhold = maxHighlightBubbles;
+          option_pauseSetting_msg.style("display", "none");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
+          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          threshhold = selectedLabel.length;
+          option_pauseSetting_msg.style("display", "none");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+        } else {
+          document.getElementById("option_pauseSetting_input").value = 2;
+          threshhold = 2;
+          option_pauseSetting_msg.style("display", "contents");
+          document.getElementById("option_pauseSetting_content").style.display = "none";
+        }
       } else {
         d3.select("#showPast")
           .style("display", "none");
+        document.getElementById("option_pauseSetting_input").value = 4;
+        threshhold = 4;
       }
     }
 
@@ -2016,6 +2074,7 @@
         buttonClickedHandler();//pause
         paused = true;
         setTimeout(function () { buttonClickedHandler() }, timePause);
+        console.log("paused");
       }
 
       if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
