@@ -2,11 +2,11 @@
   let en2ch = await getExplanation();
   let lang = "en";
 
-  var margin = { top: 10, bottom: 80, left: 120, right: 30 };
+  var margin = { top: 10, bottom: 110, left: 120, right: 30 };
   // var svgWidth = document.getElementById('chartAside').clientWidth;
   // var svgHeight = svgWidth*0.6>700? 700: svgWidth*0.6;
   var svgWidth = 1200;//850;
-  var svgHeight = 650;//690;
+  var svgHeight = 700;//690;
 
   var width = svgWidth - margin.left - margin.right;
   var height = svgHeight - margin.top - margin.bottom;
@@ -18,54 +18,9 @@
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
-  function dragmove(d) {
-    d3.select(this)
-      .attr("y", d3.event.y)
-      .attr("x", d3.event.x)
-  }
-
-  var drag = d3.drag()
-    .on("drag", dragmove);
-
-  var myText = svg.append("text")
-    .attr("x", 800)
-    .attr("y", 100)
-    .attr("id", "draggable")
-    .text("请拖动我！")
-    .attr("font-size", 20)
-    .attr("fill", "black")
-    .call(drag)
-
-  d3.select("#comment").on("input", changeText)
-  d3.select("#fontsize").on("input", changeSize)
-  d3.select("#fontcolor").on("input", changeColor)
-
-  function changeColor() {
-    myText.attr("fill", this.value)
-  }
-  function changeSize() {
-    myText.attr("font-size", String(this.value))
-  }
-
-  function changeText() {
-    myText.text(this.value)
-  }
-
-
-  function dragmove(d) {
-    d3.select(this)
-      .attr("y", d3.event.y)
-      .attr("x", d3.event.x)
-  }
-
-  var drag = d3.drag()
-    .on("drag", dragmove);
-
-  let options = d3.select("#rightrightAside")
+  let options = d3.select("#anotherFunc")
     .append("div")
     .attr("class", "options")
-    .style("position", "absolute")
-    .style("left", `${svgWidth + 460}px`);
 
   options.append("h2")
     .text("Advanced Setting")
@@ -89,13 +44,13 @@
   let option_fontSize = options.append("div");
   option_fontSize.append("p")
     .text("Reset Font Size: ")
-    .style("font-weight","bold");
+    .style("font-weight", "bold");
   let option_fontSize_input = option_fontSize.append("input")
     .attr("type", "number")
     .attr("id", "option_fontSize")
     .attr("min", 0)
     .attr("max", 40)
-    .attr("value",20)
+    .attr("value", 20)
     .attr("placeholder", "20(default)");
   option_fontSize.append("p")
     .style("display", "inline")
@@ -107,7 +62,7 @@
     .style("margin-top", "10px");
   option_fontSize.append("p")
     .text("(Also try scroll up and down when hover on a bubble.)")
-    .style("width","150px");
+    .style("width", "150px");
 
   // scale
   var y = d3
@@ -344,7 +299,7 @@
     .attr("x", margin.left)
     .attr(
       "y",
-      margin.top + height + videoYOffset + buttonSize / 2 - sliderHeight / 2
+      margin.top + height + videoYOffset + buttonSize / 2 - sliderHeight / 2 + 30
     )
     .attr("width", width)
     .attr("height", sliderHeight)
@@ -356,16 +311,16 @@
     .append("circle")
     .attr("class", "video-anchor")
     .attr("cx", margin.left)
-    .attr("cy", margin.top + height + videoYOffset + buttonSize / 2)
+    .attr("cy", margin.top + height + videoYOffset + buttonSize / 2 + 30)
     .attr("r", anchorRadius);
   let anchortext = svg.append("text")
-                        .attr("class", "anchor-text")
-                        .text("2016/1")
-                        .attr("x",margin.left-20)
-                        .attr("y", margin.top + height + videoYOffset + buttonSize / 2 - 10)
-                        .attr("font-size", 15)
-                        .attr("fill", "black")
-                        .attr("opacity","0")
+    .attr("class", "anchor-text")
+    .text("2016/1")
+    .attr("x", margin.left - 20)
+    .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 - 10)
+    .attr("font-size", 15)
+    .attr("fill", "black")
+    .attr("opacity", "0")
 
   svg
     .append("g")
@@ -521,6 +476,110 @@
       dataArray.push(tmp);
     });
 
+    //******************************************************************************************************** */
+    //添加一个矩形框，在其上添加文本
+    let textHeight = 30
+    let showTextArea = svg
+      .append("rect")
+      .attr("class", "showTextArea")
+      .attr("x", margin.left)
+      .attr(
+        "y",
+        margin.top + height + videoYOffset + buttonSize / 2 - textHeight / 2
+      )
+      .attr("width", width)
+      .attr("height", textHeight)
+      .attr("rx", borderRadius)
+      .attr("ry", borderRadius)
+      .attr("opacity", 0.1)
+      .on("dblclick", changeText)
+
+    //.attr("width", `${slider.attr("width")}px`)
+    let tempText = "double click to change the text"
+
+    function createText() {
+      return svg.append("text")
+        .attr("x", parseInt(showTextArea.attr("x")))
+        .attr(
+          "y",
+          parseInt(showTextArea.attr("y")) + parseInt(showTextArea.attr("height") - 8)
+        )
+        .attr("id", "mytext")
+        .text(tempText)
+        .attr("font-size", 20)
+        .attr("fill", "black")
+        .attr("cursor", "pointer")
+      // .on("dblclick",changeText)    //双击处理事件写在了createInput()函数下面
+      // .call(drag)
+    }
+    let myText = createText()     //初始创建一个文本
+
+    var TextandDate = {}  //准备设置为一个字典。key是年月日字符串，value是文本
+
+    function createInput() {       //创建一个input框，并且给他加上一些监听事件。
+      var foreignObject = svg.append("foreignObject")
+        .attr("id", "myforeignObject")
+        .attr("x", parseInt(showTextArea.attr("x")))
+        .attr(
+          "y",
+          parseInt(showTextArea.attr("y"))
+        )
+        .attr("height", showTextArea.attr("height"))
+        .attr("width", showTextArea.attr("width"))
+      // .append("xhtml:div")
+      // .style("font", "14px 'Helvetica Neue'")
+      // .html("<h1>An HTML Foreign Object in SVG</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu enim quam. ");
+      let textArea = foreignObject.append("xhtml:input")
+        .attr("type", "text")
+        .attr("value", tempText)
+        .attr("style", "font-size:20px;height:25px;width:1045px")
+        .on("blur", inputBlur)
+        .on("focus", inputFocus)
+        .on("input", inputContent)
+      function inputContent() {
+        textArea.text(this.value)
+        // console.log(this.value)
+      }
+      function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
+        // console.log(this.value)
+        tempText = this.value
+        d3.select("#myforeignObject").remove()  //删除输入框
+        myText = createText() //重新创建一个文本 框
+
+        let currentDate = dateScale.invert(getTime())
+
+        //dateString 用于统一格式
+        let dateString = (currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
+        if (currentDate.getMonth() + 1 < 10) //在第5个位置增加一个 0 
+          dateString = dateString.slice(0, 5) + "0" + dateString.slice(5)
+        if (currentDate.getDate() < 10) //在第8个位置插入一个0
+          dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
+
+        TextandDate[dateString] = tempText
+        console.log(TextandDate)
+      }
+      function inputFocus() {
+        textArea.attr("value", tempText)
+      }
+
+      return textArea
+    }
+
+    function changeText() { //改变文本的时候，必须暂停所有
+      if (buttonPlay === true) {
+        buttonClickedHandler()
+      }
+      else {     //当自动暂停的时候，改成永久暂停，必须手动点击开始按钮，才重新开始
+        if (timeout != null) {
+          clearTimeout(timeout)
+        }
+      }
+      d3.select("#mytext").remove() //删除文字，添加文本框
+
+      let textArea = createInput()  //创建一个输入框。输入结束后的处理也在这个函数里面
+    }
+
+    //******************************************************************************************************** */
     let twitterEnglish = getTwitterEnglish();
     let twitterChinese = getTwitterChinese();
     let twitterText = lang === "ch" ? twitterChinese : twitterEnglish;
@@ -744,7 +803,7 @@
         "transform",
         `translate(${margin.left - buttonSize + buttonXOffset},${margin.top +
         height +
-        videoYOffset})`
+        videoYOffset + 30})`
       );
     // .attr("clip-path", "url(#chart-area)");
 
@@ -921,8 +980,8 @@
     dot.on("wheel", mouseWheelHandler);
     levelPath.on("mouseover", mouseOverHandlerLevelGraph);
     levelPath.on("mouseout", mouseOutHandlerLevelGraph);
-    document.onkeydown = keyDownHandler;
-    document.onkeyup = keyUpHandler;
+    // document.onkeydown = keyDownHandler;
+    // document.onkeyup = keyUpHandler;
 
     function calcLifeCycle(labelSet) {
       let tweenValue = getTweenValue();
@@ -1382,7 +1441,7 @@
 
     function buttonClickedHandler() {
       // console.log(getTime())
-      if(timeout!=null){
+      if (timeout != null) {
         clearTimeout(timeout)
       }
       buttonPlay = !buttonPlay;
@@ -1401,7 +1460,7 @@
             let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
 
             let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
-            currentTime = earliestTime * totalTime 
+            currentTime = earliestTime * totalTime
             let endTime = latestTime * totalTime - offset
 
             limitDate = dateScale.invert(endTime);  //结束时间
@@ -1451,15 +1510,15 @@
     }
 
     function sliderClickedHandler(event) {
-      if(timeout!=null){
+      if (timeout != null) {
         clearTimeout(timeout)
       }
-      if(isAnimationFinished)
+      if (isAnimationFinished)
         isAnimationFinished = false
       //let hyperParam = 0;
       stopTime();
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x")); // 120
+      let offset = parseFloat(d3.select(".video-slider").attr("x")) + 410; // 120 + 410
       let minCXPos = offset + anchorScale.domain()[0]; //120
       let maxCXPos = offset + anchorScale.domain()[1]; //1170 = 120 + 1050
       //let currentCXPos = Math.max(minCXPos, d3.event.x + hyperParam);
@@ -1468,13 +1527,13 @@
 
       let anchor = d3.select(".video-anchor");
       anchor.attr("cx", currentCXPos);
-      anchortext.attr("x", currentCXPos-20).attr("opacity","0");
+      anchortext.attr("x", currentCXPos - 20).attr("opacity", "0");
 
       let currentTime = anchorScale(currentCXPos - offset);
       setTime(currentTime);
-      
+
       let currentDate = dateScale.invert(currentTime);
-      anchortext.text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
+      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
 
       startTime(easeFunc, totalTime, totalTime - currentTime, dateScale);
       buttonPlay = true;
@@ -1495,16 +1554,16 @@
       let maxCXPos = offset + anchorScale.domain()[1];
       let currentCXPos = Math.max(minCXPos, d3.event.x);
       currentCXPos = Math.min(maxCXPos, currentCXPos);
-      
-      anchortext.attr("x", currentCXPos-20)
-      anchortext.text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
-                .attr("opacity","1")
+
+      anchortext.attr("x", currentCXPos - 20)
+      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
+        .attr("opacity", "1")
       button.attr("xlink:href", `public/data/bubble/pause.svg`);
       stopTime();
     }
 
     function draggedHandler() {
-      if(timeout!=null){  //清楚设置的延时
+      if (timeout != null) {  //清楚设置的延时
         clearTimeout(timeout)
       }
 
@@ -1524,13 +1583,13 @@
       let currentDate = dateScale.invert(currentTime);
       // console.log(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
       // anchor.
-      anchortext.attr("x", currentCXPos-20)
-                .text(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
+      anchortext.attr("x", currentCXPos - 20)
+        .text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
     }
 
     function dragendedHandler() {
-      anchortext.attr("opacity","0")
-      if(isAnimationFinished)
+      anchortext.attr("opacity", "0")
+      if (isAnimationFinished)
         isAnimationFinished = false
 
       let currentTime = getTime();
@@ -2026,6 +2085,8 @@
         // timePause = 5000;
         buttonClickedHandler();//pause
         paused = true;
+        // alert("hello")
+
         timeout = setTimeout(function () { buttonClickedHandler() }, timePause);
       }
 
@@ -2054,7 +2115,7 @@
         // let currentTime = timeScale(proper_date);
         // setTime(currentTime);
         // if (!isAnimationFinished)
-          __plotAll(dataset, proper_date);
+        __plotAll(dataset, proper_date);
       }
 
       //check  #hashtag is highlighted  is more than 4 times
@@ -2065,7 +2126,7 @@
       }
       else {
         // if (!isAnimationFinished)
-          __plotAll(dataset, proper_date);
+        __plotAll(dataset, proper_date);
       }
 
       // for debug only
@@ -2101,8 +2162,49 @@
         }
         let tmpYear = new Date(year_month_date);
         updateVideoAnchor(tmpYear);
+        updateText(tmpYear)
         lastProperDate = proper_date;
+
+        d3.select("#mytext").remove() //删除文字，添加文本框
+        tempText = findProperText(tmpYear)  //找到此时应该显示的文本
+        myText = createText()     //初始创建一个文本
+
       }
+    }
+
+    function findProperText(tmpYear){
+      //dateString目前的时间
+      let dateString = (tmpYear.getFullYear() + "/" + (tmpYear.getMonth() + 1) + "/" + tmpYear.getDate())
+      if (tmpYear.getMonth() + 1 < 10) //在第5个位置增加一个 0 
+        dateString = dateString.slice(0, 5) + "0" + dateString.slice(5)
+      if (tmpYear.getDate() < 10) //在第8个位置插入一个0
+        dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
+
+      let len = Object.keys(TextandDate).length //长度
+      if (len != 0) {  //找出区间
+        let showdateString, tmpdateString;
+        for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
+          tmpdateString = Object.keys(TextandDate)[i]
+
+          if (tmpdateString < dateString) {
+            showdateString = tmpdateString //
+            continue;
+          } else {
+            break;
+          }
+        }
+        return TextandDate[showdateString]
+      } else{
+        return "double click to change the text"
+      }
+    }
+
+    function updateText(date) {
+      //将每次添加的文本信息存储在数组中；然后根据事件显示它。
+      //当pause时，弹出对话框，显示是否插入文本。当已有文本时，提示修改文本或者删除文本。
+      // console.log(date.getFullYear())
+      // console.log(date.getMonth() + 1)
+      // console.log(date.getDate())
     }
 
     // function updateShowupText(year, dataset, showupText, showupLifeCycle) {
@@ -2332,7 +2434,7 @@
       let downsideHeight = downsideBlockHeight + downsideTitleHeight;
 
       let downside = d3
-        .select(".container")
+        .select("#downmiddle")
         .append("div")
         .attr("class", "downside");
 
@@ -2406,7 +2508,7 @@
 
     function createLevelGraph() {
 
-      let LevelGraph = d3.select(".container")
+      let LevelGraph = d3.select("#downleft")
         .append("div")
         .attr("class", "LevelGraph");
 

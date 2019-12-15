@@ -14,23 +14,16 @@
     }
 
     body {
-      overflow: hidden;
       margin: 0;
       padding-top: 0;
       overflow: auto;
       padding: 0;
     }
 
-    #draggable {
-      text-anchor: start;
-      cursor: move;
-      text-anchor: middle;
-    }
-
     #main {
       padding: 10px 20px;
-      width: 1660px;
-      height: 1000px;
+      width: 1920px;
+      height: 1028px;
     }
 
     /* @media only screen and (max-width: 1200){
@@ -39,9 +32,13 @@
     }
     } */
     #inputArea {
-      width: 130px;
-      height: 50px;
-      position: absolute;
+      width: 260px;
+      height: 325px;
+    }
+
+    #anotherFunc{
+      width: 260px;
+      height: 325px;
     }
 
     .textLabel {
@@ -131,14 +128,27 @@
     .container {
       display: grid;
       box-sizing: border-box;
-      /*width: 1430px;
-    height: 900px;*/
+      /* width: 1430px;
+      height: 900px;*/
       padding: 0;
       border: 0;
       vertical-align: top;
       /* position: relative; */
-      grid-template-columns: 1200px 1fr;
+      grid-template-columns: 410px 1200px 260px;
       /*the selection panel position*/
+    }
+
+    #downleft {
+      width: 410px;
+      height: 378px;
+    }
+    #downmiddle{
+      width: 1200px;
+      height: 378px;
+    }
+    #downright{
+      width: 260px;
+      height: 378px;
     }
 
     /* 右侧条形图视图宽度 Right bar view width */
@@ -150,9 +160,8 @@
     }
 
     #rightrightAside {
-      display: grid;
-      grid-template-columns: 300px;
-      position: absolute;
+      width: auto;
+      height: 650px;
     }
 
     svg {
@@ -717,6 +726,20 @@
       font-weight: 500;
       font-size: 20px;
     }
+
+    #inputArea-title{
+      padding: 5px;
+      margin-bottom: 5px;
+      background-color: #565656;
+      font-size: 20px;
+      color: #E5AA17;
+      text-align: center;
+    }
+
+    #inputText{
+      vertical-align: middle;
+    }
+
   </style>
 </head>
 
@@ -730,17 +753,16 @@
       <div class="aside-title">The most popular hashtag on<br />Brexit topic</div>
     </div>
     <div class="container">
-      <div id="chartAside"></div>
       <div id="rightAside"></div>
-      <!-- <div id="my_dataviz"></div> -->
+      <div id="chartAside"></div>
+      <div id="rightrightAside">
+          <div id="anotherFunc"></div>
+        </div>
+      <div id="downleft"></div>
+      <div id="downmiddle"></div>
+      <div id="downright"></div>
     </div>
-    <div id="rightrightAside">
-      <div id="inputArea">
-        <input type="text" id="comment" value="请在此处输入文本">
-        <input type="number" id="fontsize" value="20">
-        <input type="color" id="fontcolor">
-      </div>
-    </div>
+
     <!-- for testing only-->
     <div>
       <!--show easeFunc-->
