@@ -509,7 +509,7 @@
         .attr("font-size", 20)
         .attr("fill", "black")
         .attr("cursor", "pointer")
-      // .on("dblclick",changeText)    //双击处理事件写在了createInput()函数下面
+      .on("dblclick",changeText)    //双击处理事件写在了createInput()函数下面
       // .call(drag)
     }
     let myText = createText()     //初始创建一个文本
