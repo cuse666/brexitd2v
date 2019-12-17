@@ -495,7 +495,7 @@
       .on("dblclick", changeText)
 
     //.attr("width", `${slider.attr("width")}px`)
-    let tempText = "double click to change the text"
+    let tempText = "double click to change the text at any time"
 
     function createText() {
       return svg.append("text")
@@ -526,9 +526,7 @@
         )
         .attr("height", showTextArea.attr("height"))
         .attr("width", showTextArea.attr("width"))
-      // .append("xhtml:div")
-      // .style("font", "14px 'Helvetica Neue'")
-      // .html("<h1>An HTML Foreign Object in SVG</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu enim quam. ");
+        
       let textArea = foreignObject.append("xhtml:input")
         .attr("type", "text")
         .attr("id","tt")
@@ -541,8 +539,8 @@
 
       let myInput = document.getElementById("tt");
       myInput.onkeydown = function (event){
-        if (event.keyCode === 13 || event.keyCode === 100) {
-          inputBlur()
+        if (event.keyCode === 13) {
+          myInput.blur()                //直接失去焦点
         }
       }
 
@@ -561,7 +559,7 @@
         tempText = this.value
         
         d3.select("#myforeignObject").remove()  //删除输入框
-
+          
         myText = createText() //重新创建一个文本 框
 
         
@@ -574,7 +572,7 @@
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
         TextandDate[dateString] = tempText
-        // console.log(TextandDate)
+        console.log(TextandDate)
       }
 
       function inputFocus() {
@@ -2215,7 +2213,7 @@
         }
         return TextandDate[showdateString]
       } else {
-        return "double click to change the text"
+        return "double click to change the text at any time"
       }
     }
 
