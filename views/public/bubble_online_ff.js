@@ -538,6 +538,7 @@
         // .on("keypress",logKey)
 
       let myInput = document.getElementById("tt");
+      myInput.focus()       //创建input后，立刻聚焦
       myInput.onkeydown = function (event){
         if (event.keyCode === 13) {
           myInput.blur()                //直接失去焦点
@@ -585,7 +586,6 @@
 
       function inputFocus() {
         this.select()
-        textArea.attr("value", tempText)
       }
 
       return textArea
