@@ -509,7 +509,7 @@
         .attr("font-size", 20)
         .attr("fill", "black")
         .attr("cursor", "pointer")
-      .on("dblclick",changeText)    //双击处理事件写在了createInput()函数下面
+        .on("dblclick", changeText)    //双击处理事件写在了createInput()函数下面
       // .call(drag)
     }
     let myText = createText()     //初始创建一个文本
@@ -531,23 +531,41 @@
       // .html("<h1>An HTML Foreign Object in SVG</h1><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eu enim quam. ");
       let textArea = foreignObject.append("xhtml:input")
         .attr("type", "text")
+        .attr("id","tt")
         .attr("value", tempText)
         .attr("style", "font-size:20px;height:25px;width:1045px")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
+        // .on("keypress",logKey)
+
+      let myInput = document.getElementById("tt");
+      myInput.onkeydown = function (event){
+        if (event.keyCode === 13 || event.keyCode === 100) {
+          inputBlur()
+        }
+      }
+
+      // function logKey(){
+      //   // console.log(d3.event)
+      //   if (d3.event.keyCode === 13 || d3.event.keyCode === 100) {
+      //       console.log(this.value)
+      //     }
+      // }
+
       function inputContent() {
         textArea.text(this.value)
-        // console.log(this.value)
       }
+      
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
-        // console.log(this.value)
         tempText = this.value
+        
         d3.select("#myforeignObject").remove()  //删除输入框
+
         myText = createText() //重新创建一个文本 框
 
+        
         let currentDate = dateScale.invert(getTime())
-
         //dateString 用于统一格式
         let dateString = (currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
         if (currentDate.getMonth() + 1 < 10) //在第5个位置增加一个 0 
@@ -556,9 +574,11 @@
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
         TextandDate[dateString] = tempText
-        console.log(TextandDate)
+        // console.log(TextandDate)
       }
+
       function inputFocus() {
+        this.select()
         textArea.attr("value", tempText)
       }
 
@@ -2172,7 +2192,7 @@
       }
     }
 
-    function findProperText(tmpYear){
+    function findProperText(tmpYear) {
       //dateString目前的时间
       let dateString = (tmpYear.getFullYear() + "/" + (tmpYear.getMonth() + 1) + "/" + tmpYear.getDate())
       if (tmpYear.getMonth() + 1 < 10) //在第5个位置增加一个 0 
@@ -2194,7 +2214,7 @@
           }
         }
         return TextandDate[showdateString]
-      } else{
+      } else {
         return "double click to change the text"
       }
     }
