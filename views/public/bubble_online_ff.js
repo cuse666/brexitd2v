@@ -572,6 +572,14 @@
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
         TextandDate[dateString] = tempText
+        //排序操作
+        var datearr = Object.keys(TextandDate).sort()
+        var tmpobj = {}
+        for(let i=0,len = datearr.length;i<len;i++){
+          tmpobj[datearr[i]] = TextandDate[datearr[i]]
+        }
+        TextandDate = tmpobj
+        
         console.log(TextandDate)
       }
 
@@ -1551,7 +1559,7 @@
       setTime(currentTime);
 
       let currentDate = dateScale.invert(currentTime);
-      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
+      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
 
       startTime(easeFunc, totalTime, totalTime - currentTime, dateScale);
       buttonPlay = true;
@@ -1574,7 +1582,7 @@
       currentCXPos = Math.min(maxCXPos, currentCXPos);
 
       anchortext.attr("x", currentCXPos - 20)
-      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
+      anchortext.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
         .attr("opacity", "1")
       button.attr("xlink:href", `public/data/bubble/pause.svg`);
       stopTime();
@@ -1602,7 +1610,7 @@
       // console.log(currentDate.getFullYear()+ "/" + (currentDate.getMonth() + 1))
       // anchor.
       anchortext.attr("x", currentCXPos - 20)
-        .text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1))
+        .text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
     }
 
     function dragendedHandler() {
