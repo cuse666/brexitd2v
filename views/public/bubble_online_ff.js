@@ -2,7 +2,7 @@
   let en2ch = await getExplanation();
   let lang = "en";
 
-  var margin = { top: 10, bottom: 110, left: 120, right: 30 };
+  var margin = { top: 10, bottom: 135, left: 120, right: 30 };
   // var svgWidth = document.getElementById('chartAside').clientWidth;
   // var svgHeight = svgWidth*0.6>700? 700: svgWidth*0.6;
   var svgWidth = 1200;//850;
@@ -299,7 +299,7 @@
     .attr("x", margin.left)
     .attr(
       "y",
-      margin.top + height + videoYOffset + buttonSize / 2 - sliderHeight / 2 + 30
+      margin.top + height + videoYOffset + buttonSize / 2 - sliderHeight / 2 + 30 + 25
     )
     .attr("width", width)
     .attr("height", sliderHeight)
@@ -311,13 +311,13 @@
     .append("circle")
     .attr("class", "video-anchor")
     .attr("cx", margin.left)
-    .attr("cy", margin.top + height + videoYOffset + buttonSize / 2 + 30)
+    .attr("cy", margin.top + height + videoYOffset + buttonSize / 2 + 30 + 25)
     .attr("r", anchorRadius);
   let anchortext = svg.append("text")
     .attr("class", "anchor-text")
     .text("2016/1")
     .attr("x", margin.left - 20)
-    .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 - 10)
+    .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 +25 - 10)
     .attr("font-size", 15)
     .attr("fill", "black")
     .attr("opacity", "0")
@@ -478,7 +478,7 @@
 
     //******************************************************************************************************** */
     //添加一个矩形框，在其上添加文本
-    let textHeight = 30
+    let textHeight = 55
     let showTextArea = svg
       .append("rect")
       .attr("class", "showTextArea")
@@ -492,26 +492,31 @@
       .attr("rx", borderRadius)
       .attr("ry", borderRadius)
       .attr("opacity", 0.1)
-      .on("dblclick", changeText)
 
     //.attr("width", `${slider.attr("width")}px`)
     let tempText = "double click to change the text at any time"
 
     function createText() {
-      return svg.append("text")
+      var textforeignObject = svg.append("foreignObject")
+        .attr("id", "mytextforeignObject")
         .attr("x", parseInt(showTextArea.attr("x")))
         .attr(
           "y",
-          parseInt(showTextArea.attr("y")) + parseInt(showTextArea.attr("height") - 8)
+          parseInt(showTextArea.attr("y"))
         )
+        .attr("height", textHeight)
+        .attr("width", width)
+        .attr("style","display:flex; align-items:center;justify-content:center;")
+        .style("font-size","20px")
+        .on("dblclick", changeText)
+      
+      return textforeignObject.append("xhtml:div")
+        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;")
         .attr("id", "mytext")
+        .append("div")
         .text(tempText)
-        .attr("font-size", 20)
-        .attr("fill", "black")
-        .attr("cursor", "pointer")
-        .on("dblclick", changeText)    //双击处理事件写在了createInput()函数下面
-      // .call(drag)
     }
+
     let myText = createText()     //初始创建一个文本
 
     var TextandDate = {}  //准备设置为一个字典。key是年月日字符串，value是文本
@@ -526,20 +531,22 @@
         )
         .attr("height", showTextArea.attr("height"))
         .attr("width", showTextArea.attr("width"))
-        
-      let textArea = foreignObject.append("xhtml:input")
-        .attr("type", "text")
-        .attr("id","tt")
-        .attr("value", tempText)
-        .attr("style", "font-size:20px;height:25px;width:1045px")
+
+      let textArea = foreignObject.append("xhtml:textarea")
+        .attr("id", "tt")
+        .attr("maxlength",160)
+        .attr("placeholder", "max length: 160")
+        .attr("style", "font-size:20px;height:50px;width:1045px")
+        .style("text-align","center")
+        .style("vertical-align","midddle")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
-        // .on("keypress",logKey)
+      // .on("keypress",logKey)
 
       let myInput = document.getElementById("tt");
       myInput.focus()       //创建input后，立刻聚焦
-      myInput.onkeydown = function (event){
+      myInput.onkeydown = function (event) {
         if (event.keyCode === 13) {
           myInput.blur()                //直接失去焦点
         }
@@ -553,17 +560,22 @@
       // }
 
       function inputContent() {
+        // if(this.value.length > 160){ //超过160输出
+        //   alert("The max length is 160")
+        //   myInput.blur()
+        // }
         textArea.text(this.value)
       }
-      
+
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
-        tempText = this.value
-        
+        if(this.value.length != 0)
+          tempText = this.value
+
         d3.select("#myforeignObject").remove()  //删除输入框
-          
+
         myText = createText() //重新创建一个文本 框
 
-        
+
         let currentDate = dateScale.invert(getTime())
         //dateString 用于统一格式
         let dateString = (currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
@@ -576,19 +588,33 @@
         //排序操作
         var datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
-        for(let i=0,len = datearr.length;i<len;i++){
+        for (let i = 0, len = datearr.length; i < len; i++) {
           tmpobj[datearr[i]] = TextandDate[datearr[i]]
         }
         TextandDate = tmpobj
-        
+
+        updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
-
       function inputFocus() {
         this.select()
       }
 
       return textArea
+    }
+
+    function updateshowTextArea() {   //删除之前所有的文字，再加入现在的文本信息
+      // if (d3.select("#myshowtextarea") != null)
+      d3.select("#myshowtextarea").remove()
+
+      let textarea = d3.select("#showTextArea").append("div").attr("id", "#myshowtextarea")
+
+      var datearr = Object.keys(TextandDate)
+      for (let i = 0, len = datearr.length; i < len; i++) {
+        textarea.append("text").text(datearr[i] + ": " + TextandDate[datearr[i]])
+      }
+
+      // textsvg.append("text").text("sdfasdfa")
     }
 
     function changeText() { //改变文本的时候，必须暂停所有
@@ -601,7 +627,7 @@
         }
       }
       d3.select("#mytext").remove() //删除文字，添加文本框
-
+      d3.select("#mytextforeignObject").remove() //删除文字，添加文本框\
       let textArea = createInput()  //创建一个输入框。输入结束后的处理也在这个函数里面
     }
 
@@ -829,7 +855,7 @@
         "transform",
         `translate(${margin.left - buttonSize + buttonXOffset},${margin.top +
         height +
-        videoYOffset + 30})`
+        videoYOffset + 30 + 25})`
       );
     // .attr("clip-path", "url(#chart-area)");
 
@@ -2190,8 +2216,9 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
-
+        
         d3.select("#mytext").remove() //删除文字，添加文本框
+        d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         myText = createText()     //初始创建一个文本
 
