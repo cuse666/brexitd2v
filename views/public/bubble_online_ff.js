@@ -604,14 +604,53 @@
     }
 
     function updateshowTextArea() {   //删除之前所有的文字，再加入现在的文本信息
-      // if (d3.select("#myshowtextarea") != null)
-      d3.select("#myshowtextarea").remove()
+      let showTextArea = d3.select("#showTextArea") //选中这个区域
 
-      let textarea = d3.select("#showTextArea").append("div").attr("id", "#myshowtextarea")
+      if(document.getElementById("oldTextArea") != null)
+        document.getElementById("oldTextArea").remove()
+
+      let textarea = showTextArea.append("div").attr("id","oldTextArea")
 
       var datearr = Object.keys(TextandDate)
       for (let i = 0, len = datearr.length; i < len; i++) {
-        textarea.append("text").text(datearr[i] + ": " + TextandDate[datearr[i]])
+        textarea.append("div")
+                .style("display","block")
+                .append("text")
+                .on("dblclick",deleteText)
+                .on("mouseover",MouseOverText)
+                .on("mouseout",MouseOutText)
+                .text(datearr[i] + ": " + TextandDate[datearr[i]])
+      }
+
+      var div = textarea.append("div")
+                        .attr("class", "tooltip")				
+                        .style("opacity", 0);
+
+      function MouseOutText(){
+        div.transition()		
+            .duration(500)		
+            .style("opacity", 0);	
+      }
+
+      function MouseOverText(){
+        div.transition()		
+          .duration(200)		
+          .style("opacity", .9);		
+        div.html("double click the text to delete it")	
+          .style("left", (d3.event.pageX) + "px")		
+          .style("top", (d3.event.pageY) + "px");
+      }
+
+      function deleteText(){
+        div.style("opacity", 0);	
+        // console.log(this.innerText)
+        let date = this.innerText.slice(0,10);
+        // let content = this.innerText.slice(12);
+        // console.log(date)
+        // console.log(content)
+        delete TextandDate[date]
+        console.log(TextandDate)
+        this.remove() //删除这个dom元素
       }
 
       // textsvg.append("text").text("sdfasdfa")
