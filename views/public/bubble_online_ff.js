@@ -536,7 +536,7 @@
         .attr("id", "tt")
         .attr("maxlength",160)
         .attr("placeholder", "max length: 160")
-        .attr("style", "font-size:20px;height:50px;width:1045px")
+        .attr("style", "font-size:20px;height:50px;width:1045px;resize:none;")
         .style("text-align","center")
         .style("vertical-align","midddle")
         .on("blur", inputBlur)
@@ -2260,7 +2260,7 @@
         d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         myText = createText()     //初始创建一个文本
-
+        
       }
     }
 
