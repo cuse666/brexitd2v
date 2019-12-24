@@ -1323,7 +1323,7 @@
             .style("display", "contents")
             .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else if (maxHighlightBubbles >= 2) {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
+        } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
@@ -1522,7 +1522,7 @@
             .style("display", "contents")
             .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else if (maxHighlightBubbles >= 2) {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
+        } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
