@@ -867,11 +867,11 @@
     option_pauseSetting.append("p")
       .text("Pause Setting: ")
       .style("font-weight", "bold");
+    let option_pauseSetting_content = option_pauseSetting.append("div")
+      .attr("id", "option_pauseSetting_content");
     let option_pauseSetting_msg = option_pauseSetting.append("p")
       .html("(Pause function requires at least 2 topics to be selected.)")
       .style("display", "none");
-    let option_pauseSetting_content = option_pauseSetting.append("div")
-      .attr("id", "option_pauseSetting_content");
     let option_pauseSetting_enablePause = option_pauseSetting_content.append("input")
       .attr("type", "checkbox")
       .attr("class", "squared")
@@ -887,13 +887,14 @@
       .attr("class", "option_pauseSetting_threshhold");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
-      .text("Number Of Highlighted bubbles: ");
+      .text("Number of colored bubbles: ");
     let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
       .attr("type", "number")
       .attr("id", "option_pauseSetting_input")
       .attr("value", "4")
       .attr("min", "2")
       .attr("max", `${maxHighlightBubbles}`)
+      .attr("step", 1)
       .attr("placeholder", "4(default)");
     function enablePauseCheckedHandler() {
       if (this.checked) {
@@ -1307,18 +1308,30 @@
             .style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
-          document.getElementById("option_pauseSetting_content").style.display = "none";
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(Pause function unavailable. Selected topics don't have equivalent popularity.)")
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_input").value = 2;
+          document.getElementById("option_pauseSetting_input").disabled = true;
+          threshhold = 2;
+          option_pauseSetting_msg
+            .style("display", "contents")
+            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
         } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = selectedLabel.length;
-          if (option_pauseSetting_msg.style("display") == "contents") {
-            option_pauseSetting_msg.style("display", "none");
-            document.getElementById("option_pauseSetting_content").style.display = "contents";
-          }
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+        } else if (maxHighlightBubbles == 2) {
+          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          document.getElementById("option_pauseSetting_input").disabled = true;
+          threshhold = maxHighlightBubbles;
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
         } else {
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
           if (option_pauseSetting_msg.style("display") == "contents") {
             option_pauseSetting_msg.style("display", "none");
@@ -1329,6 +1342,7 @@
         d3.select("#showPast")
           .style("display", "none");
         document.getElementById("option_pauseSetting_input").value = 4;
+        document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
         option_pauseSetting_msg.style("display", "none");
         document.getElementById("option_pauseSetting_content").style.display = "contents";
@@ -1493,31 +1507,52 @@
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
-        if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
-          document.getElementById("option_pauseSetting_content").style.display = "none";
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(Pause function unavailable. Selected topics don't have equivalent popularity.)")
-        } else if (selectedLabel.length > maxHighlightBubbles) {
-          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
-          threshhold = maxHighlightBubbles;
-          option_pauseSetting_msg.style("display", "none");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
-          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
-          threshhold = selectedLabel.length;
-          option_pauseSetting_msg.style("display", "none");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else {
+        if (selectedLabel.length < 2) {
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
-          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg
+            .text("(Pause function requires at least 2 topics to be selected.)")
+            .style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
+        } else if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_input").value = 2;
+          document.getElementById("option_pauseSetting_input").disabled = true;
+          threshhold = 2;
+          option_pauseSetting_msg
+            .style("display", "contents")
+            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
+          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
+          document.getElementById("option_pauseSetting_input").disabled = true;
+          threshhold = selectedLabel.length;
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+        } else if (maxHighlightBubbles == 2) {
+          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          document.getElementById("option_pauseSetting_input").disabled = true;
+          threshhold = maxHighlightBubbles;
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
+        } else {
+          document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
+          document.getElementById("option_pauseSetting_input").disabled = false;
+          threshhold = maxHighlightBubbles;
+          if (option_pauseSetting_msg.style("display") == "contents") {
+            option_pauseSetting_msg.style("display", "none");
+            document.getElementById("option_pauseSetting_content").style.display = "contents";
+          }
         }
       } else {
         d3.select("#showPast")
           .style("display", "none");
         document.getElementById("option_pauseSetting_input").value = 4;
+        document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
+        option_pauseSetting_msg.style("display", "none");
+        document.getElementById("option_pauseSetting_content").style.display = "contents";
       }
     }
 
@@ -2142,6 +2177,7 @@
         buttonClickedHandler();//pause
         paused = true;
         setTimeout(function () { buttonClickedHandler() }, timePause);
+        console.log("paused");
       }
 
       if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
