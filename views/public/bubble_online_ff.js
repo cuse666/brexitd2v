@@ -803,11 +803,67 @@
       .text("(Also try scroll up and down when hover on a bubble.)")
       .style("width", "150px");
 
+    function getMaxHighlightBubbles() {
+      let max_story_everyMonth = [];
+      let max_topic_everyMonth = [];
+      let totalMonth = dataArray[0].value.length;
+      let selectedLabel = getSelectedLabel();
+      if (selectedLabel.length) {
+        let selectedLabelDataArray;
+        selectedLabelDataArray = dataArray.filter((d) => getSelectedLabel().includes(d.label.substr(1)));
+        //以下两个for循环找到已选择话题各个月的max_story并push至max_story_everyMonth
+        for (let i = 0; i < totalMonth; i++) {
+          let tempArray = [];
+          for (let j = 0; j < selectedLabelDataArray.length; j++) {
+            tempArray.push(selectedLabelDataArray[j].value[i][3]);
+          }
+          max_story_everyMonth.push(Math.max(...tempArray));
+        }
+        //以下循环根据每个月的max_story找出当月level等于max_story的话题数量并push至max_topic_everyMonth(max_story=0时push显示在屏幕上的且被选择的话题数量)
+        for (let i = 0; i < totalMonth; i++) {
+          let counter = 0;
+          for (let j = 0; j < selectedLabelDataArray.length; j++) {
+            if (max_story_everyMonth[i] == 0) {
+              if (selectedLabelDataArray[j].value[i][1] >= 50 || selectedLabelDataArray[j].value[i][2] >= 500) {
+                counter = counter + 1;
+              }
+            } else {
+              if (selectedLabelDataArray[j].value[i][3] == max_story_everyMonth[i]) {
+                counter = counter + 1;
+              }
+            }
+          }
+          max_topic_everyMonth.push(counter);
+        }
+        return Math.max(...max_topic_everyMonth);
+      } else {
+        //以下两个for循环找到各个月的max_story并push至max_story_everyMonth
+        for (let i = 0; i < totalMonth; i++) {
+          let tempArray = [];
+          for (let j = 0; j < dataArray.length; j++) {
+            tempArray.push(dataArray[j].value[i][3]);
+          }
+          max_story_everyMonth.push(Math.max(...tempArray));
+        }
+        //以下循环根据每个月的max_story找出当月level等于max_story的话题数量并push至max_topic_everyMonth（max_story=0时将push 0）
+        for (let i = 0; i < totalMonth; i++) {
+          let counter = 0;
+          for (let j = 0; j < dataArray.length; j++) {
+            if (dataArray[j].value[i][3] != 0 && dataArray[j].value[i][3] == max_story_everyMonth[i]) {
+              counter = counter + 1;
+            }
+          }
+          max_topic_everyMonth.push(counter);
+        }
+        return Math.max(...max_topic_everyMonth);
+      }
+    }
+
     //暂停相关设置
     let option_pauseSetting = options.append("div");
     let enablePause = true;
     let threshhold = 4;
-    let maxHighlightBubbles = 7;
+    let maxHighlightBubbles = getMaxHighlightBubbles();
     option_pauseSetting.append("p")
       .text("Pause Setting: ")
       .style("font-weight", "bold");
@@ -837,7 +893,7 @@
       .attr("id", "option_pauseSetting_input")
       .attr("value", "4")
       .attr("min", "2")
-      .attr("max", "7")
+      .attr("max", `${maxHighlightBubbles}`)
       .attr("placeholder", "4(default)");
     function enablePauseCheckedHandler() {
       if (this.checked) {
@@ -855,12 +911,11 @@
       } else {
         threshhold = 4;
       }
-      console.log("123");
     }
     function threshholdInputHandler() {
       let inputNumber = Number(option_pauseSetting_input.property("value"));
       if (inputNumber > maxHighlightBubbles) {
-        document.getElementById("option_pauseSetting_input").value = 7;
+        document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
       }
     }
 
@@ -1235,6 +1290,8 @@
 
     function checkedHandler() {
       needUpdateMaxStory = true;
+      maxHighlightBubbles = getMaxHighlightBubbles();
+
       let selectedLabel = getSelectedLabel();
       let selectingLabel;
       let needHighlight;
@@ -1245,8 +1302,14 @@
         if (selectedLabel.length < 2) {
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
-          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg
+            .text("(Pause function requires at least 2 topics to be selected.)")
+            .style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
+        } else if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
+          document.getElementById("option_pauseSetting_content").style.display = "none";
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(Pause function unavailable. Selected topics don't have equivalent popularity.)")
         } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
           threshhold = selectedLabel.length;
@@ -1372,6 +1435,8 @@
       // let currentDate = dateScale.invert(currentTime);
       let selectedLabel = getSelectedLabel();
 
+      maxHighlightBubbles = getMaxHighlightBubbles()
+
       //**************************************************************************************************** */
       let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
       if (selectedLabel.length == 0) {
@@ -1425,11 +1490,14 @@
           cancelHightlightLevelLine(selectingLabel[index]);
         }
       }
-
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
-        if (selectedLabel.length > maxHighlightBubbles) {
+        if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
+          document.getElementById("option_pauseSetting_content").style.display = "none";
+          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.text("(Pause function unavailable. Selected topics don't have equivalent popularity.)")
+        } else if (selectedLabel.length > maxHighlightBubbles) {
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           threshhold = maxHighlightBubbles;
           option_pauseSetting_msg.style("display", "none");
@@ -1936,7 +2004,7 @@
       let selectedLabel = getSelectedLabel();
       for (d of dataset) {
         let [max_story] = getMaxStory(d.time);
-        if (selectedLabel.length && d.story >= max_story) {
+        if (selectedLabel.length && d.story >= max_story && (d.freq >= 500 || d.forward >= 50)) {
           highlight.push(d);
         } else if (max_story == d.story && max_story >= 1) {
           highlight.push(d);
@@ -2074,7 +2142,6 @@
         buttonClickedHandler();//pause
         paused = true;
         setTimeout(function () { buttonClickedHandler() }, timePause);
-        console.log("paused");
       }
 
       if (lastProperDate == null && highlight.length >= threshhold) {//获取首次暂停时间
