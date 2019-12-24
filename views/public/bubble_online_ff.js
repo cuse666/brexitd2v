@@ -1300,14 +1300,14 @@
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
-        if (selectedLabel.length < 2) {
+        if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
             .text("(Pause function requires at least 2 topics to be selected.)")
             .style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
-        } else if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
+        } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_content").style.display = "contents";
           document.getElementById("option_pauseSetting_input").value = 2;
           document.getElementById("option_pauseSetting_input").disabled = true;
@@ -1315,28 +1315,20 @@
           option_pauseSetting_msg
             .style("display", "contents")
             .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
-          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
-          document.getElementById("option_pauseSetting_input").disabled = true;
-          threshhold = selectedLabel.length;
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else if (maxHighlightBubbles == 2) {
+        } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
-          threshhold = maxHighlightBubbles;
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          threshhold = 2;
+          option_pauseSetting_msg
+            .style("display", "contents")
+            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else {
+        } else if (maxHighlightBubbles >= 2) {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
-          if (option_pauseSetting_msg.style("display") == "contents") {
-            option_pauseSetting_msg.style("display", "none");
-            document.getElementById("option_pauseSetting_content").style.display = "contents";
-          }
+          option_pauseSetting_msg.style("display", "none");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
         }
       } else {
         d3.select("#showPast")
@@ -1507,14 +1499,14 @@
       if (selectedLabel.length) {
         d3.select("#showPast")
           .style("display", "inline");
-        if (selectedLabel.length < 2) {
+        if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
             .text("(Pause function requires at least 2 topics to be selected.)")
             .style("display", "contents");
           document.getElementById("option_pauseSetting_content").style.display = "none";
-        } else if (selectedLabel.length >= 2 && maxHighlightBubbles == 1) {
+        } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_content").style.display = "contents";
           document.getElementById("option_pauseSetting_input").value = 2;
           document.getElementById("option_pauseSetting_input").disabled = true;
@@ -1522,28 +1514,20 @@
           option_pauseSetting_msg
             .style("display", "contents")
             .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-        } else if (2 <= selectedLabel.length && selectedLabel.length <= maxHighlightBubbles) {
-          document.getElementById("option_pauseSetting_input").value = selectedLabel.length;
-          document.getElementById("option_pauseSetting_input").disabled = true;
-          threshhold = selectedLabel.length;
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else if (maxHighlightBubbles == 2) {
+        } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
-          threshhold = maxHighlightBubbles;
-          option_pauseSetting_msg.style("display", "contents");
-          option_pauseSetting_msg.text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+          threshhold = 2;
+          option_pauseSetting_msg
+            .style("display", "contents")
+            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "contents";
-        } else {
+        } else if (maxHighlightBubbles >= 2) {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
-          if (option_pauseSetting_msg.style("display") == "contents") {
-            option_pauseSetting_msg.style("display", "none");
-            document.getElementById("option_pauseSetting_content").style.display = "contents";
-          }
+          option_pauseSetting_msg.style("display", "none");
+          document.getElementById("option_pauseSetting_content").style.display = "contents";
         }
       } else {
         d3.select("#showPast")
