@@ -870,7 +870,7 @@
     let option_pauseSetting_content = option_pauseSetting.append("div")
       .attr("id", "option_pauseSetting_content");
     let option_pauseSetting_msg = option_pauseSetting.append("p")
-      .html("(Pause function requires at least 2 topics to be selected.)")
+      .text("(Pause function requires at least 2 topics to be selected.)")
       .style("display", "none");
     let option_pauseSetting_enablePause = option_pauseSetting_content.append("input")
       .attr("type", "checkbox")
@@ -895,13 +895,19 @@
       .attr("min", "2")
       .attr("max", `${maxHighlightBubbles}`)
       .attr("step", 1)
-      .attr("placeholder", "4(default)");
+      .attr("placeholder", "4(default)")
+      .style("display", "block");
     function enablePauseCheckedHandler() {
+      let maxHighlightBubbles = getMaxHighlightBubbles();
       if (this.checked) {
         option_pauseSetting_threshhold.style("display", "contents");
+        if(maxHighlightBubbles<=2){
+          option_pauseSetting_msg.style("display", "contents");
+        }
         enablePause = true;
       } else {
         option_pauseSetting_threshhold.style("display", "none");
+        option_pauseSetting_msg.style("display", "none");
         enablePause = false;
       }
     }
