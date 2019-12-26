@@ -508,10 +508,11 @@
         .attr("width", width)
         .attr("style","display:flex; align-items:center;justify-content:center;")
         .style("font-size","20px")
-        .on("dblclick", changeText)
+        
       
       return textforeignObject.append("xhtml:div")
-        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;")
+        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
+        .on("dblclick", changeText)
         .attr("id", "mytext")
         .append("div")
         .text(tempText)
@@ -584,7 +585,7 @@
         if (currentDate.getDate() < 10) //在第8个位置插入一个0
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
-        TextandDate[dateString] = tempText
+        TextandDate[dateString + "-" + dateString] = tempText
         //排序操作
         var datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
@@ -613,32 +614,77 @@
 
       var datearr = Object.keys(TextandDate)
       for (let i = 0, len = datearr.length; i < len; i++) {
+        //时间-时间
+        //text
+        let datetext1 = textarea.append("div")
+                .style("display","inline")
+                .append("text")
+                // .on("dblclick",changeText)
+                // .on("mouseover",MouseOverText)
+                // .on("mouseout",MouseOutText)
+                .text(datearr[i].slice(0,10))
+
+        let datetext2 = textarea.append("div")
+                .style("display","inline")
+                .append("text")
+                .on("dblclick",changedate2)
+                .on("mouseover",MouseOverDate)
+                .on("mouseout",MouseOutDate)
+                .text(datearr[i].slice(10))
+
         textarea.append("div")
                 .style("display","block")
                 .append("text")
                 .on("dblclick",deleteText)
                 .on("mouseover",MouseOverText)
                 .on("mouseout",MouseOutText)
-                .text(datearr[i] + ": " + TextandDate[datearr[i]])
+                .text(TextandDate[datearr[i]])
+        textarea.append("hr") //分隔符
       }
 
-      var div = textarea.append("div")
-                        .attr("class", "tooltip")				
+      var div2 = textarea.append("div")
+                        .attr("class", "tooltip1")				
+                        .style("opacity", 0);
+      var div1 = textarea.append("div")
+                        .attr("class", "tooltip2")				
                         .style("opacity", 0);
 
       function MouseOutText(){
-        div.transition()		
+        div1.transition()		
             .duration(500)		
             .style("opacity", 0);	
       }
 
       function MouseOverText(){
-        div.transition()		
+        div1.transition()		
           .duration(200)		
           .style("opacity", .9);		
-        div.html("double click the text to delete it")	
+        div1.html("double click the text to delete it")	
           .style("left", (d3.event.pageX) + "px")		
           .style("top", (d3.event.pageY) + "px");
+      }
+
+      function MouseOverDate(){
+        div2.transition()		
+          .duration(200)		
+          .style("opacity", .9);		
+          div2.html("double click the date to change it")	
+          .style("left", (d3.event.pageX) + "px")		
+          .style("top", (d3.event.pageY) + "px");
+      }
+
+      function MouseOutDate(){
+        div2.transition()		
+        .duration(500)		
+        .style("opacity", 0);
+      }
+
+      function changedate1() {
+        
+      }
+
+      function changedate2(){
+
       }
 
       function deleteText(){
