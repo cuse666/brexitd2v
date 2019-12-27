@@ -618,6 +618,7 @@
         //text
         let datetext1 = textarea.append("div")
                 .style("display","inline")
+                .attr("id","dt1"+i)
                 .append("text")
                 // .on("dblclick",changeText)
                 // .on("mouseover",MouseOverText)
@@ -627,6 +628,7 @@
         let datetext2 = textarea.append("div")
                 .style("display","inline")
                 .append("text")
+                .attr("id","dt2"+i)
                 .on("dblclick",changedate2)
                 .on("mouseover",MouseOverDate)
                 .on("mouseout",MouseOutDate)
@@ -635,11 +637,13 @@
         textarea.append("div")
                 .style("display","block")
                 .append("text")
-                .on("dblclick",deleteText)
+                .attr("id","ta"+i)
+                .on("dblclick",()=>{deleteText(datearr[i],i)})
                 .on("mouseover",MouseOverText)
                 .on("mouseout",MouseOutText)
                 .text(TextandDate[datearr[i]])
         textarea.append("hr") //分隔符
+                .attr("id","hr"+i)
       }
 
       var div2 = textarea.append("div")
@@ -687,16 +691,20 @@
 
       }
 
-      function deleteText(){
-        div.style("opacity", 0);	
-        // console.log(this.innerText)
-        let date = this.innerText.slice(0,10);
-        // let content = this.innerText.slice(12);
-        // console.log(date)
-        // console.log(content)
-        delete TextandDate[date]
-        console.log(TextandDate)
-        this.remove() //删除这个dom元素
+      function deleteText(datestr,idx){
+        // console.log(datestr)
+        // console.log(idx)
+        div1.style("opacity", 0);	//悬浮框立刻消失
+
+        delete TextandDate[datestr] //删除数据
+        // console.log(TextandDate)
+
+        //删除对应的dom元素
+        d3.select("#dt1"+idx).remove()
+        d3.select("#dt2"+idx).remove()
+        d3.select("#ta"+idx).remove()
+        d3.select("#hr"+idx).remove()
+        // this.remove() //删除这个dom元素
       }
 
       // textsvg.append("text").text("sdfasdfa")
