@@ -623,16 +623,17 @@
                 // .on("dblclick",changeText)
                 // .on("mouseover",MouseOverText)
                 // .on("mouseout",MouseOutText)
-                .text(datearr[i].slice(0,10))
+                .text(datearr[i].slice(0,11))
 
         let datetext2 = textarea.append("div")
+                .style("position","relative")
+                .attr("id","dt2"+i)
                 .style("display","inline")
                 .append("text")
-                .attr("id","dt2"+i)
-                .on("dblclick",changedate2)
+                .on("dblclick",()=>{changedate2(datearr[i],i)})
                 .on("mouseover",MouseOverDate)
                 .on("mouseout",MouseOutDate)
-                .text(datearr[i].slice(10))
+                .text(datearr[i].slice(11))
 
         textarea.append("div")
                 .style("display","block")
@@ -683,11 +684,33 @@
         .style("opacity", 0);
       }
 
-      function changedate1() {
-        
-      }
+      function changedate2(datestr,idx){  
+        div2.style("opacity", 0);	//悬浮框立刻消失
+        let htmlstring = d3.select("#dt2"+idx)._groups[0][0].innerHTML
+        console.log(htmlstring)
+        d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
 
-      function changedate2(){
+        // let top = d3.select("#dt2"+idx)._groups[0][0].offsetTop
+        // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
+        // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
+        // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
+
+        d3.select("#dt2"+idx).append("div")
+                .style("position","absolute")
+                .style("left",0)
+                .style("top",0)
+                .append("input")
+                .attr("type", "date")
+                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8))
+
+        console.log()
+          
+        // textarea.append("div")
+        //         .attr("id", "input"+idx)
+        //         .attr("x", top)
+        //         .attr("y", left)
+        //         .attr("height", height)
+        //         .attr("width", width)
 
       }
 
