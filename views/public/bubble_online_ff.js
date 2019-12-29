@@ -630,6 +630,7 @@
                 .attr("id","dt2"+i)
                 .style("display","inline")
                 .append("text")
+                .attr("id","dttext2"+i)
                 .on("dblclick",()=>{changedate2(datearr[i],i)})
                 .on("mouseover",MouseOverDate)
                 .on("mouseout",MouseOutDate)
@@ -686,32 +687,54 @@
 
       function changedate2(datestr,idx){  
         div2.style("opacity", 0);	//悬浮框立刻消失
-        let htmlstring = d3.select("#dt2"+idx)._groups[0][0].innerHTML
-        console.log(htmlstring)
-        d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
+        let htmlstring = d3.select("#dttext2"+idx)._groups[0][0].innerHTML
+        // d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
 
         // let top = d3.select("#dt2"+idx)._groups[0][0].offsetTop
         // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
 
-        d3.select("#dt2"+idx).append("div")
+        let inputdate = d3.select("#dt2"+idx).append("div")
+                .attr("id","#dtdiv2"+idx) //div的id
                 .style("position","absolute")
                 .style("left",0)
                 .style("top",0)
                 .append("input")
+                .attr("id","#dtinput2"+idx) //div的id
                 .attr("type", "date")
-                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8))
+                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
+                .attr("min",htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10)) //最小值
+                .attr("max","2017-04-30") //指定最晚日期
+                .on("blur", inputdateBlur)
+        
+        document.getElementById("#dtinput2"+idx).focus()  //立马focus
 
-        console.log()
+        function inputdateBlur(){ //删除input框
+          document.getElementById("#dtinput2"+idx).remove() //删除输入框 
+          document.getElementById("#dtdiv2"+idx).remove()
+
+          let changestrformat = this.value.replace("-","/");  //改变样式
+          changestrformat = changestrformat.replace("-","/")
+
+          //目前为止: changestrformat包含着当前的输入日期；datestr 包含着是开始时间-结束时间； TextandDate是一个对象，key是"开始时间-结束时间",value是要显示的文本   datearr包含所有的key
+          //总的逻辑是这样：1、输入的时间不能小于当前开始时间，不得迟于总的结束时间和下一次的开始时间。
+          console.log(datestr)
+          console.log(TextandDate[datestr])
+          console.log(datearr)
           
-        // textarea.append("div")
-        //         .attr("id", "input"+idx)
-        //         .attr("x", top)
-        //         .attr("y", left)
-        //         .attr("height", height)
-        //         .attr("width", width)
+          let endDate = "2019/06/01"
+          if(changestrformat < datestr.slice(0,10)){  //输入的值比之前日期小
+            changestrformat = datestr.slice(0,10)
+            d3.select("#dttext2"+idx).text(datestr.slice(0,10))
+          }
+          // else if(){
 
+          // } 
+          // else if(){
+
+          // }
+        }
       }
 
       function deleteText(datestr,idx){
