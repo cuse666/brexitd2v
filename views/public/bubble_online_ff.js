@@ -705,7 +705,7 @@
                 .attr("type", "date")
                 .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
                 .attr("min",htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10)) //最小值
-                .attr("max","2017-04-30") //指定最晚日期
+                .attr("max","2019-05-30") //指定最晚日期
                 .on("blur", inputdateBlur)
         
         document.getElementById("#dtinput2"+idx).focus()  //立马focus
@@ -719,21 +719,48 @@
 
           //目前为止: changestrformat包含着当前的输入日期；datestr 包含着是开始时间-结束时间； TextandDate是一个对象，key是"开始时间-结束时间",value是要显示的文本   datearr包含所有的key
           //总的逻辑是这样：1、输入的时间不能小于当前开始时间，不得迟于总的结束时间和下一次的开始时间。
-          console.log(datestr)
-          console.log(TextandDate[datestr])
-          console.log(datearr)
+          // console.log(datestr)
+          // console.log(TextandDate[datestr])
+          // console.log(datearr)
           
-          let endDate = "2019/06/01"
+          let endDate = "2019/05/30"
+          let datearr = Object.keys(TextandDate)
+          let len = datearr.length
+          let pos = datearr.indexOf(datestr)
+
           if(changestrformat < datestr.slice(0,10)){  //输入的值比之前日期小
             changestrformat = datestr.slice(0,10)
             d3.select("#dttext2"+idx).text(datestr.slice(0,10))
+          }else if(pos===len-1){ //最后一个位置，那么就要控制它小于最大日期
+            if(changestrformat > endDate){
+              changestrformat = endDate
+            }
+            let tmp1 = datestr.slice(0,10) + "-" + changestrformat
+            let tmp2 = TextandDate[datestr]
+            delete TextandDate[datestr]
+            TextandDate[tmp1] = tmp2      //改变数组
+            d3.select("#dttext2"+idx).text(changestrformat)
+          }else{
+            let tmpmaxdate = Object.keys(TextandDate)[pos+1].slice(0,10)  //下一个位置的日期
+            if(changestrformat > tmpmaxdate){
+              changestrformat = tmpmaxdate
+            }
+            let tmp1 = datestr.slice(0,10) + "-" + changestrformat
+            let tmp2 = TextandDate[datestr]
+            delete TextandDate[datestr]
+            TextandDate[tmp1] = tmp2      //改变数组
+            d3.select("#dttext2"+idx).text(changestrformat)
           }
-          // else if(){
+          //排序操作
+          datearr = Object.keys(TextandDate).sort()
+          var tmpobj = {}
+          for (let i = 0, len = datearr.length; i < len; i++) {
+            tmpobj[datearr[i]] = TextandDate[datearr[i]]
+          }
+          TextandDate = tmpobj
 
-          // } 
-          // else if(){
-
-          // }
+          updateshowTextArea
+          console.log(TextandDate)
         }
       }
 
@@ -2364,7 +2391,7 @@
       }
     }
 
-    function findProperText(tmpYear) {
+    function findProperText(tmpYear) {  //返回在tmpYear时刻需要展示的字符串
       //dateString目前的时间
       let dateString = (tmpYear.getFullYear() + "/" + (tmpYear.getMonth() + 1) + "/" + tmpYear.getDate())
       if (tmpYear.getMonth() + 1 < 10) //在第5个位置增加一个 0 
@@ -2374,18 +2401,24 @@
 
       let len = Object.keys(TextandDate).length //长度
       if (len != 0) {  //找出区间
-        let showdateString, tmpdateString;
+        let tmpdateString;
         for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
           tmpdateString = Object.keys(TextandDate)[i]
-
-          if (tmpdateString < dateString) {
-            showdateString = tmpdateString //
-            continue;
-          } else {
-            break;
+          if(tmpdateString.slice(0,10) <= dateString && dateString < tmpdateString.slice(11)){
+            return TextandDate[tmpdateString]
           }
         }
-        return TextandDate[showdateString]
+        // for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
+        //   tmpdateString = Object.keys(TextandDate)[i]
+
+        //   if (tmpdateString < dateString) {
+        //     showdateString = tmpdateString //
+        //     continue;
+        //   } else {
+        //     break;
+        //   }
+        // }
+        // return TextandDate[showdateString]
       } else {
         return "double click to change the text at any time"
       }
