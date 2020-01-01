@@ -571,11 +571,11 @@
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
         if(this.value.length != 0)
           tempText = this.value
-
+        else  
+          tempText = ""
         d3.select("#myforeignObject").remove()  //删除输入框
 
-        myText = createText() //重新创建一个文本 框
-
+        myText = createText() //重新创建一个文本框
 
         let currentDate = dateScale.invert(getTime())
         //dateString 用于统一格式
@@ -590,7 +590,8 @@
         var datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
         for (let i = 0, len = datearr.length; i < len; i++) {
-          tmpobj[datearr[i]] = TextandDate[datearr[i]]
+          if(TextandDate[datearr[i]] != "") //删除空字符
+            tmpobj[datearr[i]] = TextandDate[datearr[i]]
         }
         TextandDate = tmpobj
 
@@ -711,6 +712,8 @@
         document.getElementById("#dtinput2"+idx).focus()  //立马focus
 
         function inputdateBlur(){ //删除input框
+          // console.log(TextandDate)
+          // console.log(this.value)
           document.getElementById("#dtinput2"+idx).remove() //删除输入框 
           document.getElementById("#dtdiv2"+idx).remove()
 
@@ -727,6 +730,11 @@
           let datearr = Object.keys(TextandDate)
           let len = datearr.length
           let pos = datearr.indexOf(datestr)
+
+          // console.log(datestr)
+          // console.log(pos)
+          // console.log(changestrformat)
+          console.log(changestrformat ,datestr.slice(0,10))
 
           if(changestrformat < datestr.slice(0,10)){  //输入的值比之前日期小
             changestrformat = datestr.slice(0,10)
@@ -747,6 +755,8 @@
             }
             let tmp1 = datestr.slice(0,10) + "-" + changestrformat
             let tmp2 = TextandDate[datestr]
+            // console.log(datestr)
+            // console.log(tmp1)
             delete TextandDate[datestr]
             TextandDate[tmp1] = tmp2      //改变数组
             d3.select("#dttext2"+idx).text(changestrformat)
@@ -759,7 +769,7 @@
           }
           TextandDate = tmpobj
 
-          updateshowTextArea
+          updateshowTextArea()
           console.log(TextandDate)
         }
       }
@@ -2404,7 +2414,7 @@
         let tmpdateString;
         for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
           tmpdateString = Object.keys(TextandDate)[i]
-          if(tmpdateString.slice(0,10) <= dateString && dateString < tmpdateString.slice(11)){
+          if(tmpdateString.slice(0,10) <= dateString && dateString <= tmpdateString.slice(11)){
             return TextandDate[tmpdateString]
           }
         }
