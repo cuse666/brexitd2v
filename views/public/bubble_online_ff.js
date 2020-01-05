@@ -586,14 +586,33 @@
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
         TextandDate[dateString + "-" + dateString] = tempText
-        //排序操作
+
         var datearr = Object.keys(TextandDate).sort()
+
+        //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
+        //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
+        let tmpstr = dateString+"-"+dateString
+        let idx = datearr.indexOf(tmpstr)
+        if( idx != 0 ){  //如果插入的日期在第一个，不进行操作
+          let prestr = datearr[idx-1]
+          if(prestr.slice(11) > dateString){
+            console.log("here")
+            let sentence = TextandDate[prestr]
+            delete TextandDate[prestr]
+            TextandDate[prestr.slice(0,11)+dateString] = sentence
+          }
+        }
+
+        //排序操作
+        datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
         for (let i = 0, len = datearr.length; i < len; i++) {
           if(TextandDate[datearr[i]] != "") //删除空字符
             tmpobj[datearr[i]] = TextandDate[datearr[i]]
         }
         TextandDate = tmpobj
+
+        
 
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
@@ -734,7 +753,7 @@
           // console.log(datestr)
           // console.log(pos)
           // console.log(changestrformat)
-          console.log(changestrformat ,datestr.slice(0,10))
+          // console.log(changestrformat ,datestr.slice(0,10))
 
           if(changestrformat < datestr.slice(0,10)){  //输入的值比之前日期小
             changestrformat = datestr.slice(0,10)
