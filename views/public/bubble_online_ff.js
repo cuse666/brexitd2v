@@ -569,9 +569,11 @@
       }
 
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
+        if(this.value.trim().length === 0)
+          this.value = ""
         if(this.value.length != 0)
           tempText = this.value
-        else  
+        else
           tempText = ""
         d3.select("#myforeignObject").remove()  //删除输入框
 
@@ -725,7 +727,7 @@
                 .attr("type", "date")
                 .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
                 .attr("min",htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10)) //最小值
-                .attr("max","2019-05-30") //指定最晚日期
+                // .attr("max","2019-05-30") //指定最晚日期
                 .on("blur", inputdateBlur)
         
         document.getElementById("#dtinput2"+idx).focus()  //立马focus
