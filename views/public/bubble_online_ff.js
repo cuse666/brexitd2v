@@ -494,7 +494,7 @@
       .attr("opacity", 0.1)
 
     //.attr("width", `${slider.attr("width")}px`)
-    let tempText = "double click to change the text at any time"
+    let tempText = "double click to change the text"
 
     function createText() {
       var textforeignObject = svg.append("foreignObject")
@@ -571,13 +571,11 @@
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
         if(this.value.trim().length === 0)
           this.value = ""
+
         if(this.value.length != 0)
           tempText = this.value
         else
           tempText = ""
-        d3.select("#myforeignObject").remove()  //删除输入框
-
-        myText = createText() //重新创建一个文本框
 
         let currentDate = dateScale.invert(getTime())
         //dateString 用于统一格式
@@ -587,35 +585,54 @@
         if (currentDate.getDate() < 10) //在第8个位置插入一个0
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
-        TextandDate[dateString + "-" + dateString] = tempText
-
-        var datearr = Object.keys(TextandDate).sort()
-
-        //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
-        //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
-        let tmpstr = dateString+"-"+dateString
-        let idx = datearr.indexOf(tmpstr)
-        if( idx != 0 ){  //如果插入的日期在第一个，不进行操作
-          let prestr = datearr[idx-1]
-          if(prestr.slice(11) > dateString){
-            console.log("here")
-            let sentence = TextandDate[prestr]
-            delete TextandDate[prestr]
-            TextandDate[prestr.slice(0,11)+dateString] = sentence
+        //如果此dateString在TextandDate的keys中的区间中，那么执行修改操作，而不是新增一个
+        let change = false;
+        var datearr = Object.keys(TextandDate)
+        for(let i=0;i<datearr.length;i++){
+          if(datearr[i].slice(0,10)<=dateString && dateString<=datearr[i].slice(11)){
+            change = true;
+            if(tempText.length != 0)
+              TextandDate[datearr[i]] = tempText;
+            else{ //如果输入为空，不改变数据
+              tempText = TextandDate[datearr[i]] 
+            }
+            break;
           }
         }
 
-        //排序操作
-        datearr = Object.keys(TextandDate).sort()
-        var tmpobj = {}
-        for (let i = 0, len = datearr.length; i < len; i++) {
-          if(TextandDate[datearr[i]] != "") //删除空字符
-            tmpobj[datearr[i]] = TextandDate[datearr[i]]
-        }
-        TextandDate = tmpobj
-
         
+        d3.select("#myforeignObject").remove()  //删除输入框
+        myText = createText() //重新创建一个文本框
 
+        if(change === false){
+          TextandDate[dateString + "-" + dateString] = tempText
+
+          // var datearr = Object.keys(TextandDate).sort()
+  
+          // //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
+          // //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
+          // let tmpstr = dateString+"-"+dateString
+          // let idx = datearr.indexOf(tmpstr)
+          // if( idx != 0 ){  //如果插入的日期在第一个，不进行操作
+          //   let prestr = datearr[idx-1]
+          //   if(prestr.slice(11) > dateString){
+          //     console.log("here")
+          //     let sentence = TextandDate[prestr]
+          //     delete TextandDate[prestr]
+          //     TextandDate[prestr.slice(0,11)+dateString] = sentence
+          //   }
+          // }
+  
+          //排序操作
+          datearr = Object.keys(TextandDate).sort()
+          var tmpobj = {}
+          for (let i = 0, len = datearr.length; i < len; i++) {
+            if(TextandDate[datearr[i]] != "") //删除空字符
+              tmpobj[datearr[i]] = TextandDate[datearr[i]]
+          }
+          TextandDate = tmpobj
+        }
+        
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
@@ -716,6 +733,7 @@
         // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
+        let begindatehtmlstring = d3.select("#dt1"+idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
 
         let inputdate = d3.select("#dt2"+idx).append("div")
                 .attr("id","#dtdiv2"+idx) //div的id
@@ -725,9 +743,10 @@
                 .append("input")
                 .attr("id","#dtinput2"+idx) //div的id
                 .attr("type", "date")
+                .attr("data-date-format","DD-MMMM-YYYY")
                 .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
-                .attr("min",htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10)) //最小值
-                // .attr("max","2019-05-30") //指定最晚日期
+                .attr("min",begindatehtmlstring.slice(0,4)+"-"+begindatehtmlstring.slice(5,7)+"-"+begindatehtmlstring.slice(8,10)) //最小值
+                .attr("max","2019-05-30") //指定最晚日期
                 .on("blur", inputdateBlur)
         
         document.getElementById("#dtinput2"+idx).focus()  //立马focus
@@ -2718,7 +2737,7 @@
         // }
         // return TextandDate[showdateString]
       } else {
-        return "double click to change the text at any time"
+        return "double click to change the text"
       }
     }
 
