@@ -536,7 +536,10 @@
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
         .attr("maxlength",160)
+        // .attr("value",tempText)
         .attr("placeholder", "max length: 160")
+        // .attr("placeholder",tempText)
+        // .attr("value","asdfadsf")
         .attr("style", "font-size:20px;height:50px;width:1045px;resize:none;")
         .style("text-align","center")
         .style("vertical-align","midddle")
@@ -544,8 +547,10 @@
         .on("focus", inputFocus)
         .on("input", inputContent)
       // .on("keypress",logKey)
-
+      
       let myInput = document.getElementById("tt");
+      if(tempText)
+        myInput.value = tempText  //初始值
       myInput.focus()       //创建input后，立刻聚焦
       myInput.onkeydown = function (event) {
         if (event.keyCode === 13) {
@@ -743,7 +748,9 @@
                 .append("input")
                 .attr("id","#dtinput2"+idx) //div的id
                 .attr("type", "date")
-                .attr("data-date-format","DD-MMMM-YYYY")
+                .attr("date-date-format","YYYY-MM-DD")
+                // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
+                // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
                 .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
                 .attr("min",begindatehtmlstring.slice(0,4)+"-"+begindatehtmlstring.slice(5,7)+"-"+begindatehtmlstring.slice(8,10)) //最小值
                 .attr("max","2019-05-30") //指定最晚日期
@@ -1793,9 +1800,9 @@
       }
       //console.log(earliestTime) //输出百分比
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      // let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
       currentTime = earliestTime * totalTime
-      let endTime = latestTime * totalTime - offset
+      let endTime = latestTime * totalTime //- offset
       // console.log(currentTime) //乘以总时间
 
       limitDate = dateScale.invert(endTime);  //结束时间
@@ -1806,7 +1813,8 @@
       // endDate = limitDate
 
       updateVideoAnchor(currentDate)
-      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()) 没有问题
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
       setTime(currentTime)
 
       updateMask(selectedLabel);
@@ -1874,9 +1882,9 @@
       }
       //console.log(earliestTime) //输出百分比
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      //let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
       currentTime = earliestTime * totalTime
-      let endTime = latestTime * totalTime - offset
+      let endTime = latestTime * totalTime //- offset
       // console.log(currentTime) //乘以总时间
 
       limitDate = dateScale.invert(endTime);  //结束时间
@@ -1887,7 +1895,8 @@
       // endDate = limitDate
 
       updateVideoAnchor(currentDate)
-      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()) 没有问题
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
       setTime(currentTime)
       //**************************************************************************************************** */
       updateMask(selectedLabel);
@@ -1992,15 +2001,16 @@
           if (selectedLabel.length != 0) {
             let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
 
-            let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+            // let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
             currentTime = earliestTime * totalTime
-            let endTime = latestTime * totalTime - offset
+            let endTime = latestTime * totalTime //- offset
 
             limitDate = dateScale.invert(endTime);  //结束时间
             let currentDate = dateScale.invert(currentTime);
 
             updateVideoAnchor(currentDate)
-            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+            // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
+            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
             setTime(currentTime)
 
             buttonPlay = !buttonPlay;
@@ -2419,6 +2429,7 @@
             }
 
             dateTime = monthScale(new_t);
+            // console.log(dateTime)
             tweenYear(dateTime);
 
             //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
@@ -2433,18 +2444,22 @@
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-
+      console.log(timeTodo)
+      console.log(d3.easeLinear(timeTodo))
       svg
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .tween("time", () => {
           return function (t) {
+            console.log(t)
+            console.log(dateScale.invert(getTime()))
             var month = d3.interpolateDate(
               //dateScale.invert(totalTime - timeTodo),              
               dateScale.invert(getTime()),
               endDate
             );
+            console.log(t)
             tweenYear(month(t));
           };
         });
@@ -2686,7 +2701,8 @@
         verticalText.data(dataset).call(verTextPosition);
         textPosition(dataset);
         if (year_month_date <= limitDate) {
-          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
+          console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
+          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
         }
         else {
           isAnimationFinished = true;
