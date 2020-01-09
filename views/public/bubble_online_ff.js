@@ -508,13 +508,15 @@
         .attr("width", width)
         .attr("style","display:flex; align-items:center;justify-content:center;")
         .style("font-size","20px")
+        .on("dblclick", changeText)
         
       
       return textforeignObject.append("xhtml:div")
         .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
-        .on("dblclick", changeText)
-        .attr("id", "mytext")
+        // .on("dblclick", changeText)
+        // .attr("id", "mytext")
         .append("div")
+        .attr("id", "mytext")
         .text(tempText)
     }
 
@@ -558,18 +560,7 @@
         }
       }
 
-      // function logKey(){
-      //   // console.log(d3.event)
-      //   if (d3.event.keyCode === 13 || d3.event.keyCode === 100) {
-      //       console.log(this.value)
-      //     }
-      // }
-
       function inputContent() {
-        // if(this.value.length > 160){ //超过160输出
-        //   alert("The max length is 160")
-        //   myInput.blur()
-        // }
         textArea.text(this.value)
       }
 
@@ -604,29 +595,12 @@
             break;
           }
         }
-
         
         d3.select("#myforeignObject").remove()  //删除输入框
         myText = createText() //重新创建一个文本框
 
         if(change === false){
           TextandDate[dateString + "-" + dateString] = tempText
-
-          // var datearr = Object.keys(TextandDate).sort()
-  
-          // //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
-          // //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
-          // let tmpstr = dateString+"-"+dateString
-          // let idx = datearr.indexOf(tmpstr)
-          // if( idx != 0 ){  //如果插入的日期在第一个，不进行操作
-          //   let prestr = datearr[idx-1]
-          //   if(prestr.slice(11) > dateString){
-          //     console.log("here")
-          //     let sentence = TextandDate[prestr]
-          //     delete TextandDate[prestr]
-          //     TextandDate[prestr.slice(0,11)+dateString] = sentence
-          //   }
-          // }
   
           //排序操作
           datearr = Object.keys(TextandDate).sort()
@@ -849,7 +823,7 @@
           clearTimeout(timeout)
         }
       }
-      d3.select("#mytext").remove() //删除文字，添加文本框
+      // d3.select("#mytext").remove() //删除文字，添加文本框
       d3.select("#mytextforeignObject").remove() //删除文字，添加文本框\
       let textArea = createInput()  //创建一个输入框。输入结束后的处理也在这个函数里面
     }
@@ -2701,7 +2675,7 @@
         verticalText.data(dataset).call(verTextPosition);
         textPosition(dataset);
         if (year_month_date <= limitDate) {
-          console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
+          // console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
           monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
         }
         else {
@@ -2716,10 +2690,8 @@
         updateText(tmpYear)
         lastProperDate = proper_date;
         
-        d3.select("#mytext").remove() //删除文字，添加文本框
-        d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
-        myText = createText()     //初始创建一个文本
+        document.getElementById("mytext").innerText = (tempText ? tempText : "")
         
       }
     }
