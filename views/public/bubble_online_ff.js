@@ -26,44 +26,6 @@
     .text("Advanced Setting")
     .style("font-family", "Helvetica");
 
-  let option_showPast = options.append("div");
-
-  let option_showPast_input = option_showPast.append("input")
-    .attr("type", "checkbox")
-    .attr("class", "squared")
-    .attr("id", "showPast_input");
-
-  option_showPast.append("label")
-    .html("Show Past")
-    .attr("for", "showPast_input")
-    .attr("id", "showPast")
-    .style("font-family", "Helvetica")
-    .style("margin-left", "15px")
-    .style("display", "none");
-
-  let option_fontSize = options.append("div");
-  option_fontSize.append("p")
-    .text("Reset Font Size: ")
-    .style("font-weight", "bold");
-  let option_fontSize_input = option_fontSize.append("input")
-    .attr("type", "number")
-    .attr("id", "option_fontSize")
-    .attr("min", 0)
-    .attr("max", 40)
-    .attr("value", 20)
-    .attr("placeholder", "20(default)");
-  option_fontSize.append("p")
-    .style("display", "inline")
-    .text(" px");
-  let option_fontSize_button = option_fontSize.append("input")
-    .attr("type", "button")
-    .attr("value", "Apply")
-    .style("display", "block")
-    .style("margin-top", "10px");
-  option_fontSize.append("p")
-    .text("(Also try scroll up and down when hover on a bubble.)")
-    .style("width", "150px");
-
   // scale
   var y = d3
     .scaleLinear()
@@ -317,7 +279,7 @@
     .attr("class", "anchor-text")
     .text("2016/1")
     .attr("x", margin.left - 20)
-    .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 +25 - 10)
+    .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 + 25 - 10)
     .attr("font-size", 15)
     .attr("fill", "black")
     .attr("opacity", "0")
@@ -506,12 +468,12 @@
         )
         .attr("height", textHeight)
         .attr("width", width)
-        .attr("style","display:flex; align-items:center;justify-content:center;")
-        .style("font-size","20px")
-        
-      
+        .attr("style", "display:flex; align-items:center;justify-content:center;")
+        .style("font-size", "20px")
+
+
       return textforeignObject.append("xhtml:div")
-        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
+        .attr("style", "width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
         .on("dblclick", changeText)
         .attr("id", "mytext")
         .append("div")
@@ -535,11 +497,11 @@
 
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
-        .attr("maxlength",160)
+        .attr("maxlength", 160)
         .attr("placeholder", "max length: 160")
         .attr("style", "font-size:20px;height:50px;width:1045px;resize:none;")
-        .style("text-align","center")
-        .style("vertical-align","midddle")
+        .style("text-align", "center")
+        .style("vertical-align", "midddle")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
@@ -569,9 +531,9 @@
       }
 
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
-        if(this.value.trim().length === 0)
+        if (this.value.trim().length === 0)
           this.value = ""
-        if(this.value.length != 0)
+        if (this.value.length != 0)
           tempText = this.value
         else
           tempText = ""
@@ -593,15 +555,15 @@
 
         //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
         //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
-        let tmpstr = dateString+"-"+dateString
+        let tmpstr = dateString + "-" + dateString
         let idx = datearr.indexOf(tmpstr)
-        if( idx != 0 ){  //如果插入的日期在第一个，不进行操作
-          let prestr = datearr[idx-1]
-          if(prestr.slice(11) > dateString){
+        if (idx != 0) {  //如果插入的日期在第一个，不进行操作
+          let prestr = datearr[idx - 1]
+          if (prestr.slice(11) > dateString) {
             console.log("here")
             let sentence = TextandDate[prestr]
             delete TextandDate[prestr]
-            TextandDate[prestr.slice(0,11)+dateString] = sentence
+            TextandDate[prestr.slice(0, 11) + dateString] = sentence
           }
         }
 
@@ -609,12 +571,12 @@
         datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
         for (let i = 0, len = datearr.length; i < len; i++) {
-          if(TextandDate[datearr[i]] != "") //删除空字符
+          if (TextandDate[datearr[i]] != "") //删除空字符
             tmpobj[datearr[i]] = TextandDate[datearr[i]]
         }
         TextandDate = tmpobj
 
-        
+
 
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
@@ -629,87 +591,87 @@
     function updateshowTextArea() {   //删除之前所有的文字，再加入现在的文本信息
       let showTextArea = d3.select("#showTextArea") //选中这个区域
 
-      if(document.getElementById("oldTextArea") != null)
+      if (document.getElementById("oldTextArea") != null)
         document.getElementById("oldTextArea").remove()
 
-      let textarea = showTextArea.append("div").attr("id","oldTextArea")
+      let textarea = showTextArea.append("div").attr("id", "oldTextArea")
 
       var datearr = Object.keys(TextandDate)
       for (let i = 0, len = datearr.length; i < len; i++) {
         //时间-时间
         //text
         let datetext1 = textarea.append("div")
-                .style("display","inline")
-                .attr("id","dt1"+i)
-                .append("text")
-                // .on("dblclick",changeText)
-                // .on("mouseover",MouseOverText)
-                // .on("mouseout",MouseOutText)
-                .text(datearr[i].slice(0,11))
+          .style("display", "inline")
+          .attr("id", "dt1" + i)
+          .append("text")
+          // .on("dblclick",changeText)
+          // .on("mouseover",MouseOverText)
+          // .on("mouseout",MouseOutText)
+          .text(datearr[i].slice(0, 11))
 
         let datetext2 = textarea.append("div")
-                .style("position","relative")
-                .attr("id","dt2"+i)
-                .style("display","inline")
-                .append("text")
-                .attr("id","dttext2"+i)
-                .on("dblclick",()=>{changedate2(datearr[i],i)})
-                .on("mouseover",MouseOverDate)
-                .on("mouseout",MouseOutDate)
-                .text(datearr[i].slice(11))
+          .style("position", "relative")
+          .attr("id", "dt2" + i)
+          .style("display", "inline")
+          .append("text")
+          .attr("id", "dttext2" + i)
+          .on("dblclick", () => { changedate2(datearr[i], i) })
+          .on("mouseover", MouseOverDate)
+          .on("mouseout", MouseOutDate)
+          .text(datearr[i].slice(11))
 
         textarea.append("div")
-                .style("display","block")
-                .append("text")
-                .attr("id","ta"+i)
-                .on("dblclick",()=>{deleteText(datearr[i],i)})
-                .on("mouseover",MouseOverText)
-                .on("mouseout",MouseOutText)
-                .text(TextandDate[datearr[i]])
+          .style("display", "block")
+          .append("text")
+          .attr("id", "ta" + i)
+          .on("dblclick", () => { deleteText(datearr[i], i) })
+          .on("mouseover", MouseOverText)
+          .on("mouseout", MouseOutText)
+          .text(TextandDate[datearr[i]])
         textarea.append("hr") //分隔符
-                .attr("id","hr"+i)
+          .attr("id", "hr" + i)
       }
 
       var div2 = textarea.append("div")
-                        .attr("class", "tooltip1")				
-                        .style("opacity", 0);
-      var div1 = textarea.append("div")
-                        .attr("class", "tooltip2")				
-                        .style("opacity", 0);
-
-      function MouseOutText(){
-        div1.transition()		
-            .duration(500)		
-            .style("opacity", 0);	
-      }
-
-      function MouseOverText(){
-        div1.transition()		
-          .duration(200)		
-          .style("opacity", .9);		
-        div1.html("double click the text to delete it")	
-          .style("left", (d3.event.pageX) + "px")		
-          .style("top", (d3.event.pageY) + "px");
-      }
-
-      function MouseOverDate(){
-        div2.transition()		
-          .duration(200)		
-          .style("opacity", .9);		
-          div2.html("double click the date to change it")	
-          .style("left", (d3.event.pageX) + "px")		
-          .style("top", (d3.event.pageY) + "px");
-      }
-
-      function MouseOutDate(){
-        div2.transition()		
-        .duration(500)		
+        .attr("class", "tooltip1")
         .style("opacity", 0);
+      var div1 = textarea.append("div")
+        .attr("class", "tooltip2")
+        .style("opacity", 0);
+
+      function MouseOutText() {
+        div1.transition()
+          .duration(500)
+          .style("opacity", 0);
       }
 
-      function changedate2(datestr,idx){  
+      function MouseOverText() {
+        div1.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div1.html("double click the text to delete it")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      }
+
+      function MouseOverDate() {
+        div2.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div2.html("double click the date to change it")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      }
+
+      function MouseOutDate() {
+        div2.transition()
+          .duration(500)
+          .style("opacity", 0);
+      }
+
+      function changedate2(datestr, idx) {
         div2.style("opacity", 0);	//悬浮框立刻消失
-        let htmlstring = d3.select("#dttext2"+idx)._groups[0][0].innerHTML
+        let htmlstring = d3.select("#dttext2" + idx)._groups[0][0].innerHTML
         // d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
 
         // let top = d3.select("#dt2"+idx)._groups[0][0].offsetTop
@@ -717,36 +679,36 @@
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
 
-        let inputdate = d3.select("#dt2"+idx).append("div")
-                .attr("id","#dtdiv2"+idx) //div的id
-                .style("position","absolute")
-                .style("left",0)
-                .style("top",0)
-                .append("input")
-                .attr("id","#dtinput2"+idx) //div的id
-                .attr("type", "date")
-                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
-                .attr("min",htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10)) //最小值
-                // .attr("max","2019-05-30") //指定最晚日期
-                .on("blur", inputdateBlur)
-        
-        document.getElementById("#dtinput2"+idx).focus()  //立马focus
+        let inputdate = d3.select("#dt2" + idx).append("div")
+          .attr("id", "#dtdiv2" + idx) //div的id
+          .style("position", "absolute")
+          .style("left", 0)
+          .style("top", 0)
+          .append("input")
+          .attr("id", "#dtinput2" + idx) //div的id
+          .attr("type", "date")
+          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
+          .attr("min", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10)) //最小值
+          // .attr("max","2019-05-30") //指定最晚日期
+          .on("blur", inputdateBlur)
 
-        function inputdateBlur(){ //删除input框
+        document.getElementById("#dtinput2" + idx).focus()  //立马focus
+
+        function inputdateBlur() { //删除input框
           // console.log(TextandDate)
           // console.log(this.value)
-          document.getElementById("#dtinput2"+idx).remove() //删除输入框 
-          document.getElementById("#dtdiv2"+idx).remove()
+          document.getElementById("#dtinput2" + idx).remove() //删除输入框 
+          document.getElementById("#dtdiv2" + idx).remove()
 
-          let changestrformat = this.value.replace("-","/");  //改变样式
-          changestrformat = changestrformat.replace("-","/")
+          let changestrformat = this.value.replace("-", "/");  //改变样式
+          changestrformat = changestrformat.replace("-", "/")
 
           //目前为止: changestrformat包含着当前的输入日期；datestr 包含着是开始时间-结束时间； TextandDate是一个对象，key是"开始时间-结束时间",value是要显示的文本   datearr包含所有的key
           //总的逻辑是这样：1、输入的时间不能小于当前开始时间，不得迟于总的结束时间和下一次的开始时间。
           // console.log(datestr)
           // console.log(TextandDate[datestr])
           // console.log(datearr)
-          
+
           let endDate = "2019/05/30"
           let datearr = Object.keys(TextandDate)
           let len = datearr.length
@@ -757,30 +719,30 @@
           // console.log(changestrformat)
           // console.log(changestrformat ,datestr.slice(0,10))
 
-          if(changestrformat < datestr.slice(0,10)){  //输入的值比之前日期小
-            changestrformat = datestr.slice(0,10)
-            d3.select("#dttext2"+idx).text(datestr.slice(0,10))
-          }else if(pos===len-1){ //最后一个位置，那么就要控制它小于最大日期
-            if(changestrformat > endDate){
+          if (changestrformat < datestr.slice(0, 10)) {  //输入的值比之前日期小
+            changestrformat = datestr.slice(0, 10)
+            d3.select("#dttext2" + idx).text(datestr.slice(0, 10))
+          } else if (pos === len - 1) { //最后一个位置，那么就要控制它小于最大日期
+            if (changestrformat > endDate) {
               changestrformat = endDate
             }
-            let tmp1 = datestr.slice(0,10) + "-" + changestrformat
+            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
             let tmp2 = TextandDate[datestr]
             delete TextandDate[datestr]
             TextandDate[tmp1] = tmp2      //改变数组
-            d3.select("#dttext2"+idx).text(changestrformat)
-          }else{
-            let tmpmaxdate = Object.keys(TextandDate)[pos+1].slice(0,10)  //下一个位置的日期
-            if(changestrformat > tmpmaxdate){
+            d3.select("#dttext2" + idx).text(changestrformat)
+          } else {
+            let tmpmaxdate = Object.keys(TextandDate)[pos + 1].slice(0, 10)  //下一个位置的日期
+            if (changestrformat > tmpmaxdate) {
               changestrformat = tmpmaxdate
             }
-            let tmp1 = datestr.slice(0,10) + "-" + changestrformat
+            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
             let tmp2 = TextandDate[datestr]
             // console.log(datestr)
             // console.log(tmp1)
             delete TextandDate[datestr]
             TextandDate[tmp1] = tmp2      //改变数组
-            d3.select("#dttext2"+idx).text(changestrformat)
+            d3.select("#dttext2" + idx).text(changestrformat)
           }
           //排序操作
           datearr = Object.keys(TextandDate).sort()
@@ -795,7 +757,7 @@
         }
       }
 
-      function deleteText(datestr,idx){
+      function deleteText(datestr, idx) {
         // console.log(datestr)
         // console.log(idx)
         div1.style("opacity", 0);	//悬浮框立刻消失
@@ -804,10 +766,10 @@
         // console.log(TextandDate)
 
         //删除对应的dom元素
-        d3.select("#dt1"+idx).remove()
-        d3.select("#dt2"+idx).remove()
-        d3.select("#ta"+idx).remove()
-        d3.select("#hr"+idx).remove()
+        d3.select("#dt1" + idx).remove()
+        d3.select("#dt2" + idx).remove()
+        d3.select("#ta" + idx).remove()
+        d3.select("#hr" + idx).remove()
         // this.remove() //删除这个dom元素
       }
 
@@ -1164,18 +1126,20 @@
       .style("display", "none");
 
     //显示气泡路径开关
-    let option_showPast = options.append("div");
+    let option_showPast = options.append("div")
+      .style("display", "none");
+    option_showPast.append('p')
+      .text("Show bubble path: ")
+      .style("font-weight", "bold");
     let option_showPast_input = option_showPast.append("input")
       .attr("type", "checkbox")
       .attr("class", "squared")
       .attr("id", "showPast_input");
     option_showPast.append("label")
-      .html("Show Past")
+      .html("Enable")
       .attr("for", "showPast_input")
       .attr("id", "showPast")
-      .style("font-family", "Helvetica")
-      .style("margin-left", "15px")
-      .style("display", "none");
+      .style("font-family", "Helvetica");
 
     //调整字体大小功能
     let option_fontSize = options.append("div");
@@ -1299,7 +1263,7 @@
       let maxHighlightBubbles = getMaxHighlightBubbles();
       if (this.checked) {
         option_pauseSetting_threshhold.style("display", "contents");
-        if(maxHighlightBubbles<=2){
+        if (maxHighlightBubbles <= 2) {
           option_pauseSetting_msg.style("display", "contents");
         }
         enablePause = true;
@@ -1311,7 +1275,10 @@
     }
     function threshholdChangedHandler() {
       let inputNumber = Number(option_pauseSetting_input.property("value"));
-      if (inputNumber > 0) {
+      if (inputNumber < 2) {
+        document.getElementById("option_pauseSetting_input").value = 2;
+        threshhold = 2;
+      } else if (inputNumber >= 2) {
         threshhold = option_pauseSetting_input.property("value");
       } else {
         threshhold = 4;
@@ -1702,8 +1669,12 @@
       let needHighlight;
 
       if (selectedLabel.length) {
-        d3.select("#showPast")
-          .style("display", "inline");
+        //选择话题时显示展示路径勾选项
+        option_showPast.style("display", "inline");
+
+        //选择话题时隐藏Highlight Colored Bubbles选项
+        option_highlightColoredBubbles.style('display', 'none');
+
         if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
@@ -1735,8 +1706,12 @@
           document.getElementById("option_pauseSetting_content").style.display = "contents";
         }
       } else {
-        d3.select("#showPast")
-          .style("display", "none");
+        //没有选择任何话题时隐藏展示路劲设置
+        option_showPast.style("display", "none");
+
+        //没有选择任何话题时展示Highlight Colored Bubbles选项
+        option_highlightColoredBubbles.style('display', 'inline');
+
         document.getElementById("option_pauseSetting_input").value = 4;
         document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
@@ -1901,8 +1876,12 @@
         }
       }
       if (selectedLabel.length) {
-        d3.select("#showPast")
-          .style("display", "inline");
+        //有话题被选择时显示展示路径选项
+        option_showPast.style("display", "inline");
+
+        //有话题被选择时隐藏Highlight Colored Bubbles选项
+        option_highlightColoredBubbles.style('display', 'none');
+
         if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
@@ -1934,8 +1913,12 @@
           document.getElementById("option_pauseSetting_content").style.display = "contents";
         }
       } else {
-        d3.select("#showPast")
-          .style("display", "none");
+        //没有任何话题被选择时隐藏展示路劲选项
+        option_showPast.style("display", "none");
+
+        //没有任何话题被选择时显示Highlight Colored Bubbles选项
+        option_highlightColoredBubbles.style('display', 'inline');
+
         document.getElementById("option_pauseSetting_input").value = 4;
         document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
@@ -2188,6 +2171,7 @@
     }
 
     function mouseWheelHandler() {
+      d3.event.preventDefault();
       let direction = d3.event.wheelDelta < 0 ? 'down' : 'up';
       let label = d3.select(this).attr("data-label");
       let overText = text.filter((d) => { return d.label.substr(1) == label });
@@ -2680,12 +2664,12 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
-        
+
         d3.select("#mytext").remove() //删除文字，添加文本框
         d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         myText = createText()     //初始创建一个文本
-        
+
       }
     }
 
@@ -2702,7 +2686,7 @@
         let tmpdateString;
         for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
           tmpdateString = Object.keys(TextandDate)[i]
-          if(tmpdateString.slice(0,10) <= dateString && dateString <= tmpdateString.slice(11)){
+          if (tmpdateString.slice(0, 10) <= dateString && dateString <= tmpdateString.slice(11)) {
             return TextandDate[tmpdateString]
           }
         }
