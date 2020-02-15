@@ -1226,6 +1226,7 @@
     let enablePause = true;
     let threshhold = 4;
     let maxHighlightBubbles = getMaxHighlightBubbles();
+    let pauseTimeFactor = 0.6;//设置一个可调节的影响暂停时间的因子
     option_pauseSetting.append("p")
       .text("Pause Setting: ")
       .style("font-weight", "bold");
@@ -1245,6 +1246,20 @@
       .attr("id", "enablePause")
       .style("font-family", "Helvetica")
       .style("display", "block");
+    option_pauseSetting_content.append("p")
+      .text("How fast to read a highlighted bubble(default 0.6):")
+    let option_pauseSetting_timePauseFactor = option_pauseSetting_content.append("input")
+      .attr("id", "option_pauseSetting_timePauseFactor")
+      .attr("type", "range")
+      .attr("value", "0.6")
+      .property("value", "0.6")//d3好像改不了value
+      .attr("min", "0.1")
+      .attr("max", "1.0")
+      .attr("step", "0.01");
+    let option_pauseSetting_timePauseFactor_label=option_pauseSetting_content.append("label")
+      .html("0.6")
+      .attr("for","option_pauseSetting_timePauseFactor");
+    document.getElementById("option_pauseSetting_timePauseFactor").value = 0.6;//d3好像改不了value,所以只能用原生来改
     let option_pauseSetting_threshhold = option_pauseSetting_content.append("div")
       .attr("class", "option_pauseSetting_threshhold");
     option_pauseSetting_threshhold.append("p")
@@ -1289,6 +1304,11 @@
       if (inputNumber > maxHighlightBubbles) {
         document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
       }
+    }
+    function pauseTimeFactorInputHandler(){
+      let factor=option_pauseSetting_timePauseFactor.property('value');
+      option_pauseSetting_timePauseFactor_label.html(factor);
+      pauseTimeFactor=factor;
     }
 
     //突出显示彩色气泡开关
@@ -1368,6 +1388,7 @@
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
     option_pauseSetting_input.on("change", threshholdChangedHandler);
     option_pauseSetting_input.on("input", threshholdInputHandler);
+    option_pauseSetting_timePauseFactor.on("input", pauseTimeFactorInputHandler);
     option_highlightColoredBubbles_input.on("change", enableHighlightColoredBubblesHandler)
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
@@ -2620,7 +2641,7 @@
       // console.log(threshhold);
       // console.log("paused: " + paused);
       if (enablePause && highlight.length >= threshhold && paused == false && formatTime(proper_date) == formatTime(year_month_date)) {
-        timePause = highlight.length * 0.6 * 1000
+        let timePause = highlight.length * pauseTimeFactor * 1000;
         myNewDate();
         myPause(timePause);
       }
