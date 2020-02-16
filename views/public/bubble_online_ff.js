@@ -468,16 +468,6 @@
         )
         .attr("height", textHeight)
         .attr("width", width)
-<<<<<<< HEAD
-        .attr("style", "display:flex; align-items:center;justify-content:center;")
-        .style("font-size", "20px")
-
-
-      return textforeignObject.append("xhtml:div")
-        .attr("style", "width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
-        .on("dblclick", changeText)
-        .attr("id", "mytext")
-=======
         .attr("style","display:flex; align-items:center;justify-content:center;")
         .style("font-size","20px")
         .on("dblclick", changeText)
@@ -487,7 +477,6 @@
         .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
         // .on("dblclick", changeText)
         // .attr("id", "mytext")
->>>>>>> origin/xjl
         .append("div")
         .attr("id", "mytext")
         .text(tempText)
@@ -510,12 +499,8 @@
 
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
-<<<<<<< HEAD
-        .attr("maxlength", 160)
-=======
         .attr("maxlength",160)
         // .attr("value",tempText)
->>>>>>> origin/xjl
         .attr("placeholder", "max length: 160")
         // .attr("placeholder",tempText)
         // .attr("value","asdfadsf")
@@ -544,12 +529,7 @@
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
         if (this.value.trim().length === 0)
           this.value = ""
-<<<<<<< HEAD
         if (this.value.length != 0)
-=======
-
-        if(this.value.length != 0)
->>>>>>> origin/xjl
           tempText = this.value
         else
           tempText = ""
@@ -562,23 +542,6 @@
         if (currentDate.getDate() < 10) //在第8个位置插入一个0
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
-<<<<<<< HEAD
-        TextandDate[dateString + "-" + dateString] = tempText
-
-        var datearr = Object.keys(TextandDate).sort()
-
-        //如果这个date在前一个时间段中间的话，则前一个时间段的结尾改为此date
-        //比如{"2017/01/04-2018/06/05":"asdfasdf"}。新插入一个日期"2018/01/02"，则要将原来的"2017/01/04-2018/06/05"改为"2017/01/04-2018/01/02"
-        let tmpstr = dateString + "-" + dateString
-        let idx = datearr.indexOf(tmpstr)
-        if (idx != 0) {  //如果插入的日期在第一个，不进行操作
-          let prestr = datearr[idx - 1]
-          if (prestr.slice(11) > dateString) {
-            console.log("here")
-            let sentence = TextandDate[prestr]
-            delete TextandDate[prestr]
-            TextandDate[prestr.slice(0, 11) + dateString] = sentence
-=======
         //如果此dateString在TextandDate的keys中的区间中，那么执行修改操作，而不是新增一个
         let change = false;
         var datearr = Object.keys(TextandDate)
@@ -591,26 +554,12 @@
               tempText = TextandDate[datearr[i]] 
             }
             break;
->>>>>>> origin/xjl
           }
         }
         
         d3.select("#myforeignObject").remove()  //删除输入框
         myText = createText() //重新创建一个文本框
 
-<<<<<<< HEAD
-        //排序操作
-        datearr = Object.keys(TextandDate).sort()
-        var tmpobj = {}
-        for (let i = 0, len = datearr.length; i < len; i++) {
-          if (TextandDate[datearr[i]] != "") //删除空字符
-            tmpobj[datearr[i]] = TextandDate[datearr[i]]
-        }
-        TextandDate = tmpobj
-
-
-
-=======
         if(change === false){
           TextandDate[dateString + "-" + dateString] = tempText
   
@@ -624,7 +573,6 @@
           TextandDate = tmpobj
         }
         
->>>>>>> origin/xjl
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
@@ -727,24 +675,6 @@
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
         let begindatehtmlstring = d3.select("#dt1"+idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
 
-<<<<<<< HEAD
-        let inputdate = d3.select("#dt2" + idx).append("div")
-          .attr("id", "#dtdiv2" + idx) //div的id
-          .style("position", "absolute")
-          .style("left", 0)
-          .style("top", 0)
-          .append("input")
-          .attr("id", "#dtinput2" + idx) //div的id
-          .attr("type", "date")
-          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
-          .attr("min", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10)) //最小值
-          // .attr("max","2019-05-30") //指定最晚日期
-          .on("blur", inputdateBlur)
-
-        document.getElementById("#dtinput2" + idx).focus()  //立马focus
-
-        function inputdateBlur() { //删除input框
-=======
         let inputdate = d3.select("#dt2"+idx).append("div")
                 .attr("id","#dtdiv2"+idx) //div的id
                 .style("position","absolute")
@@ -764,7 +694,6 @@
         document.getElementById("#dtinput2"+idx).focus()  //立马focus
 
         function inputdateBlur(){ //删除input框
->>>>>>> origin/xjl
           // console.log(TextandDate)
           // console.log(this.value)
           document.getElementById("#dtinput2" + idx).remove() //删除输入框 
@@ -2933,19 +2862,10 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
-<<<<<<< HEAD
-
-        d3.select("#mytext").remove() //删除文字，添加文本框
-        d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
-        tempText = findProperText(tmpYear)  //找到此时应该显示的文本
-        myText = createText()     //初始创建一个文本
-
-=======
         
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         document.getElementById("mytext").innerText = (tempText ? tempText : "")
         
->>>>>>> origin/xjl
       }
     }
 
