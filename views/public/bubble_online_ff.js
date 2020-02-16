@@ -1125,6 +1125,92 @@
       .attr("id", d => `textDateLabel-${d.label.slice(1)}`)
       .style("display", "none");
 
+    //视频时间设置
+    let totalTime = 120000;
+    let option_totalTime = options.append("div");
+    option_totalTime.append("p")
+      .text("Video total time:")
+      .style("font-weight", "bold")
+    let option_totalTime_input = option_totalTime.append("input")
+      .attr("id", "option_totalTime")
+      .attr("type", "range")
+      .attr("min", "60000")
+      .attr("max", "240000")
+      .attr("step", "10000");
+    document.getElementById("option_totalTime").value = 120000;
+    let option_totalTime_label = option_totalTime.append("label")
+      .html("2 mins")
+      .attr("for", "option_totalTime");
+    let option_totalTime_button = option_totalTime.append("input")
+      .attr("type", "button")
+      .attr("value", "Apply")
+      .style("display", "block")
+      .style("margin-top", "10px");
+    function totalTimeInputHandler() {
+      let __totalTime = option_totalTime_input.property("value")
+      option_totalTime_label.html(msToMinute(__totalTime));
+    }
+    function msToMinute(ms) {
+      let sec = ms / 1000;
+      let min = Math.floor(sec / 60);
+      sec = sec - min * 60;
+      if (sec < 0) {
+        sec = 0;
+      }
+      if (sec == 0) {//如果没有秒数,只显示分钟
+        if (min == 1) {//分钟个位时单词没有复数形式
+          return `${min} minute`;
+        } else {
+          return `${min} minutes`;
+        }
+      } else {//有秒数剩余,显示分钟和秒数
+        if (min == 1) {//分钟个位时单词没有复数形式
+          if (sec == 1) {//如果秒数为1,单词没有复数形式
+            return `${min} min ${sec} sec`;
+          } else {
+            return `${min} min ${sec} secs`;
+          }
+        } else {
+          if (sec == 1) {//如果秒数为1,单词没有复数形式
+            return `${min} mins ${sec} sec`;
+          } else {
+            return `${min} mins ${sec} secs`;
+          }
+        }
+      }
+    }
+    function totalTimeButtonClickedHandler() {
+      //console.log("clicked");
+      let __totalTime = option_totalTime_input.property("value");
+      if (window.confirm(`Change totaltime to ${msToMinute(__totalTime)} ?`)) {
+        //console.log("confirmed!");
+        applyNewTotaltime(__totalTime);
+      }
+    }
+    function applyNewTotaltime(__totalTime) {
+      totalTime = __totalTime;
+      //console.log("Totaltime updated to: " + __totalTime);
+      dateScale = d3
+        .scaleTime()
+        .domain([startDate, endDate])
+        .range([0, totalTime]);
+      anchorScale = d3
+        .scaleLinear()
+        .domain([0, width])
+        .range([0, totalTime]);
+      //let { ... lifeCycleGradient } = calcLifeCycle(labelSet);
+      //renderDownsideWithLifeCycle(lifeCycleGradient);
+      initTime();
+      buttonClickedHandler();
+      setTimeout(() => {
+        buttonPlay = false;
+        button.attr("xlink:href", `public/data/bubble/pause.svg`);
+        stopTime();
+        window.alert("Totaltime reset!")
+      }, 1);
+      //startTime(easeFunc, totalTime, totalTime, dateScale);
+    }
+
     //显示气泡路径开关
     let option_showPast = options.append("div")
       .style("display", "none");
@@ -1363,15 +1449,14 @@
       .append("svg:text")
       .attr("T", 0)
       .text("");
-    const totalTime = 120000;
     const durationTime = 500;
     let easeFunc = d3.easeLinear;
 
-    const dateScale = d3
+    let dateScale = d3
       .scaleTime()
       .domain([startDate, endDate])
       .range([0, totalTime]);
-    const anchorScale = d3
+    let anchorScale = d3
       .scaleLinear()
       .domain([0, width])
       .range([0, totalTime]);
@@ -1391,6 +1476,8 @@
     let checkboxLabels = d3.selectAll("div.labelRow label");
 
     // 绑定监听 Binding bubbles monitoring 
+    option_totalTime_input.on("input", totalTimeInputHandler);
+    option_totalTime_button.on("click", totalTimeButtonClickedHandler);
     option_showPast_input.on("change", showPastCheckedHandler);
     option_fontSize_button.on("click", fontApplyButtonClickedHandler);
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
