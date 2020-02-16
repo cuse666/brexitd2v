@@ -994,8 +994,83 @@
         .attr("fill", "#fff");
     }
 
+    function drawRightBottomLeg(svg, height) {
+      let trendLegend = svg.append("g");
+      let maxRadius = 20 , minRadius = 8; //8 11 14 17 20
+
+      // gray
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft)
+        .attr("cy", height + maxRadius)
+        .attr("r",minRadius)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11)
+        .attr("cy", height + maxRadius)
+        .attr("r",11)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11)
+        .attr("cy", height + maxRadius)
+        .attr("r",11)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      //red
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14) 
+        .attr("cy", height + maxRadius)
+        .attr("r",14)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17) 
+        .attr("cy", height + maxRadius)
+        .attr("r",17)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17*2+20) 
+        .attr("cy", height + maxRadius)
+        .attr("r",20)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+
+      // blue
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14) 
+        .attr("cy", height + maxRadius)
+        .attr("r",14)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17) 
+        .attr("cy", height + maxRadius)
+        .attr("r",17)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17*2-20) 
+        .attr("cy", height + maxRadius)
+        .attr("r",20)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+    }
+    
+
     drawRightLeg(rightAsideSvg, 12);
-    drawRightLeg(rightAsideSvg, svgHeight - 40);
+    drawRightBottomLeg(rightAsideSvg, svgHeight - 40);
     createAsidePanel(labelSet2, "labelSet2");
     createAsidePanel(labelSet1, "labelSet1");
     createAsidePanel(labelSet0, "labelSet0");
@@ -2413,27 +2488,26 @@
     }
 
     function startTime(ease, totalTime, timeTodo, dateScale) {
+      // console.log(dateScale.invert(getTime()))
       timer
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-      console.log(timeTodo)
-      console.log(d3.easeLinear(timeTodo))
+        // console.log(dateScale.invert(getTime()))
       svg
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .tween("time", () => {
           return function (t) {
-            console.log(t)
-            console.log(dateScale.invert(getTime()))
+            // console.log(dateScale.invert(getTime()))
             var month = d3.interpolateDate(
-              //dateScale.invert(totalTime - timeTodo),              
+              //dateScale.invert(totalTime - timeTodo),      
               dateScale.invert(getTime()),
               endDate
             );
-            console.log(t)
+            // console.log(t)
             tweenYear(month(t));
           };
         });
