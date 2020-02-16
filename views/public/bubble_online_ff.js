@@ -996,11 +996,7 @@
 
     function drawRightBottomLeg(svg, height) {
       let trendLegend = svg.append("g");
-<<<<<<< HEAD
-      let maxRadius = 20 , minRadius = 10; // 13 16 20  
-=======
       let maxRadius = 20 , minRadius = 8; //8 11 14 17 20
->>>>>>> 369afc2e13bb0a4861023a71955050e26d9209cc
 
       // gray
       trendLegend
@@ -1013,48 +1009,21 @@
       
       trendLegend
         .append("circle")
-<<<<<<< HEAD
-        .attr("cx", rightAsidePivotFromLeft + 10 + 13)
-        .attr("cy", height + maxRadius)
-        .attr("r",13)
-=======
         .attr("cx", rightAsidePivotFromLeft + 8 + 11)
         .attr("cy", height + maxRadius)
         .attr("r",11)
->>>>>>> 369afc2e13bb0a4861023a71955050e26d9209cc
         .attr("fill", "#b2b2b2")
         .attr("style","fill-opacity:1;");
       trendLegend
         .append("circle")
-<<<<<<< HEAD
-        .attr("cx", rightAsidePivotFromLeft - 10 - 13)
-        .attr("cy", height + maxRadius)
-        .attr("r",13)
-=======
         .attr("cx", rightAsidePivotFromLeft - 8 - 11)
         .attr("cy", height + maxRadius)
         .attr("r",11)
->>>>>>> 369afc2e13bb0a4861023a71955050e26d9209cc
         .attr("fill", "#b2b2b2")
         .attr("style","fill-opacity:1;");
       //red
       trendLegend
         .append("circle")
-<<<<<<< HEAD
-        .attr("cx", rightAsidePivotFromLeft + 10 + 13 * 2 + 16) 
-        .attr("cy", height + maxRadius)
-        .attr("r",16)
-        .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
-        // .attr("fill-opacity","1");
-      trendLegend
-        .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 10 + 13 * 2 + 16 *2 + 20)
-        .attr("cy", height + maxRadius)
-        .attr("r",20)
-        .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;");
-=======
         .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14) 
         .attr("cy", height + maxRadius)
         .attr("r",14)
@@ -1074,25 +1043,10 @@
         .attr("r",20)
         .attr("fill", "#f1706f")
         .attr("style","fill-opacity:1;")
->>>>>>> 369afc2e13bb0a4861023a71955050e26d9209cc
 
       // blue
       trendLegend
         .append("circle")
-<<<<<<< HEAD
-        .attr("cx", rightAsidePivotFromLeft - 10 - 13 * 2 - 16)
-        .attr("cy", height + maxRadius)
-        .attr("r",16)
-        .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;");
-      trendLegend
-        .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 10 - 13 * 2 - 16 *2 - 20)
-        .attr("cy", height + maxRadius)
-        .attr("r",20)
-        .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;");
-=======
         .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14) 
         .attr("cy", height + maxRadius)
         .attr("r",14)
@@ -1112,7 +1066,6 @@
         .attr("r",20)
         .attr("fill", "#76a6ca")
         .attr("style","fill-opacity:1;")
->>>>>>> 369afc2e13bb0a4861023a71955050e26d9209cc
     }
     
 
