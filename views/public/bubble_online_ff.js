@@ -456,7 +456,7 @@
       .attr("opacity", 0.1)
 
     //.attr("width", `${slider.attr("width")}px`)
-    let tempText = "double click to change the text at any time"
+    let tempText = "double click to change the text"
 
     function createText() {
       var textforeignObject = svg.append("foreignObject")
@@ -468,6 +468,7 @@
         )
         .attr("height", textHeight)
         .attr("width", width)
+<<<<<<< HEAD
         .attr("style", "display:flex; align-items:center;justify-content:center;")
         .style("font-size", "20px")
 
@@ -476,7 +477,19 @@
         .attr("style", "width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
         .on("dblclick", changeText)
         .attr("id", "mytext")
+=======
+        .attr("style","display:flex; align-items:center;justify-content:center;")
+        .style("font-size","20px")
+        .on("dblclick", changeText)
+        
+      
+      return textforeignObject.append("xhtml:div")
+        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
+        // .on("dblclick", changeText)
+        // .attr("id", "mytext")
+>>>>>>> origin/xjl
         .append("div")
+        .attr("id", "mytext")
         .text(tempText)
     }
 
@@ -497,8 +510,15 @@
 
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
+<<<<<<< HEAD
         .attr("maxlength", 160)
+=======
+        .attr("maxlength",160)
+        // .attr("value",tempText)
+>>>>>>> origin/xjl
         .attr("placeholder", "max length: 160")
+        // .attr("placeholder",tempText)
+        // .attr("value","asdfadsf")
         .attr("style", "font-size:20px;height:50px;width:1045px;resize:none;")
         .style("text-align", "center")
         .style("vertical-align", "midddle")
@@ -506,8 +526,10 @@
         .on("focus", inputFocus)
         .on("input", inputContent)
       // .on("keypress",logKey)
-
+      
       let myInput = document.getElementById("tt");
+      if(tempText)
+        myInput.value = tempText  //初始值
       myInput.focus()       //创建input后，立刻聚焦
       myInput.onkeydown = function (event) {
         if (event.keyCode === 13) {
@@ -515,31 +537,22 @@
         }
       }
 
-      // function logKey(){
-      //   // console.log(d3.event)
-      //   if (d3.event.keyCode === 13 || d3.event.keyCode === 100) {
-      //       console.log(this.value)
-      //     }
-      // }
-
       function inputContent() {
-        // if(this.value.length > 160){ //超过160输出
-        //   alert("The max length is 160")
-        //   myInput.blur()
-        // }
         textArea.text(this.value)
       }
 
       function inputBlur() {         //这个函数比较重要，因为他处理输入结束后的情况
         if (this.value.trim().length === 0)
           this.value = ""
+<<<<<<< HEAD
         if (this.value.length != 0)
+=======
+
+        if(this.value.length != 0)
+>>>>>>> origin/xjl
           tempText = this.value
         else
           tempText = ""
-        d3.select("#myforeignObject").remove()  //删除输入框
-
-        myText = createText() //重新创建一个文本框
 
         let currentDate = dateScale.invert(getTime())
         //dateString 用于统一格式
@@ -549,6 +562,7 @@
         if (currentDate.getDate() < 10) //在第8个位置插入一个0
           dateString = dateString.slice(0, 8) + "0" + dateString.slice(8)
 
+<<<<<<< HEAD
         TextandDate[dateString + "-" + dateString] = tempText
 
         var datearr = Object.keys(TextandDate).sort()
@@ -564,9 +578,27 @@
             let sentence = TextandDate[prestr]
             delete TextandDate[prestr]
             TextandDate[prestr.slice(0, 11) + dateString] = sentence
+=======
+        //如果此dateString在TextandDate的keys中的区间中，那么执行修改操作，而不是新增一个
+        let change = false;
+        var datearr = Object.keys(TextandDate)
+        for(let i=0;i<datearr.length;i++){
+          if(datearr[i].slice(0,10)<=dateString && dateString<=datearr[i].slice(11)){
+            change = true;
+            if(tempText.length != 0)
+              TextandDate[datearr[i]] = tempText;
+            else{ //如果输入为空，不改变数据
+              tempText = TextandDate[datearr[i]] 
+            }
+            break;
+>>>>>>> origin/xjl
           }
         }
+        
+        d3.select("#myforeignObject").remove()  //删除输入框
+        myText = createText() //重新创建一个文本框
 
+<<<<<<< HEAD
         //排序操作
         datearr = Object.keys(TextandDate).sort()
         var tmpobj = {}
@@ -578,6 +610,21 @@
 
 
 
+=======
+        if(change === false){
+          TextandDate[dateString + "-" + dateString] = tempText
+  
+          //排序操作
+          datearr = Object.keys(TextandDate).sort()
+          var tmpobj = {}
+          for (let i = 0, len = datearr.length; i < len; i++) {
+            if(TextandDate[datearr[i]] != "") //删除空字符
+              tmpobj[datearr[i]] = TextandDate[datearr[i]]
+          }
+          TextandDate = tmpobj
+        }
+        
+>>>>>>> origin/xjl
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
@@ -678,7 +725,9 @@
         // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
+        let begindatehtmlstring = d3.select("#dt1"+idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
 
+<<<<<<< HEAD
         let inputdate = d3.select("#dt2" + idx).append("div")
           .attr("id", "#dtdiv2" + idx) //div的id
           .style("position", "absolute")
@@ -695,6 +744,27 @@
         document.getElementById("#dtinput2" + idx).focus()  //立马focus
 
         function inputdateBlur() { //删除input框
+=======
+        let inputdate = d3.select("#dt2"+idx).append("div")
+                .attr("id","#dtdiv2"+idx) //div的id
+                .style("position","absolute")
+                .style("left",0)
+                .style("top",0)
+                .append("input")
+                .attr("id","#dtinput2"+idx) //div的id
+                .attr("type", "date")
+                .attr("date-date-format","YYYY-MM-DD")
+                // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
+                // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
+                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
+                .attr("min",begindatehtmlstring.slice(0,4)+"-"+begindatehtmlstring.slice(5,7)+"-"+begindatehtmlstring.slice(8,10)) //最小值
+                .attr("max","2019-05-30") //指定最晚日期
+                .on("blur", inputdateBlur)
+        
+        document.getElementById("#dtinput2"+idx).focus()  //立马focus
+
+        function inputdateBlur(){ //删除input框
+>>>>>>> origin/xjl
           // console.log(TextandDate)
           // console.log(this.value)
           document.getElementById("#dtinput2" + idx).remove() //删除输入框 
@@ -785,7 +855,7 @@
           clearTimeout(timeout)
         }
       }
-      d3.select("#mytext").remove() //删除文字，添加文本框
+      // d3.select("#mytext").remove() //删除文字，添加文本框
       d3.select("#mytextforeignObject").remove() //删除文字，添加文本框\
       let textArea = createInput()  //创建一个输入框。输入结束后的处理也在这个函数里面
     }
@@ -956,8 +1026,83 @@
         .attr("fill", "#fff");
     }
 
+    function drawRightBottomLeg(svg, height) {
+      let trendLegend = svg.append("g");
+      let maxRadius = 20 , minRadius = 8; //8 11 14 17 20
+
+      // gray
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft)
+        .attr("cy", height + maxRadius)
+        .attr("r",minRadius)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11)
+        .attr("cy", height + maxRadius)
+        .attr("r",11)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11)
+        .attr("cy", height + maxRadius)
+        .attr("r",11)
+        .attr("fill", "#b2b2b2")
+        .attr("style","fill-opacity:1;");
+      //red
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14) 
+        .attr("cy", height + maxRadius)
+        .attr("r",14)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17) 
+        .attr("cy", height + maxRadius)
+        .attr("r",17)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17*2+20) 
+        .attr("cy", height + maxRadius)
+        .attr("r",20)
+        .attr("fill", "#f1706f")
+        .attr("style","fill-opacity:1;")
+
+      // blue
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14) 
+        .attr("cy", height + maxRadius)
+        .attr("r",14)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17) 
+        .attr("cy", height + maxRadius)
+        .attr("r",17)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+      trendLegend
+        .append("circle")
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17*2-20) 
+        .attr("cy", height + maxRadius)
+        .attr("r",20)
+        .attr("fill", "#76a6ca")
+        .attr("style","fill-opacity:1;")
+    }
+    
+
     drawRightLeg(rightAsideSvg, 12);
-    drawRightLeg(rightAsideSvg, svgHeight - 40);
+    drawRightBottomLeg(rightAsideSvg, svgHeight - 40);
     createAsidePanel(labelSet2, "labelSet2");
     createAsidePanel(labelSet1, "labelSet1");
     createAsidePanel(labelSet0, "labelSet0");
@@ -1865,9 +2010,9 @@
       }
       //console.log(earliestTime) //输出百分比
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      // let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
       currentTime = earliestTime * totalTime
-      let endTime = latestTime * totalTime - offset
+      let endTime = latestTime * totalTime //- offset
       // console.log(currentTime) //乘以总时间
 
       limitDate = dateScale.invert(endTime);  //结束时间
@@ -1878,7 +2023,8 @@
       // endDate = limitDate
 
       updateVideoAnchor(currentDate)
-      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()) 没有问题
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
       setTime(currentTime)
 
       updateMask(selectedLabel);
@@ -1946,9 +2092,9 @@
       }
       //console.log(earliestTime) //输出百分比
 
-      let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+      //let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
       currentTime = earliestTime * totalTime
-      let endTime = latestTime * totalTime - offset
+      let endTime = latestTime * totalTime //- offset
       // console.log(currentTime) //乘以总时间
 
       limitDate = dateScale.invert(endTime);  //结束时间
@@ -1959,7 +2105,8 @@
       // endDate = limitDate
 
       updateVideoAnchor(currentDate)
-      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+      // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()) 没有问题
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
       setTime(currentTime)
       //**************************************************************************************************** */
       updateMask(selectedLabel);
@@ -2072,15 +2219,16 @@
           if (selectedLabel.length != 0) {
             let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)  //最早开始时间，最迟结束时间的百分比,
 
-            let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
+            // let offset = parseFloat(d3.select(".video-slider").attr("x")); //仿照上面的，不知道是否必要
             currentTime = earliestTime * totalTime
-            let endTime = latestTime * totalTime - offset
+            let endTime = latestTime * totalTime //- offset
 
             limitDate = dateScale.invert(endTime);  //结束时间
             let currentDate = dateScale.invert(currentTime);
 
             updateVideoAnchor(currentDate)
-            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
+            // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
+            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
             setTime(currentTime)
 
             buttonPlay = !buttonPlay;
@@ -2500,6 +2648,7 @@
             }
 
             dateTime = monthScale(new_t);
+            // console.log(dateTime)
             tweenYear(dateTime);
 
             //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
@@ -2509,23 +2658,26 @@
     }
 
     function startTime(ease, totalTime, timeTodo, dateScale) {
+      // console.log(dateScale.invert(getTime()))
       timer
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-
+        // console.log(dateScale.invert(getTime()))
       svg
         .transition()
         .duration(timeTodo)
         .ease(easeFunc)
         .tween("time", () => {
           return function (t) {
+            // console.log(dateScale.invert(getTime()))
             var month = d3.interpolateDate(
-              //dateScale.invert(totalTime - timeTodo),              
+              //dateScale.invert(totalTime - timeTodo),      
               dateScale.invert(getTime()),
               endDate
             );
+            // console.log(t)
             tweenYear(month(t));
           };
         });
@@ -2767,7 +2919,8 @@
         verticalText.data(dataset).call(verTextPosition);
         textPosition(dataset);
         if (year_month_date <= limitDate) {
-          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
+          // console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
+          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
         }
         else {
           isAnimationFinished = true;
@@ -2780,12 +2933,19 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
+<<<<<<< HEAD
 
         d3.select("#mytext").remove() //删除文字，添加文本框
         d3.select("#mytextforeignObject").remove() //删除文字，添加文本框
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         myText = createText()     //初始创建一个文本
 
+=======
+        
+        tempText = findProperText(tmpYear)  //找到此时应该显示的文本
+        document.getElementById("mytext").innerText = (tempText ? tempText : "")
+        
+>>>>>>> origin/xjl
       }
     }
 
@@ -2818,7 +2978,7 @@
         // }
         // return TextandDate[showdateString]
       } else {
-        return "double click to change the text at any time"
+        return "double click to change the text"
       }
     }
 
