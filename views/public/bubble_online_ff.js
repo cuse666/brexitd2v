@@ -468,13 +468,13 @@
         )
         .attr("height", textHeight)
         .attr("width", width)
-        .attr("style","display:flex; align-items:center;justify-content:center;")
-        .style("font-size","20px")
+        .attr("style", "display:flex; align-items:center;justify-content:center;")
+        .style("font-size", "20px")
         .on("dblclick", changeText)
-        
-      
+
+
       return textforeignObject.append("xhtml:div")
-        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
+        .attr("style", "width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
         // .on("dblclick", changeText)
         // .attr("id", "mytext")
         .append("div")
@@ -499,7 +499,7 @@
 
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
-        .attr("maxlength",160)
+        .attr("maxlength", 160)
         // .attr("value",tempText)
         .attr("placeholder", "max length: 160")
         // .attr("placeholder",tempText)
@@ -511,9 +511,9 @@
         .on("focus", inputFocus)
         .on("input", inputContent)
       // .on("keypress",logKey)
-      
+
       let myInput = document.getElementById("tt");
-      if(tempText)
+      if (tempText)
         myInput.value = tempText  //初始值
       myInput.focus()       //创建input后，立刻聚焦
       myInput.onkeydown = function (event) {
@@ -545,34 +545,34 @@
         //如果此dateString在TextandDate的keys中的区间中，那么执行修改操作，而不是新增一个
         let change = false;
         var datearr = Object.keys(TextandDate)
-        for(let i=0;i<datearr.length;i++){
-          if(datearr[i].slice(0,10)<=dateString && dateString<=datearr[i].slice(11)){
+        for (let i = 0; i < datearr.length; i++) {
+          if (datearr[i].slice(0, 10) <= dateString && dateString <= datearr[i].slice(11)) {
             change = true;
-            if(tempText.length != 0)
+            if (tempText.length != 0)
               TextandDate[datearr[i]] = tempText;
-            else{ //如果输入为空，不改变数据
-              tempText = TextandDate[datearr[i]] 
+            else { //如果输入为空，不改变数据
+              tempText = TextandDate[datearr[i]]
             }
             break;
           }
         }
-        
+
         d3.select("#myforeignObject").remove()  //删除输入框
         myText = createText() //重新创建一个文本框
 
-        if(change === false){
+        if (change === false) {
           TextandDate[dateString + "-" + dateString] = tempText
-  
+
           //排序操作
           datearr = Object.keys(TextandDate).sort()
           var tmpobj = {}
           for (let i = 0, len = datearr.length; i < len; i++) {
-            if(TextandDate[datearr[i]] != "") //删除空字符
+            if (TextandDate[datearr[i]] != "") //删除空字符
               tmpobj[datearr[i]] = TextandDate[datearr[i]]
           }
           TextandDate = tmpobj
         }
-        
+
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
@@ -593,9 +593,10 @@
 
       var datearr = Object.keys(TextandDate)
       for (let i = 0, len = datearr.length; i < len; i++) {
+        let singleText = textarea.append("div").attr("id", "singleTextArea" + i)
         //时间-时间
         //text
-        let datetext1 = textarea.append("div")
+        let datetext1 = singleText.append("div")
           .style("display", "inline")
           .attr("id", "dt1" + i)
           .append("text")
@@ -604,7 +605,7 @@
           // .on("mouseout",MouseOutText)
           .text(datearr[i].slice(0, 11))
 
-        let datetext2 = textarea.append("div")
+        let datetext2 = singleText.append("div")
           .style("position", "relative")
           .attr("id", "dt2" + i)
           .style("display", "inline")
@@ -615,7 +616,7 @@
           .on("mouseout", MouseOutDate)
           .text(datearr[i].slice(11))
 
-        textarea.append("div")
+          singleText.append("div")
           .style("display", "block")
           .append("text")
           .attr("id", "ta" + i)
@@ -623,7 +624,7 @@
           .on("mouseover", MouseOverText)
           .on("mouseout", MouseOutText)
           .text(TextandDate[datearr[i]])
-        textarea.append("hr") //分隔符
+          singleText.append("hr") //分隔符
           .attr("id", "hr" + i)
       }
 
@@ -673,27 +674,27 @@
         // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
-        let begindatehtmlstring = d3.select("#dt1"+idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
+        let begindatehtmlstring = d3.select("#dt1" + idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
 
-        let inputdate = d3.select("#dt2"+idx).append("div")
-                .attr("id","#dtdiv2"+idx) //div的id
-                .style("position","absolute")
-                .style("left",0)
-                .style("top",0)
-                .append("input")
-                .attr("id","#dtinput2"+idx) //div的id
-                .attr("type", "date")
-                .attr("date-date-format","YYYY-MM-DD")
-                // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
-                // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
-                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
-                .attr("min",begindatehtmlstring.slice(0,4)+"-"+begindatehtmlstring.slice(5,7)+"-"+begindatehtmlstring.slice(8,10)) //最小值
-                .attr("max","2019-05-30") //指定最晚日期
-                .on("blur", inputdateBlur)
-        
-        document.getElementById("#dtinput2"+idx).focus()  //立马focus
+        let inputdate = d3.select("#dt2" + idx).append("div")
+          .attr("id", "#dtdiv2" + idx) //div的id
+          .style("position", "absolute")
+          .style("left", 0)
+          .style("top", 0)
+          .append("input")
+          .attr("id", "#dtinput2" + idx) //div的id
+          .attr("type", "date")
+          .attr("date-date-format", "YYYY-MM-DD")
+          // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
+          // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
+          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
+          .attr("min", begindatehtmlstring.slice(0, 4) + "-" + begindatehtmlstring.slice(5, 7) + "-" + begindatehtmlstring.slice(8, 10)) //最小值
+          .attr("max", "2019-05-30") //指定最晚日期
+          .on("blur", inputdateBlur)
 
-        function inputdateBlur(){ //删除input框
+        document.getElementById("#dtinput2" + idx).focus()  //立马focus
+
+        function inputdateBlur() { //删除input框
           // console.log(TextandDate)
           // console.log(this.value)
           document.getElementById("#dtinput2" + idx).remove() //删除输入框 
@@ -957,78 +958,78 @@
 
     function drawRightBottomLeg(svg, height) {
       let trendLegend = svg.append("g");
-      let maxRadius = 20 , minRadius = 8; //8 11 14 17 20
+      let maxRadius = 20, minRadius = 8; //8 11 14 17 20
 
       // gray
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft)
         .attr("cy", height + maxRadius)
-        .attr("r",minRadius)
+        .attr("r", minRadius)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
-      
+        .attr("style", "fill-opacity:1;");
+
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft + 8 + 11)
         .attr("cy", height + maxRadius)
-        .attr("r",11)
+        .attr("r", 11)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
+        .attr("style", "fill-opacity:1;");
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft - 8 - 11)
         .attr("cy", height + maxRadius)
-        .attr("r",11)
+        .attr("r", 11)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
+        .attr("style", "fill-opacity:1;");
       //red
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14)
         .attr("cy", height + maxRadius)
-        .attr("r",14)
+        .attr("r", 14)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17)
         .attr("cy", height + maxRadius)
-        .attr("r",17)
+        .attr("r", 17)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17*2+20) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17 * 2 + 20)
         .attr("cy", height + maxRadius)
-        .attr("r",20)
+        .attr("r", 20)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
 
       // blue
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14)
         .attr("cy", height + maxRadius)
-        .attr("r",14)
+        .attr("r", 14)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17)
         .attr("cy", height + maxRadius)
-        .attr("r",17)
+        .attr("r", 17)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17*2-20) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17 * 2 - 20)
         .attr("cy", height + maxRadius)
-        .attr("r",20)
+        .attr("r", 20)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
     }
-    
+
 
     drawRightLeg(rightAsideSvg, 12);
     drawRightBottomLeg(rightAsideSvg, svgHeight - 40);
@@ -2593,7 +2594,7 @@
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-        // console.log(dateScale.invert(getTime()))
+      // console.log(dateScale.invert(getTime()))
       svg
         .transition()
         .duration(timeTodo)
@@ -2862,10 +2863,10 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
-        
+
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         document.getElementById("mytext").innerText = (tempText ? tempText : "")
-        
+
       }
     }
 
@@ -2883,6 +2884,7 @@
         for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
           tmpdateString = Object.keys(TextandDate)[i]
           if (tmpdateString.slice(0, 10) <= dateString && dateString <= tmpdateString.slice(11)) {
+            document.getElementById("singleTextArea"+i).style.background = "#e6e6e6"
             return TextandDate[tmpdateString]
           }
         }
