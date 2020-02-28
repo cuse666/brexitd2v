@@ -1031,7 +1031,7 @@
     
 
     drawRightLeg(rightAsideSvg, 12);
-    drawRightBottomLeg(rightAsideSvg, svgHeight - 40);
+    drawRightBottomLeg(rightAsideSvg, svgHeight-45);
     createAsidePanel(labelSet2, "labelSet2");
     createAsidePanel(labelSet1, "labelSet1");
     createAsidePanel(labelSet0, "labelSet0");
@@ -3149,7 +3149,11 @@
         .style("width", `${svgWidth}px`)
         .style("height", `${downsideTitleHeight}px`)
         .text("Topic lifetime")
-        .style("text-align", "center");
+        .style("text-align", "center")
+        .style("font-family", "SimSun")
+        .style("fill", "#565656")
+        .style("font-weight", "600")
+        .attr("font-size", "18");
 
       let slider = d3.select(".video-slider");
 
@@ -3223,7 +3227,7 @@
 
       svg.append("text")
         .attr("text-anchor", "middle")
-        .attr("x", "230px")
+        .attr("x", "190px")
         .attr("y", "18px")
         .style("width", "200px")
         .style("height", "50px")
@@ -3834,23 +3838,14 @@
     let headSvg = d3
       .select(".header")
       .append("svg")
-      .attr("width", 1050)
       .attr("height", 60)
       .style("position", "absolute");
 
     headSvg
       .append("text")
       .attr("transform", "translate(" + 0 + " ," + 40 + ")")
-      .text("Brexit topic dynamics")
-      .style("font-size", "40px");
-
-    headSvg
-      .append("image")
-      .attr("xlink:href", "public/left_legend_2.svg")
-      .attr("x", 800)
-      .attr("y", 0)
-      // .attr('width', 400)
-      .attr("height", 60);
+      .text("Brexit topic")
+      .style("font-size", "60px");
 
     function updatePast(selector, currentDate, reRenderLine = false) {
       let label = selector.attr("name");
