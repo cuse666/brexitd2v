@@ -770,6 +770,7 @@
         d3.select("#dt2" + idx).remove()
         d3.select("#ta" + idx).remove()
         d3.select("#hr" + idx).remove()
+        d3.select("#singleTextArea" + idx).remove()
         // this.remove() //删除这个dom元素
       }
 
@@ -2880,25 +2881,21 @@
 
       let len = Object.keys(TextandDate).length //长度
       if (len != 0) {  //找出区间
-        let tmpdateString;
-        for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
-          tmpdateString = Object.keys(TextandDate)[i]
-          if (tmpdateString.slice(0, 10) <= dateString && dateString <= tmpdateString.slice(11)) {
-            document.getElementById("singleTextArea"+i).style.background = "#e6e6e6"
-            return TextandDate[tmpdateString]
+        // let tmpdateString;
+        let textToshow = ""
+        let children = document.getElementById("oldTextArea").childNodes
+        for(let i=0,len=children.length;i<len-2;i++){ //遍历每一个子节点
+          let child = children[i];
+          let begin = child.childNodes[0],end = child.childNodes[1]
+          begin = begin.childNodes[0].innerText.slice(0,10) // 开始时间字符串
+          end = end.childNodes[0].innerText //结束时间字符串
+          child.style.background = ""
+          if(begin <= dateString && dateString <= end){
+            child.style.background = "#e6e6e6"
+            textToshow = child.childNodes[2].childNodes[0].innerText
           }
         }
-        // for (let i = 0; i < len; i++) { //dateString是当前日期；tmpdateString是指向i位置的日期
-        //   tmpdateString = Object.keys(TextandDate)[i]
-
-        //   if (tmpdateString < dateString) {
-        //     showdateString = tmpdateString //
-        //     continue;
-        //   } else {
-        //     break;
-        //   }
-        // }
-        // return TextandDate[showdateString]
+        return textToshow
       } else {
         return "double click to change the text"
       }
