@@ -1245,6 +1245,37 @@
       .style("border-radius", "5px")
       .style("margin-top", "10px")
       .style("margin-left", "30px");
+    
+    // 调整caption字体大小
+    let option_captionfontSize = options.append("div")
+      .style("margin-top", "20px");
+    option_captionfontSize.append("p")
+      .text("Caption Font: ")
+      .style("display", "inline")
+      .style("margin-left", "22px");
+    let option_captionfontSize_input = option_captionfontSize.append("input")
+      .attr("type", "number")
+      .attr("id", "option_captionfontSize")
+      .attr("min", 0)
+      .attr("max", 40)
+      .attr("value", 20)
+      .attr("placeholder", "20(default)")
+      .style("display", "inline")
+      .style("border-style", "solid")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("border-color", "rgb(216, 216, 216)")
+      .style("margin-left", "16px");
+      option_captionfontSize.append("p")
+      .style("display", "inline")
+      .text(" px");
+    let option_captionfontSize_button = option_captionfontSize.append("input")
+      .attr("type", "button")
+      .attr("value", "Apply")
+      .style("display", "inline")
+      .style("border-radius", "5px")
+      .style("margin-top", "10px")
+      .style("margin-left", "30px");
 
     //视频时间设置
     let totalTime = 120000;
@@ -1635,6 +1666,7 @@
     option_showPast_input.on("change", showPastCheckedHandler);
     showPathIcon.on("click", showPastIconClickHandler);
     option_fontSize_button.on("click", fontApplyButtonClickedHandler);
+    option_captionfontSize_button.on("click", CaptionfontApplyButtonClickedHandler);
     option_pauseSetting_enablePause_icon.on("click", enablePauseCheckedHandler);
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
     option_pauseSetting_input.on("change", threshholdChangedHandler);
@@ -1939,6 +1971,9 @@
 
     function fontApplyButtonClickedHandler() {
       text.style("font-size", option_fontSize_input.property("value"));
+    }
+    function CaptionfontApplyButtonClickedHandler(){
+      document.getElementById("mytextforeignObject").style.fontSize = option_captionfontSize_input.property("value")
     }
 
     function checkedHandler() {
