@@ -312,6 +312,10 @@
     .style("text-anchor", "end")
     .text(lang === "en" ? "Retweet" : "支持量")
     .attr("class", "xLabel");
+  
+  d3.select("#showTextArea")
+    .append("p").style("font-size","25px")
+    .text("Caption Transcript")
 
   var bisect = d3.bisector(function (d) {
     return d[0];
@@ -452,7 +456,7 @@
       .attr("rx", borderRadius)
       .attr("ry", borderRadius)
       .attr("opacity", 0.1)
-
+    
     //.attr("width", `${slider.attr("width")}px`)
     let tempText = "double click to change the text"
 
