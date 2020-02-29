@@ -22,7 +22,7 @@
     .append("div")
     .attr("class", "options")
     .style("display", "grid")
-    .style("grid-template-rows", "62px 62px 226px");
+    .style("grid-template-rows", "62px 62px 62px 226px");
 
   // scale
   var y = d3
