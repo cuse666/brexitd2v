@@ -616,6 +616,7 @@
 
           singleText.append("div")
           .style("display", "block")
+          .style("word-wrap","break-word")
           .append("text")
           .attr("id", "ta" + i)
           .on("dblclick", () => { deleteText(datearr[i], i) })
