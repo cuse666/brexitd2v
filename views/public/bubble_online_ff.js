@@ -21,10 +21,8 @@
   let options = d3.select("#anotherFunc")
     .append("div")
     .attr("class", "options")
-
-  options.append("h2")
-    .text("Advanced Setting")
-    .style("font-family", "Helvetica");
+    .style("display", "grid")
+    .style("grid-template-rows", "62px 62px 226px");
 
   // scale
   var y = d3
@@ -468,13 +466,13 @@
         )
         .attr("height", textHeight)
         .attr("width", width)
-        .attr("style","display:flex; align-items:center;justify-content:center;")
-        .style("font-size","20px")
+        .attr("style", "display:flex; align-items:center;justify-content:center;")
+        .style("font-size", "20px")
         .on("dblclick", changeText)
-        
-      
+
+
       return textforeignObject.append("xhtml:div")
-        .attr("style","width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
+        .attr("style", "width: 100%;height: 100%;display: flex;align-items: center;justify-content: center;text-align:center;")
         // .on("dblclick", changeText)
         // .attr("id", "mytext")
         .append("div")
@@ -499,7 +497,7 @@
 
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
-        .attr("maxlength",160)
+        .attr("maxlength", 160)
         // .attr("value",tempText)
         .attr("placeholder", "max length: 160")
         // .attr("placeholder",tempText)
@@ -511,9 +509,9 @@
         .on("focus", inputFocus)
         .on("input", inputContent)
       // .on("keypress",logKey)
-      
+
       let myInput = document.getElementById("tt");
-      if(tempText)
+      if (tempText)
         myInput.value = tempText  //初始值
       myInput.focus()       //创建input后，立刻聚焦
       myInput.onkeydown = function (event) {
@@ -545,34 +543,34 @@
         //如果此dateString在TextandDate的keys中的区间中，那么执行修改操作，而不是新增一个
         let change = false;
         var datearr = Object.keys(TextandDate)
-        for(let i=0;i<datearr.length;i++){
-          if(datearr[i].slice(0,10)<=dateString && dateString<=datearr[i].slice(11)){
+        for (let i = 0; i < datearr.length; i++) {
+          if (datearr[i].slice(0, 10) <= dateString && dateString <= datearr[i].slice(11)) {
             change = true;
-            if(tempText.length != 0)
+            if (tempText.length != 0)
               TextandDate[datearr[i]] = tempText;
-            else{ //如果输入为空，不改变数据
-              tempText = TextandDate[datearr[i]] 
+            else { //如果输入为空，不改变数据
+              tempText = TextandDate[datearr[i]]
             }
             break;
           }
         }
-        
+
         d3.select("#myforeignObject").remove()  //删除输入框
         myText = createText() //重新创建一个文本框
 
-        if(change === false){
+        if (change === false) {
           TextandDate[dateString + "-" + dateString] = tempText
-  
+
           //排序操作
           datearr = Object.keys(TextandDate).sort()
           var tmpobj = {}
           for (let i = 0, len = datearr.length; i < len; i++) {
-            if(TextandDate[datearr[i]] != "") //删除空字符
+            if (TextandDate[datearr[i]] != "") //删除空字符
               tmpobj[datearr[i]] = TextandDate[datearr[i]]
           }
           TextandDate = tmpobj
         }
-        
+
         updateshowTextArea()  //更新文本区域
         console.log(TextandDate)
       }
@@ -673,27 +671,27 @@
         // let left = d3.select("#dt2"+idx)._groups[0][0].offsetLeft
         // let width = d3.select("#dt2"+idx)._groups[0][0].offsetWidth
         // let height = d3.select("#dt2"+idx)._groups[0][0].offsetHeight
-        let begindatehtmlstring = d3.select("#dt1"+idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
+        let begindatehtmlstring = d3.select("#dt1" + idx)._groups[0][0].innerHTML.slice(6)  //开始时间的date string
 
-        let inputdate = d3.select("#dt2"+idx).append("div")
-                .attr("id","#dtdiv2"+idx) //div的id
-                .style("position","absolute")
-                .style("left",0)
-                .style("top",0)
-                .append("input")
-                .attr("id","#dtinput2"+idx) //div的id
-                .attr("type", "date")
-                .attr("date-date-format","YYYY-MM-DD")
-                // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
-                // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
-                .attr("value", htmlstring.slice(0,4)+"-"+htmlstring.slice(5,7)+"-"+htmlstring.slice(8,10))
-                .attr("min",begindatehtmlstring.slice(0,4)+"-"+begindatehtmlstring.slice(5,7)+"-"+begindatehtmlstring.slice(8,10)) //最小值
-                .attr("max","2019-05-30") //指定最晚日期
-                .on("blur", inputdateBlur)
-        
-        document.getElementById("#dtinput2"+idx).focus()  //立马focus
+        let inputdate = d3.select("#dt2" + idx).append("div")
+          .attr("id", "#dtdiv2" + idx) //div的id
+          .style("position", "absolute")
+          .style("left", 0)
+          .style("top", 0)
+          .append("input")
+          .attr("id", "#dtinput2" + idx) //div的id
+          .attr("type", "date")
+          .attr("date-date-format", "YYYY-MM-DD")
+          // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
+          // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
+          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
+          .attr("min", begindatehtmlstring.slice(0, 4) + "-" + begindatehtmlstring.slice(5, 7) + "-" + begindatehtmlstring.slice(8, 10)) //最小值
+          .attr("max", "2019-05-30") //指定最晚日期
+          .on("blur", inputdateBlur)
 
-        function inputdateBlur(){ //删除input框
+        document.getElementById("#dtinput2" + idx).focus()  //立马focus
+
+        function inputdateBlur() { //删除input框
           // console.log(TextandDate)
           // console.log(this.value)
           document.getElementById("#dtinput2" + idx).remove() //删除输入框 
@@ -816,9 +814,11 @@
       .style("position", "absolute")
       .style("height", svgHeight)
       // 与rightAside保持一致吧 Keep up with rightAside
-      .style("width", "410")
-      .style("z-index", -100);
+      .style("width", "410");
     let pivotLines = rightAsideSvg.append("g");
+    let showPathIcon = rightAsideSvg.append("g")
+      .style("display", "none");
+    let hightlightColoredBubbleG = rightAsideSvg.append("g");
 
     pivotLines
       .append("line")
@@ -844,6 +844,20 @@
       .attr("y2", svgHeight - 50)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#EE504E");
+    showPathIcon
+      .append("image")
+      .attr("height", "35px")
+      .attr("width", "35px")
+      .attr("xlink:href", "public/data/bubble/path.svg")
+      .style("transform", `translate(10px,${height + 103}px)`)
+      .style("cursor", "pointer");
+    let hightlightColoredBubbleIcon = hightlightColoredBubbleG
+      .append("image")
+      .attr("height", "35px")
+      .attr("width", "35px")
+      .attr("xlink:href", "public/data/bubble/off_icon.png")
+      .style("transform", `translate(65px,${height + 103}px)`)
+      .style("cursor", "pointer");
 
     // // 制作箭头
     // var defs = rightAsideSvg.append("defs");
@@ -957,81 +971,81 @@
 
     function drawRightBottomLeg(svg, height) {
       let trendLegend = svg.append("g");
-      let maxRadius = 20 , minRadius = 8; //8 11 14 17 20
+      let maxRadius = 20, minRadius = 8; //8 11 14 17 20
 
       // gray
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft)
         .attr("cy", height + maxRadius)
-        .attr("r",minRadius)
+        .attr("r", minRadius)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
-      
+        .attr("style", "fill-opacity:1;");
+
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft + 8 + 11)
         .attr("cy", height + maxRadius)
-        .attr("r",11)
+        .attr("r", 11)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
+        .attr("style", "fill-opacity:1;");
       trendLegend
         .append("circle")
         .attr("cx", rightAsidePivotFromLeft - 8 - 11)
         .attr("cy", height + maxRadius)
-        .attr("r",11)
+        .attr("r", 11)
         .attr("fill", "#b2b2b2")
-        .attr("style","fill-opacity:1;");
+        .attr("style", "fill-opacity:1;");
       //red
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14)
         .attr("cy", height + maxRadius)
-        .attr("r",14)
+        .attr("r", 14)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17)
         .attr("cy", height + maxRadius)
-        .attr("r",17)
+        .attr("r", 17)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14*2 + 17*2+20) 
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17 * 2 + 20)
         .attr("cy", height + maxRadius)
-        .attr("r",20)
+        .attr("r", 20)
         .attr("fill", "#f1706f")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
 
       // blue
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14)
         .attr("cy", height + maxRadius)
-        .attr("r",14)
+        .attr("r", 14)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17)
         .attr("cy", height + maxRadius)
-        .attr("r",17)
+        .attr("r", 17)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14*2 - 17*2-20) 
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17 * 2 - 20)
         .attr("cy", height + maxRadius)
-        .attr("r",20)
+        .attr("r", 20)
         .attr("fill", "#76a6ca")
-        .attr("style","fill-opacity:1;")
+        .attr("style", "fill-opacity:1;")
     }
-    
+
 
     drawRightLeg(rightAsideSvg, 12);
-    drawRightBottomLeg(rightAsideSvg, svgHeight-45);
+    drawRightBottomLeg(rightAsideSvg, svgHeight - 45);
     createAsidePanel(labelSet2, "labelSet2");
     createAsidePanel(labelSet1, "labelSet1");
     createAsidePanel(labelSet0, "labelSet0");
@@ -1199,27 +1213,65 @@
       .attr("id", d => `textDateLabel-${d.label.slice(1)}`)
       .style("display", "none");
 
+    //调整字体大小功能
+    let option_fontSize = options.append("div")
+      .style("margin-top", "20px");
+    option_fontSize.append("p")
+      .text("Bubble Font: ")
+      .style("display", "inline")
+      .style("margin-left", "22px");
+    let option_fontSize_input = option_fontSize.append("input")
+      .attr("type", "number")
+      .attr("id", "option_fontSize")
+      .attr("min", 0)
+      .attr("max", 40)
+      .attr("value", 20)
+      .attr("placeholder", "20(default)")
+      .style("display", "inline")
+      .style("border-style", "solid")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("border-color", "rgb(216, 216, 216)")
+      .style("margin-left", "20px");
+    option_fontSize.append("p")
+      .style("display", "inline")
+      .text(" px");
+    let option_fontSize_button = option_fontSize.append("input")
+      .attr("type", "button")
+      .attr("value", "Apply")
+      .style("display", "inline")
+      .style("border-radius", "5px")
+      .style("margin-top", "10px")
+      .style("margin-left", "30px");
+
     //视频时间设置
     let totalTime = 120000;
-    let option_totalTime = options.append("div");
-    option_totalTime.append("p")
-      .text("Video total time:")
-      .style("font-weight", "bold")
+    let option_totalTime = options.append("div")
+      .style("margin-top", "10px");
+    option_totalTime.append("i")
+      .attr("class", "cil-clock")
+      .style("display", "inline-block")
+      .style("font-size", "24px")
+      .style("transform", `translate(0,3px)`)
+      .style("margin-left", "50px");
     let option_totalTime_input = option_totalTime.append("input")
       .attr("id", "option_totalTime")
       .attr("type", "range")
       .attr("min", "60000")
       .attr("max", "240000")
-      .attr("step", "10000");
+      .attr("step", "10000")
+      .style("margin-left", "10px");
     document.getElementById("option_totalTime").value = 120000;
-    let option_totalTime_label = option_totalTime.append("label")
-      .html("2 mins")
-      .attr("for", "option_totalTime");
     let option_totalTime_button = option_totalTime.append("input")
       .attr("type", "button")
       .attr("value", "Apply")
+      .style("border-radius", "5px")
+      .style("margin-left", "10px");
+    let option_totalTime_label = option_totalTime.append("label")
+      .html("2 minutes")
+      .attr("for", "option_totalTime")
       .style("display", "block")
-      .style("margin-top", "10px");
+      .style("margin-left", "30px");
     function totalTimeInputHandler() {
       let __totalTime = option_totalTime_input.property("value")
       option_totalTime_label.html(msToMinute(__totalTime));
@@ -1285,46 +1337,6 @@
       //startTime(easeFunc, totalTime, totalTime, dateScale);
     }
 
-    //显示气泡路径开关
-    let option_showPast = options.append("div")
-      .style("display", "none");
-    option_showPast.append('p')
-      .text("Show bubble path: ")
-      .style("font-weight", "bold");
-    let option_showPast_input = option_showPast.append("input")
-      .attr("type", "checkbox")
-      .attr("class", "squared")
-      .attr("id", "showPast_input");
-    option_showPast.append("label")
-      .html("Enable")
-      .attr("for", "showPast_input")
-      .attr("id", "showPast")
-      .style("font-family", "Helvetica");
-
-    //调整字体大小功能
-    let option_fontSize = options.append("div");
-    option_fontSize.append("p")
-      .text("Reset Font Size: ")
-      .style("font-weight", "bold");
-    let option_fontSize_input = option_fontSize.append("input")
-      .attr("type", "number")
-      .attr("id", "option_fontSize")
-      .attr("min", 0)
-      .attr("max", 40)
-      .attr("value", 20)
-      .attr("placeholder", "20(default)");
-    option_fontSize.append("p")
-      .style("display", "inline")
-      .text(" px");
-    let option_fontSize_button = option_fontSize.append("input")
-      .attr("type", "button")
-      .attr("value", "Apply")
-      .style("display", "block")
-      .style("margin-top", "10px");
-    option_fontSize.append("p")
-      .text("(Also try scroll up and down when hover on a bubble.)")
-      .style("width", "150px");
-
     function getMaxHighlightBubbles() {
       let max_story_everyMonth = [];
       let max_topic_everyMonth = [];
@@ -1382,47 +1394,51 @@
     }
 
     //暂停相关设置
-    let option_pauseSetting = options.append("div");
+    let option_pauseSetting = options.append("div")
+      .style("margin-top", "15px")
+      .style("overflow-y", "scroll");
     let enablePause = true;
     let threshhold = 4;
     let maxHighlightBubbles = getMaxHighlightBubbles();
     let pauseTimeFactor = 0.6;//设置一个可调节的影响暂停时间的因子,这里不是0.5是0.6是因为开始的时候并没有对滑块进行任何操作
     option_pauseSetting.append("p")
-      .text("Pause Setting: ")
-      .style("font-weight", "bold");
+      .text("Pause Setting")
+      .style("font-weight", "bold")
+      .style("text-align", "center");
     let option_pauseSetting_content = option_pauseSetting.append("div")
-      .attr("id", "option_pauseSetting_content");
-    let option_pauseSetting_msg = option_pauseSetting.append("p")
-      .text("(Pause function requires at least 2 topics to be selected.)")
-      .style("display", "none");
-    let option_pauseSetting_enablePause = option_pauseSetting_content.append("input")
+      .attr("id", "option_pauseSetting_content")
+      .style("display", "grid")
+      .style("grid-template-columns", "28% 1fr");
+    let option_pauseSetting_content_left = option_pauseSetting_content.append("div");//暂停功能内容grid布局的左边部分
+    let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
+    let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("i")
+      .attr("class", "cil-touch-app")
+      .style("font-size", "50px")
+      .style("display", "inline-block")
+      .style("transform", `translate(15px,0)`);
+    let option_pauseSetting_enablePause = option_pauseSetting_content_left.append("input")
       .attr("type", "checkbox")
-      .attr("class", "squared")
       .attr("id", "enablePause_input")
-      .attr("checked", true);
-    option_pauseSetting_content.append("label")
-      .html("Enable Pause")
+      .attr("checked", true)
+      .style("display", "none");
+    let option_pauseSetting_enablePause_label = option_pauseSetting_content_left.append("label")
+      .html("On")
       .attr("for", "enablePause_input")
       .attr("id", "enablePause")
       .style("font-family", "Helvetica")
-      .style("display", "block");
-    option_pauseSetting_content.append("p")
-      .text("How fast to read a highlighted bubble:")
-    let option_pauseSetting_timePauseFactor = option_pauseSetting_content.append("input")
-      .attr("id", "option_pauseSetting_timePauseFactor")
-      .attr("type", "range")
-      .attr("min", "0.1")
-      .attr("max", "1.0")
-      .attr("step", "0.01");
-    let option_pauseSetting_timePauseFactor_label = option_pauseSetting_content.append("label")
-      .html("0.5 (default)")//1.1-0.6=0.5
-      .attr("for", "option_pauseSetting_timePauseFactor");
-    document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
-    let option_pauseSetting_threshhold = option_pauseSetting_content.append("div")
+      .style("display", "block")
+      .style("transform", `translate(32px,0)`);
+    option_pauseSetting_content_left.append("p")
+      .text("Pause Bubble")
+      .style("text-align", "center")
+      .style("margin-top", "5px");
+    let option_pauseSetting_threshhold = option_pauseSetting_content_right.append("div")
       .attr("class", "option_pauseSetting_threshhold");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
-      .text("Number of colored bubbles: ");
+      .text("Pause when ")
+      .style("display", "inline")
+      .style("margin", "0");
     let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
       .attr("type", "number")
       .attr("id", "option_pauseSetting_input")
@@ -1431,17 +1447,50 @@
       .attr("max", `${maxHighlightBubbles}`)
       .attr("step", 1)
       .attr("placeholder", "4(default)")
+      .style("display", "inline")
+      .style("border-style", "solid")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("border-color", "rgb(216, 216, 216)");
+    option_pauseSetting_threshhold.append("p")
+      .style("width", "150px")
+      .text(" colored bubbles appear at the same time.")
+      .style("display", "inline")
+      .style("margin", "0");
+    option_pauseSetting_content_right.append("p")
+      .text("How fast for pausing:")
+      .style("margin", "15px 0 0 0")
+      .style("padding-right", "10px");
+    let option_pauseSetting_timePauseFactor = option_pauseSetting_content_right.append("input")
+      .attr("id", "option_pauseSetting_timePauseFactor")
+      .attr("type", "range")
+      .attr("min", "0.1")
+      .attr("max", "1.0")
+      .attr("step", "0.01")
       .style("display", "block");
+    let option_pauseSetting_timePauseFactor_label = option_pauseSetting_content_right.append("label")
+      .html("0.5 (default)")//1.1-0.6=0.5
+      .attr("for", "option_pauseSetting_timePauseFactor");
+    document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
+    let option_pauseSetting_msg = option_pauseSetting.append("p")
+      .text("(Pause function requires at least 2 topics to be selected.)")
+      .style("padding", "0 20px")
+      .style("text-align", "center")
+      .style("display", "none");
     function enablePauseCheckedHandler() {
       let maxHighlightBubbles = getMaxHighlightBubbles();
-      if (this.checked) {
-        option_pauseSetting_threshhold.style("display", "contents");
+      if (option_pauseSetting_enablePause.checked) {
+        option_pauseSetting_enablePause.checked = false;
+        option_pauseSetting_enablePause_label.html("On");
+        option_pauseSetting_content_right.style("display", "inline");
         if (maxHighlightBubbles <= 2) {
-          option_pauseSetting_msg.style("display", "contents");
+          option_pauseSetting_msg.style("display", "block");
         }
         enablePause = true;
       } else {
-        option_pauseSetting_threshhold.style("display", "none");
+        option_pauseSetting_enablePause.checked = true;
+        option_pauseSetting_enablePause_label.html("Off");
+        option_pauseSetting_content_right.style("display", "none");
         option_pauseSetting_msg.style("display", "none");
         enablePause = false;
       }
@@ -1479,8 +1528,28 @@
       option_pauseSetting_timePauseFactor_label.html(factor);
     }
 
+    //显示气泡路径开关
+    let option_showPast = options.append("div")
+      .style("display", "none");
+    option_showPast.append('p')//界面改动,这里影藏掉了但是功能保留,请勿删除
+      .text("Show bubble path: ")
+      .style("font-weight", "bold")
+      .style("display", "none");
+    let option_showPast_input = option_showPast.append("input")//界面改动,这里影藏掉了但是功能保留,请勿删除
+      .attr("type", "checkbox")
+      .attr("class", "squared")
+      .attr("id", "showPast_input")
+      .style("display", "none");
+    option_showPast.append("label")//界面改动,这里影藏掉了但是功能保留,请勿删除
+      .html("Enable")
+      .attr("for", "showPast_input")
+      .attr("id", "showPast")
+      .style("font-family", "Helvetica")
+      .style("display", "none");
+
     //突出显示彩色气泡开关
-    let option_highlightColoredBubbles = options.append("div");
+    let option_highlightColoredBubbles = options.append("div")//由于布局变动,此处隐藏,但功能保留,请勿删除
+      .style("display", "none");
     let highlightColoredBubble = false;
     option_highlightColoredBubbles.append("p")
       .text("Highlight Colored Bubbles: ")
@@ -1504,6 +1573,15 @@
         let selectedLabel = getSelectedLabel();
         updateMask(selectedLabel);
       }
+    }
+    function hightlightColoredBubbleIconClickHandler() {
+      let hightlightColoredBubblesCheckbox = document.getElementById("enableHighlightColoredBubbles_input");
+      if (hightlightColoredBubblesCheckbox.checked) {
+        hightlightColoredBubbleIcon.attr("xlink:href", "public/data/bubble/off_icon.png")
+      } else {
+        hightlightColoredBubbleIcon.attr("xlink:href", "public/data/bubble/on_icon.png")
+      }
+      hightlightColoredBubblesCheckbox.click();
     }
 
     let mouseoverDot = null;
@@ -1553,12 +1631,15 @@
     option_totalTime_input.on("input", totalTimeInputHandler);
     option_totalTime_button.on("click", totalTimeButtonClickedHandler);
     option_showPast_input.on("change", showPastCheckedHandler);
+    showPathIcon.on("click", showPastIconClickHandler);
     option_fontSize_button.on("click", fontApplyButtonClickedHandler);
+    option_pauseSetting_enablePause_icon.on("click", enablePauseCheckedHandler);
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
     option_pauseSetting_input.on("change", threshholdChangedHandler);
     option_pauseSetting_input.on("input", threshholdInputHandler);
     option_pauseSetting_timePauseFactor.on("input", pauseTimeFactorInputHandler);
-    option_highlightColoredBubbles_input.on("change", enableHighlightColoredBubblesHandler)
+    option_highlightColoredBubbles_input.on("change", enableHighlightColoredBubblesHandler);
+    hightlightColoredBubbleIcon.on("click", hightlightColoredBubbleIconClickHandler);
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
@@ -1846,6 +1927,14 @@
       updateTraj(currentDate);
     }
 
+    function showPastIconClickHandler() {
+      if (getSelectedLabel().length) {
+        document.getElementById("showPast").click();
+      } else {
+        window.alert("Please select topic first.")
+      }
+    }
+
     function fontApplyButtonClickedHandler() {
       text.style("font-size", option_fontSize_input.property("value"));
     }
@@ -1860,53 +1949,53 @@
 
       if (selectedLabel.length) {
         //选择话题时显示展示路径勾选项
-        option_showPast.style("display", "inline");
+        showPathIcon.style("display", "inline");
 
         //选择话题时隐藏Highlight Colored Bubbles选项
-        option_highlightColoredBubbles.style('display', 'none');
+        hightlightColoredBubbleIcon.style('display', 'none');
 
         if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
             .text("(Pause function requires at least 2 topics to be selected.)")
-            .style("display", "contents");
+            .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
           document.getElementById("option_pauseSetting_input").value = 2;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
-            .style("display", "contents")
-            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+            .style("display", "block")
+            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
-            .style("display", "contents")
-            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+            .style("display", "block")
+            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
           option_pauseSetting_msg.style("display", "none");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
         }
       } else {
         //没有选择任何话题时隐藏展示路劲设置
-        option_showPast.style("display", "none");
+        showPathIcon.style("display", "none");
 
         //没有选择任何话题时展示Highlight Colored Bubbles选项
-        option_highlightColoredBubbles.style('display', 'inline');
+        hightlightColoredBubbleIcon.style('display', 'inline');
 
         document.getElementById("option_pauseSetting_input").value = 4;
         document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
         option_pauseSetting_msg.style("display", "none");
-        document.getElementById("option_pauseSetting_content").style.display = "contents";
+        document.getElementById("option_pauseSetting_content").style.display = "grid";
       }
 
       if (selectedLabelHis.length == 0) {
@@ -2069,53 +2158,53 @@
       }
       if (selectedLabel.length) {
         //有话题被选择时显示展示路径选项
-        option_showPast.style("display", "inline");
+        showPathIcon.style("display", "inline");
 
         //有话题被选择时隐藏Highlight Colored Bubbles选项
-        option_highlightColoredBubbles.style('display', 'none');
+        hightlightColoredBubbleIcon.style('display', 'none');
 
         if (selectedLabel.length < 2) {//选择的话题小于2,隐藏暂停功能并显示提示信息
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
             .text("(Pause function requires at least 2 topics to be selected.)")
-            .style("display", "contents");
+            .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
           document.getElementById("option_pauseSetting_input").value = 2;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
-            .style("display", "contents")
-            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
+            .style("display", "block")
+            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
-            .style("display", "contents")
-            .text("(This value only can be adjust when there are more then 2 colored bubbles in a same month.)");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+            .style("display", "block")
+            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = false;
           threshhold = maxHighlightBubbles;
           option_pauseSetting_msg.style("display", "none");
-          document.getElementById("option_pauseSetting_content").style.display = "contents";
+          document.getElementById("option_pauseSetting_content").style.display = "grid";
         }
       } else {
         //没有任何话题被选择时隐藏展示路劲选项
-        option_showPast.style("display", "none");
+        showPathIcon.style("display", "none");
 
         //没有任何话题被选择时显示Highlight Colored Bubbles选项
-        option_highlightColoredBubbles.style('display', 'inline');
+        hightlightColoredBubbleIcon.style('display', 'inline');
 
         document.getElementById("option_pauseSetting_input").value = 4;
         document.getElementById("option_pauseSetting_input").disabled = false;
         threshhold = 4;
         option_pauseSetting_msg.style("display", "none");
-        document.getElementById("option_pauseSetting_content").style.display = "contents";
+        document.getElementById("option_pauseSetting_content").style.display = "grid";
       }
     }
 
@@ -2593,7 +2682,7 @@
         .duration(timeTodo)
         .ease(easeFunc)
         .attr("T", totalTime);
-        // console.log(dateScale.invert(getTime()))
+      // console.log(dateScale.invert(getTime()))
       svg
         .transition()
         .duration(timeTodo)
@@ -2862,10 +2951,10 @@
         updateVideoAnchor(tmpYear);
         updateText(tmpYear)
         lastProperDate = proper_date;
-        
+
         tempText = findProperText(tmpYear)  //找到此时应该显示的文本
         document.getElementById("mytext").innerText = (tempText ? tempText : "")
-        
+
       }
     }
 
