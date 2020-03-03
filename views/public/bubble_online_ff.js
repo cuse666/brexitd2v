@@ -250,7 +250,7 @@
   //       height +
   //       videoYOffset})`
   //   );
-
+  let captionfontSize = 20;
   let sliderHeight = 10;
   let borderRadius = 5;
   let slider = svg
@@ -471,7 +471,7 @@
         .attr("height", textHeight)
         .attr("width", width)
         .attr("style", "display:flex; align-items:center;justify-content:center;")
-        .style("font-size", "20px")
+        .style("font-size", captionfontSize+ "px")
         .on("dblclick", changeText)
 
 
@@ -1978,7 +1978,8 @@
       text.style("font-size", option_fontSize_input.property("value"));
     }
     function CaptionfontApplyButtonClickedHandler(){
-      document.getElementById("mytextforeignObject").style.fontSize = option_captionfontSize_input.property("value")
+      captionfontSize = option_captionfontSize_input.property("value")
+      document.getElementById("mytextforeignObject").style.fontSize = captionfontSize
     }
 
     function checkedHandler() {
