@@ -7,6 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Twitter hashtag animation FF</title>
   <link rel="stylesheet" href="./public/icon/all.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/rrweb@latest/dist/rrweb.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/rrweb-player@latest/dist/index.js"></script>
+
   <style>
     @import url(https://fonts.googleapis.com/earlyaccess/notosanstc.css);
 
@@ -45,7 +51,8 @@
       height: 325px;
       overflow-y: scroll;
     }
-    #showTextArea{
+
+    #showTextArea {
       /* background:#e6e6e6; */
       font-size: 20px;
       width: 310px;
@@ -488,6 +495,18 @@
       /* background-color: #909099; */
       opacity: 0.3;
     }
+
+    text {
+      moz-user-select: -moz-none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    /*禁止文字被选中*/
 
     .title {
       box-sizing: border-box;

@@ -1,4 +1,7 @@
 (async function main() {
+
+  let events = [];
+
   let en2ch = await getExplanation();
   let lang = "en";
 
@@ -312,9 +315,9 @@
     .style("text-anchor", "end")
     .text(lang === "en" ? "Retweet" : "支持量")
     .attr("class", "xLabel");
-  
+
   d3.select("#showTextArea")
-    .append("p").style("font-size","25px")
+    .append("p").style("font-size", "25px")
     .text("Caption Transcript")
 
   var bisect = d3.bisector(function (d) {
@@ -456,7 +459,7 @@
       .attr("rx", borderRadius)
       .attr("ry", borderRadius)
       .attr("opacity", 0.1)
-    
+
     //.attr("width", `${slider.attr("width")}px`)
     let tempText = "double click to change the text"
 
@@ -471,7 +474,7 @@
         .attr("height", textHeight)
         .attr("width", width)
         .attr("style", "display:flex; align-items:center;justify-content:center;")
-        .style("font-size", captionfontSize+ "px")
+        .style("font-size", captionfontSize + "px")
         .on("dblclick", changeText)
 
 
@@ -618,16 +621,16 @@
           .on("mouseout", MouseOutDate)
           .text(datearr[i].slice(11))
 
-          singleText.append("div")
+        singleText.append("div")
           .style("display", "block")
-          .style("word-wrap","break-word")
+          .style("word-wrap", "break-word")
           .append("text")
           .attr("id", "ta" + i)
           .on("dblclick", () => { deleteText(datearr[i], i) })
           .on("mouseover", MouseOverText)
           .on("mouseout", MouseOutText)
           .text(TextandDate[datearr[i]])
-          singleText.append("hr") //分隔符
+        singleText.append("hr") //分隔符
           .attr("id", "hr" + i)
       }
 
@@ -1250,7 +1253,7 @@
       .style("border-radius", "5px")
       .style("margin-top", "10px")
       .style("margin-left", "30px");
-    
+
     // 调整caption字体大小
     let option_captionfontSize = options.append("div")
       .style("margin-top", "20px");
@@ -1271,7 +1274,7 @@
       .style("border-radius", "5px")
       .style("border-color", "rgb(216, 216, 216)")
       .style("margin-left", "16px");
-      option_captionfontSize.append("p")
+    option_captionfontSize.append("p")
       .style("display", "inline")
       .text(" px");
     let option_captionfontSize_button = option_captionfontSize.append("input")
@@ -1977,7 +1980,7 @@
     function fontApplyButtonClickedHandler() {
       text.style("font-size", option_fontSize_input.property("value"));
     }
-    function CaptionfontApplyButtonClickedHandler(){
+    function CaptionfontApplyButtonClickedHandler() {
       captionfontSize = option_captionfontSize_input.property("value")
       document.getElementById("mytextforeignObject").style.fontSize = captionfontSize
     }
@@ -3014,13 +3017,13 @@
         // let tmpdateString;
         let textToshow = ""
         let children = document.getElementById("oldTextArea").childNodes
-        for(let i=0,len=children.length;i<len-2;i++){ //遍历每一个子节点
+        for (let i = 0, len = children.length; i < len - 2; i++) { //遍历每一个子节点
           let child = children[i];
-          let begin = child.childNodes[0],end = child.childNodes[1]
-          begin = begin.childNodes[0].innerText.slice(0,10) // 开始时间字符串
+          let begin = child.childNodes[0], end = child.childNodes[1]
+          begin = begin.childNodes[0].innerText.slice(0, 10) // 开始时间字符串
           end = end.childNodes[0].innerText //结束时间字符串
           child.style.background = ""
-          if(begin <= dateString && dateString <= end){
+          if (begin <= dateString && dateString <= end) {
             child.style.background = "#e6e6e6"
             textToshow = child.childNodes[2].childNodes[0].innerText
           }
@@ -3973,8 +3976,77 @@
     headSvg
       .append("text")
       .attr("transform", "translate(" + 0 + " ," + 40 + ")")
-      .text("Brexit topic")
-      .style("font-size", "60px");
+      .text("BREXBLE")
+      .style("font-size", "60px")
+      .style("fill", "#003399");
+
+    let middleTitleSvg = d3.select(".middle-title")
+      .append("svg")
+      .attr("height", 60)
+      .attr("width", 1200);
+    middleTitleSvg
+      .append("text")
+      .attr("transform", "translate(" + 0 + " ," + 40 + ")")
+      .text("About")
+      .style("font-size", "40px")
+      .on("mouseover", () => {
+        middleTitleSvg.style("cursor", "hand") //设置光标
+      })
+      .on("dblclick", () => {  //双击事件
+        // console.log("hello")
+      })
+    middleTitleSvg.append("a")
+      .attr("xlink:href", "public/data/bubble/off_icon.png")
+      .attr("download", "icon")
+      .append("text")
+      .attr("transform", "translate(" + 300 + " ," + 40 + ")")
+      .text("Data")
+      .style("font-size", "40px")
+      .on("mouseover", () => {
+        middleTitleSvg.style("cursor", "hand") //设置光标
+      })
+    middleTitleSvg
+      .append("text")
+      .attr("transform", "translate(" + 550 + " ," + 40 + ")")
+      .text("Export")
+      .style("font-size", "40px")
+      .on("mouseover", () => {
+        middleTitleSvg.style("cursor", "hand") //设置光标
+      })
+      .on("click", () => { // 先完成设置 -> 选择文件夹以保存 ->选择区域 -> 从头开始
+        if (confirm("已完成设置，并继续导出视频")) {
+          // 从头开始
+          svg.style("cursor", "none")    // 隐藏鼠标
+          initTime();
+          buttonClickedHandler();
+          let stopFn = rrweb.record({
+            emit(event) {
+              if (event)
+                events.push(event);
+              if (isAnimationFinished) {
+                // isAnimationFinished
+                // 当事件数量大于 20 时停止录制
+                stopFn();
+                document.getElementById("main").remove(); // 删除其余部分
+                new rrwebPlayer({ // 回放
+                  target: document.body, //getElementById("main"), 
+                  data: {
+                    events,
+                  },
+                });
+                // const replayer = new rrweb.Replayer(events);
+                // replayer.play();
+                // events = [];
+              }
+            },
+          });
+        }
+
+
+
+
+
+      })
 
     function updatePast(selector, currentDate, reRenderLine = false) {
       let label = selector.attr("name");
