@@ -2830,7 +2830,8 @@
       let DaysOfTheMonth = MonthOfDate.getDate();
       // console.log(DaysOfTheMonth);
       for (let i = 1; i <= DaysOfTheMonth; i++) { // find proper day
-        new_date.setDate(i); //+1 days
+        if (new_date < endDate)
+          new_date.setDate(i); //+1 days
         // find center of new cx, cy for pause
         let sum_x = 0;
         let sum_y = 0;
@@ -2982,15 +2983,16 @@
         horizontalText.data(dataset).call(horTextPosition);
         verticalText.data(dataset).call(verTextPosition);
         textPosition(dataset);
-        if (year_month_date <= limitDate) {
+        if (year_month_date < limitDate) {
           // console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
           monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
         }
         else {
+          // console.log("isAnimationFinished == true")
           isAnimationFinished = true;
-          // buttonPlay = false; //没有真正停止
-          // button.attr("xlink:href", `public/data/bubble/pause.svg`);
-          buttonClickedHandler();
+          buttonPlay = false;
+          button.attr("xlink:href", `public/data/bubble/pause.svg`);
+          // buttonClickedHandler();
           enableCursor();
         }
         let tmpYear = new Date(year_month_date);
@@ -3980,6 +3982,57 @@
       .style("font-size", "60px")
       .style("fill", "#003399");
 
+    let Events2JSON = null;
+    function Replayer(Events2JSON) {  // 参数为JSON文件
+      // To-do 从文件中解析数组
+      let evts = JSON.parse(Events2JSON).events
+
+      let replayer = new rrwebPlayer({ // 回放
+        target: document.body, //getElementById("main"), 
+        data: {
+          events: evts,
+          // width: document.body.clientWidth,
+          // height: document.body.clientHeight,
+          autoPlay: false,
+          showController: true
+        },
+      });
+      try {
+        replayer.fullscreen()
+      } catch (error) {
+        console.log("error")
+      }
+    }
+
+    document.addEventListener('fullscreenchange', () => {
+      // 进入全屏，不操作；退出全屏，删除原视频。
+      if (document.fullscreen) {//进入全屏
+        console.log("进入全屏")
+        let elements = document.getElementsByClassName("replayer-mouse") // 删除鼠标
+        if (elements.length != 0)
+          elements[0].parentNode.removeChild(elements[0]);
+
+        elements = document.getElementsByClassName("rr-player svelte-1wetjm2")
+        let len = elements.length;
+        if (len >= 2) { // 如果有多个视频，只删除一个。
+          for (let i = len - 1; i >= 1; i--) {
+            if (elements.item(i))
+              elements.item(i).parentNode.removeChild(elements.item(i));
+          }
+        }
+
+      }
+      else {  // 退出全屏
+        console.log("退出全屏")
+        let elements = document.getElementsByClassName("rr-player svelte-1wetjm2")
+        let len = elements.length;
+        for (let i = len - 1; i >= 0; i--) {
+          if (elements.item(i))
+            elements.item(i).parentNode.removeChild(elements.item(i));
+        }
+      }
+    });
+
     let middleTitleSvg = d3.select(".middle-title")
       .append("svg")
       .attr("height", 60)
@@ -4005,47 +4058,146 @@
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
       })
+    var textNode1 = document.createTextNode("选择文件");
+    middleTitleSvg.append("foreignObject")
+      .attr("x", 775)
+      .attr("y", 10)
+      .attr("height", 40)
+      .attr("width", 100)
+      .append("xhtml:div")
+      .attr("id", "inputFileDiv")
+      // .attr("style", "width: 100%;height: 100%;text-align:center;")
+      .attr("class", "file")
+      .append("input")
+      .attr("type", "file")
+      .attr("id", "files")
+    document.getElementById("inputFileDiv").appendChild(textNode1)
+
+    var inputElement = document.getElementById("files");
+    if (inputElement)
+      inputElement.addEventListener("change", handleFiles, false);
+    function handleFiles() {
+      var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+      // var name = selectedFile.name;//读取选中文件的文件名
+      // var size = selectedFile.size;//读取选中文件的大小
+      // console.log("文件名:" + name + "大小：" + size);
+      var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+      reader.readAsText(selectedFile);//读取文件的内容
+
+      reader.onload = function () {
+        Events2JSON = this.result;
+        Replayer(Events2JSON)
+      };
+    }
+
     middleTitleSvg
       .append("text")
-      .attr("transform", "translate(" + 550 + " ," + 40 + ")")
+      .attr("id", "export")
+      .attr("transform", "translate(" + 600 + " ," + 40 + ")")
       .text("Export")
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
       })
       .on("click", () => { // 先完成设置 -> 选择文件夹以保存 ->选择区域 -> 从头开始
+        events = [];
         if (confirm("已完成设置，并继续导出视频")) {
-          // 从头开始
-          svg.style("cursor", "none")    // 隐藏鼠标
-          initTime();
-          buttonClickedHandler();
-          let stopFn = rrweb.record({
+          let BorderofMain = document.getElementById("main").style.border;
+          let BorderofContainer = document.getElementsByClassName("container")[0].style.border;
+          let BorderofChartAside = document.getElementById("chartAside").style.border;
+
+          document.getElementById("main").style.border = "none";
+          document.getElementsByClassName("container")[0].style.border = "none";
+          document.getElementById("chartAside").style.border = "none";
+
+          let selectedLabel = getSelectedLabel();
+          if (selectedLabel.length) {
+            let { earliestTime, latestTime } = calcEarliestTime(selectedLabel)
+            currentTime = earliestTime * totalTime
+            let currentDate = dateScale.invert(currentTime);
+            updateVideoAnchor(currentDate)
+            setTime(currentTime)
+          } else {
+            initTime(); // 设置从头开始
+          }
+
+          if (!buttonPlay)
+            buttonClickedHandler();
+          if (document.getElementById("Repalyer"))
+            document.getElementById("Repalyer").remove()
+
+          let stopFn = rrweb.record({ // 记录
             emit(event) {
-              if (event)
+              if (event && event.data.source != 1 && event.data.source != 2) // 不记录鼠标
                 events.push(event);
-              if (isAnimationFinished) {
-                // isAnimationFinished
-                // 当事件数量大于 20 时停止录制
+
+              let timeTodo = totalTime - getTime();
+              // console.log(timeTodo)
+              if (isAnimationFinished || timeTodo < 100) { // 停止录制
+                if (buttonPlay)
+                  buttonClickedHandler();
+                console.log("finished")
                 stopFn();
-                document.getElementById("main").remove(); // 删除其余部分
-                new rrwebPlayer({ // 回放
-                  target: document.body, //getElementById("main"), 
-                  data: {
-                    events,
-                  },
-                });
-                // const replayer = new rrweb.Replayer(events);
-                // replayer.play();
-                // events = [];
+                let eventOftype4 = null;  // "Meta"
+                let eventOftype2 = null; // "FullSnapshot"
+                for (let i = 0; i < events.length; i++) { // 
+                  if (events[i].type === 4)
+                    eventOftype4 = events[i];
+                  if (events[i].type === 2)
+                    eventOftype2 = events[i];
+                  if (eventOftype2 && eventOftype4)
+                    break;  // 全部找到
+                }
+                if (eventOftype4) {
+                  eventOftype4.data.width = 1300
+                  eventOftype4.data.height = 800;
+                }
+
+                let divmain = eventOftype2.data.node.childNodes[1].childNodes[2].childNodes[1]
+                // console.log(divmain)
+                let divcontainer = divmain.childNodes[5]
+                // console.log(divcontainer)
+                let divChartaside = divcontainer.childNodes[3]
+                // console.log(divChartaside)
+
+                divcontainer.childNodes = [];
+                divcontainer.childNodes.push(divChartaside);
+                // console.log(divcontainer)
+                divmain.childNodes = [];
+                divmain.childNodes.push(divcontainer);
+                // console.log(divmain)
+
+                Events2JSON = JSON.stringify({ events });
+                //将json文件保存到其它地方。
+                var blob = new Blob([Events2JSON], { type: "text/plain;charset=utf-8" });
+                saveAs(blob, "events.json");
+
+                events = [];  // 设为空
+
+                // Replayer(Events2JSON); // 没有必要立马播放
+                document.getElementById("main").style.border = BorderofMain
+                document.getElementsByClassName("container")[0].style.border = BorderofContainer
+                document.getElementById("chartAside").style.border = BorderofChartAside
+
+                if (!document.getElementById("Repalyer"))
+                  middleTitleSvg  // 新增一个 Repaly按钮。
+                    .append("text")
+                    .attr("id", "Repalyer")
+                    .attr("transform", "translate(" + 900 + " ," + 40 + ")")
+                    .text("Repaly")
+                    .style("font-size", "40px")
+                    .on("mouseover", () => {
+                      middleTitleSvg.style("cursor", "hand") //设置光标
+                    })
+                    .on("click", () => {
+                      Replayer(Events2JSON);
+                    });
+                alert("Export success!")
               }
             },
           });
+
         }
-
-
-
-
-
       })
 
     function updatePast(selector, currentDate, reRenderLine = false) {
