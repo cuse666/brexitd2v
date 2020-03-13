@@ -2170,7 +2170,7 @@
 
       updateVideoAnchor(currentDate)
       // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()) 没有问题
-      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
+      monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
       setTime(currentTime)
       //**************************************************************************************************** */
       updateMask(selectedLabel);
@@ -2292,7 +2292,7 @@
 
             updateVideoAnchor(currentDate)
             // console.log(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate())
-            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1) + "/" + currentDate.getDate()); //更新月份
+            monthText.text(currentDate.getFullYear() + "/" + (currentDate.getMonth() + 1)); //更新月份
             setTime(currentTime)
 
             buttonPlay = !buttonPlay;
@@ -2985,7 +2985,7 @@
         textPosition(dataset);
         if (year_month_date < limitDate) {
           // console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
-          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
+          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
         }
         else {
           // console.log("isAnimationFinished == true")
