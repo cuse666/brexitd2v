@@ -25,7 +25,7 @@
     .append("div")
     .attr("class", "options")
     .style("display", "grid")
-    .style("grid-template-rows", "62px 62px 62px 226px");
+    .style("grid-template-rows", "20px 20px 77px 226px");
 
   // scale
   var y = d3
@@ -319,6 +319,7 @@
   d3.select("#showTextArea")
     .append("p").style("font-size", "25px")
     .text("Caption Transcript")
+    .style("text-align", "center");
 
   var bisect = d3.bisector(function (d) {
     return d[0];
@@ -1225,7 +1226,7 @@
 
     //调整字体大小功能
     let option_fontSize = options.append("div")
-      .style("margin-top", "20px");
+      .style("padding-left", "25px");
     option_fontSize.append("p")
       .text("Bubble Font: ")
       .style("display", "inline")
@@ -1242,7 +1243,7 @@
       .style("border-width", "1px")
       .style("border-radius", "5px")
       .style("border-color", "rgb(216, 216, 216)")
-      .style("margin-left", "20px");
+      .style("margin-left", "22px");
     option_fontSize.append("p")
       .style("display", "inline")
       .text(" px");
@@ -1252,11 +1253,11 @@
       .style("display", "inline")
       .style("border-radius", "5px")
       .style("margin-top", "10px")
-      .style("margin-left", "30px");
+      .style("margin-left", "29px");
 
     // 调整caption字体大小
     let option_captionfontSize = options.append("div")
-      .style("margin-top", "20px");
+      .style("padding-left", "25px");
     option_captionfontSize.append("p")
       .text("Caption Font: ")
       .style("display", "inline")
@@ -1288,13 +1289,13 @@
     //视频时间设置
     let totalTime = 120000;
     let option_totalTime = options.append("div")
-      .style("margin-top", "10px");
+      .style("margin-top", "28px");
     option_totalTime.append("i")
       .attr("class", "cil-clock")
       .style("display", "inline-block")
       .style("font-size", "24px")
       .style("transform", `translate(0,3px)`)
-      .style("margin-left", "50px");
+      .style("margin-left", "46px");
     let option_totalTime_input = option_totalTime.append("input")
       .attr("id", "option_totalTime")
       .attr("type", "range")
@@ -1307,7 +1308,7 @@
       .attr("type", "button")
       .attr("value", "Apply")
       .style("border-radius", "5px")
-      .style("margin-left", "10px");
+      .style("margin-left", "14px");
     let option_totalTime_label = option_totalTime.append("label")
       .html("2 minutes")
       .attr("for", "option_totalTime")
@@ -1436,27 +1437,31 @@
 
     //暂停相关设置
     let option_pauseSetting = options.append("div")
-      .style("margin-top", "15px")
       .style("overflow-y", "scroll");
     let enablePause = true;
     let threshhold = 4;
     let maxHighlightBubbles = getMaxHighlightBubbles();
     let pauseTimeFactor = 0.6;//设置一个可调节的影响暂停时间的因子,这里不是0.5是0.6是因为开始的时候并没有对滑块进行任何操作
-    option_pauseSetting.append("p")
+    option_pauseSetting.append("div")
       .text("Pause Setting")
-      .style("font-weight", "bold")
-      .style("text-align", "center");
+      .style("text-align", "center")
+      .style("font-size", "18px")
+      .style("font-weight", "600")
+      .style("padding-top", "30px")
+      .style("color", "#565656");
     let option_pauseSetting_content = option_pauseSetting.append("div")
       .attr("id", "option_pauseSetting_content")
       .style("display", "grid")
-      .style("grid-template-columns", "28% 1fr");
+      .style("grid-template-columns", "28% 1fr")
+      .style("padding-top", "20px");
     let option_pauseSetting_content_left = option_pauseSetting_content.append("div");//暂停功能内容grid布局的左边部分
     let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
     let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("i")
       .attr("class", "cil-touch-app")
       .style("font-size", "50px")
       .style("display", "inline-block")
-      .style("transform", `translate(15px,0)`);
+      .style("transform", `translate(15px,0)`)
+      .style("cursor", "pointer");
     let option_pauseSetting_enablePause = option_pauseSetting_content_left.append("input")
       .attr("type", "checkbox")
       .attr("id", "enablePause_input")
@@ -1468,11 +1473,7 @@
       .attr("id", "enablePause")
       .style("font-family", "Helvetica")
       .style("display", "block")
-      .style("transform", `translate(32px,0)`);
-    option_pauseSetting_content_left.append("p")
-      .text("Pause Bubble")
-      .style("text-align", "center")
-      .style("margin-top", "5px");
+      .style("transform", `translate(35px,5px)`);
     let option_pauseSetting_threshhold = option_pauseSetting_content_right.append("div")
       .attr("class", "option_pauseSetting_threshhold");
     option_pauseSetting_threshhold.append("p")
