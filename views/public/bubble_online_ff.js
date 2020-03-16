@@ -1438,42 +1438,54 @@
     let maxHighlightBubbles = getMaxHighlightBubbles();
     let pauseTimeFactor = 0.6;//设置一个可调节的影响暂停时间的因子,这里不是0.5是0.6是因为开始的时候并没有对滑块进行任何操作
     option_pauseSetting.append("div")
-      .text("Pause Setting")
+      .text("Auto Pause")
       .style("text-align", "center")
       .style("font-size", "18px")
       .style("font-weight", "600")
-      .style("padding-top", "30px")
+      .style("padding-top", "17px")
       .style("color", "#565656");
     let option_pauseSetting_content = option_pauseSetting.append("div")
       .attr("id", "option_pauseSetting_content")
       .style("display", "grid")
-      .style("grid-template-columns", "28% 1fr")
+      .style("grid-template-columns", "50% 1fr")
       .style("padding-top", "20px");
-    let option_pauseSetting_content_left = option_pauseSetting_content.append("div");//暂停功能内容grid布局的左边部分
+    let option_pauseSetting_content_left = option_pauseSetting_content
+      .append("div")//暂停功能内容grid布局的左边部分
+      .style("transform", "translate(40px, 0px)")
     let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
-    let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("i")
-      .attr("class", "cil-touch-app")
-      .style("font-size", "50px")
-      .style("display", "inline-block")
-      .style("transform", `translate(15px,0)`)
-      .style("cursor", "pointer");
+    let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("img")
+      .attr("src", "public/icon/autopause_ON.png")
+      .attr("width", "50px")
+      .attr("height", "50px")
+      .style("cursor", "pointer")
+      .style("margin-left", "53px");
     let option_pauseSetting_enablePause = option_pauseSetting_content_left.append("input")
       .attr("type", "checkbox")
       .attr("id", "enablePause_input")
       .attr("checked", true)
       .style("display", "none");
     let option_pauseSetting_enablePause_label = option_pauseSetting_content_left.append("label")
-      .html("On")
+      .html("ON")
       .attr("for", "enablePause_input")
       .attr("id", "enablePause")
       .style("font-family", "Helvetica")
       .style("display", "block")
-      .style("transform", `translate(35px,5px)`);
-    let option_pauseSetting_threshhold = option_pauseSetting_content_right.append("div")
-      .attr("class", "option_pauseSetting_threshhold");
+      .style("text-align", "center")
+      .style("width", "50%")
+      .style("margin", "auto");
+    let option_pauseSetting_threshhold = option_pauseSetting_content_left.append("div")
+      .attr("class", "option_pauseSetting_threshhold")
+      .style("width", "50%")
+      .style("text-align", "center")
+      .style("margin", "auto")
+      .style("margin-top", "5px")
+      .style("padding-top", "5px")
+      .style("padding-bottom", "5px")
+      .style("border", "solid black")
+      .style("border-radius", "5px");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
-      .text("Pause when ")
+      .text("MINIMUM COLORED BUBBLES")
       .style("display", "inline")
       .style("margin", "0");
     let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
@@ -1484,30 +1496,24 @@
       .attr("max", `${maxHighlightBubbles}`)
       .attr("step", 1)
       .attr("placeholder", "4(default)")
-      .style("display", "inline")
-      .style("border-style", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("border-color", "rgb(216, 216, 216)");
-    option_pauseSetting_threshhold.append("p")
-      .style("width", "150px")
-      .text(" colored bubbles appear at the same time.")
-      .style("display", "inline")
-      .style("margin", "0");
+      .style("color", "black")
+      .style("border-style", "solid");
     option_pauseSetting_content_right.append("p")
-      .text("How fast for pausing:")
-      .style("margin", "15px 0 0 0")
-      .style("padding-right", "10px");
+      .text("Fast")
+      .style("margin-top", "0")
+      .style("margin-left", "25px");
     let option_pauseSetting_timePauseFactor = option_pauseSetting_content_right.append("input")
       .attr("id", "option_pauseSetting_timePauseFactor")
       .attr("type", "range")
       .attr("min", "0.1")
       .attr("max", "1.0")
       .attr("step", "0.01")
-      .style("display", "block");
-    let option_pauseSetting_timePauseFactor_label = option_pauseSetting_content_right.append("label")
-      .html("0.5 (default)")//1.1-0.6=0.5
-      .attr("for", "option_pauseSetting_timePauseFactor");
+      .style("display", "block")
+      .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.9)")
+      .style("height", "100px");
+    option_pauseSetting_content_right.append("p")
+      .html("Slow")
+      .style("margin-left", "25px");
     document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
     let option_pauseSetting_msg = option_pauseSetting.append("p")
       .text("(Pause function requires at least 2 topics to be selected.)")
@@ -1518,16 +1524,26 @@
       let maxHighlightBubbles = getMaxHighlightBubbles();
       if (option_pauseSetting_enablePause.checked) {
         option_pauseSetting_enablePause.checked = false;
-        option_pauseSetting_enablePause_label.html("On");
-        option_pauseSetting_content_right.style("display", "inline");
+        option_pauseSetting_enablePause_label.html("ON");
+        option_pauseSetting_enablePause_icon.attr("src", "public/icon/autopause_ON.png");
+        option_pauseSetting_input
+          .attr("disabled", null)
+          .style("background-color", "white");
+        option_pauseSetting_timePauseFactor.attr("disabled", null);
+        option_pauseSetting_content_right.style("color", "black");
         if (maxHighlightBubbles <= 2) {
           option_pauseSetting_msg.style("display", "block");
         }
         enablePause = true;
       } else {
         option_pauseSetting_enablePause.checked = true;
-        option_pauseSetting_enablePause_label.html("Off");
-        option_pauseSetting_content_right.style("display", "none");
+        option_pauseSetting_enablePause_label.html("OFF");
+        option_pauseSetting_enablePause_icon.attr("src", "public/icon/autopause_OFF.png");
+        option_pauseSetting_input
+          .attr("disabled", "true")
+          .style("background-color", "rgb(225,228,228 )");
+        option_pauseSetting_timePauseFactor.attr("disabled", "true");
+        option_pauseSetting_content_right.style("color", "grey");
         option_pauseSetting_msg.style("display", "none");
         enablePause = false;
       }
@@ -1552,17 +1568,6 @@
     function pauseTimeFactorInputHandler() {
       let factor = option_pauseSetting_timePauseFactor.property('value');
       pauseTimeFactor = 1.1 - factor;//由于用户直观上会认为大的factor会更快,所以实际赋值对factor做一个颠倒(factor的范围为0.1~1)
-      if (factor >= 0.8) {
-        factor += ' (fast)';
-      } else if (factor <= 0.4) {
-        factor += ' (slow)';
-      } else if (factor == 0.5) {
-        factor += ' (default)'
-      }
-      else {
-        factor += ' (normal)'
-      }
-      option_pauseSetting_timePauseFactor_label.html(factor);
     }
 
     //显示气泡路径开关
