@@ -25,7 +25,7 @@
     .append("div")
     .attr("class", "options")
     .style("display", "grid")
-    .style("grid-template-rows", "20px 20px 77px 226px");
+    .style("grid-template-rows", "30px 30px 66px 226px");
 
   // scale
   var y = d3
@@ -827,8 +827,7 @@
       // 与rightAside保持一致吧 Keep up with rightAside
       .style("width", "410");
     let pivotLines = rightAsideSvg.append("g");
-    let showPathIcon = rightAsideSvg.append("g")
-      .style("display", "none");
+    let showPathIconG = rightAsideSvg.append("g");
     let hightlightColoredBubbleG = rightAsideSvg.append("g");
 
     pivotLines
@@ -855,13 +854,14 @@
       .attr("y2", svgHeight - 50)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#EE504E");
-    showPathIcon
+    let showPathIcon = showPathIconG
       .append("image")
       .attr("height", "35px")
       .attr("width", "35px")
-      .attr("xlink:href", "public/data/bubble/path.svg")
-      .style("transform", `translate(10px,${height + 103}px)`)
-      .style("cursor", "pointer");
+      .attr("xlink:href", "public/icon/path_OFF.png")
+      .style("transform", `translate(15px,${height + 105}px)`)
+      .style("cursor", "pointer")
+      .style("display", "none");
     let hightlightColoredBubbleIcon = hightlightColoredBubbleG
       .append("image")
       .attr("height", "35px")
@@ -1226,70 +1226,65 @@
 
     //调整字体大小功能
     let option_fontSize = options.append("div")
-      .style("padding-left", "25px");
-    option_fontSize.append("p")
-      .text("Bubble Font: ")
-      .style("display", "inline")
-      .style("margin-left", "22px");
+      .style("padding-left", "30px")
+      .style("margin-top", "5px");
+    option_fontSize.append("img")
+      .attr("src", "public/icon/BubbleFont.png")
+      .attr("height", "25px")
+      .attr("width", "25px")
+      .style("margin-left", "20px")
+      .style("transform", `translate(0px,5px)`);
     let option_fontSize_input = option_fontSize.append("input")
-      .attr("type", "number")
-      .attr("id", "option_fontSize")
-      .attr("min", 0)
-      .attr("max", 40)
+      .attr("type", "range")
+      .attr("min", 10)
+      .attr("max", 27)
       .attr("value", 20)
-      .attr("placeholder", "20(default)")
       .style("display", "inline")
-      .style("border-style", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("border-color", "rgb(216, 216, 216)")
-      .style("margin-left", "22px");
-    option_fontSize.append("p")
-      .style("display", "inline")
-      .text(" px");
-    let option_fontSize_button = option_fontSize.append("input")
-      .attr("type", "button")
-      .attr("value", "Apply")
-      .style("display", "inline")
-      .style("border-radius", "5px")
-      .style("margin-top", "10px")
-      .style("margin-left", "29px");
+      .style("margin-left", "10px");
+    option_fontSize.append("i")
+      .attr("class", "cil-text-size")
+      .style("font-size", "30px")
+      .style("display", "inline-block")
+      .style("transform", `translate(0px,3px)`)
+      .style("margin-left", "10px");
+    function bubbleFontSizeChangeHandler() {
+      text.style("font-size", option_fontSize_input.property("value"));
+    }
 
     // 调整caption字体大小
     let option_captionfontSize = options.append("div")
-      .style("padding-left", "25px");
-    option_captionfontSize.append("p")
-      .text("Caption Font: ")
-      .style("display", "inline")
-      .style("margin-left", "22px");
+      .style("padding-left", "30px")
+      .style("margin-top", "5px");
+    option_captionfontSize.append("img")
+      .attr("src", "public/icon/caption.png")
+      .attr("height", "30px")
+      .attr("width", "30px")
+      .style("margin-left", "18px")
+      .style("transform", `translate(0px,8px)`);
     let option_captionfontSize_input = option_captionfontSize.append("input")
-      .attr("type", "number")
-      .attr("id", "option_captionfontSize")
-      .attr("min", 0)
-      .attr("max", 40)
+      .attr("type", "range")
+      .attr("min", 14)
+      .attr("max", 23)
       .attr("value", 20)
-      .attr("placeholder", "20(default)")
       .style("display", "inline")
-      .style("border-style", "solid")
-      .style("border-width", "1px")
-      .style("border-radius", "5px")
-      .style("border-color", "rgb(216, 216, 216)")
-      .style("margin-left", "16px");
-    option_captionfontSize.append("p")
-      .style("display", "inline")
-      .text(" px");
-    let option_captionfontSize_button = option_captionfontSize.append("input")
-      .attr("type", "button")
-      .attr("value", "Apply")
-      .style("display", "inline")
-      .style("border-radius", "5px")
-      .style("margin-top", "10px")
-      .style("margin-left", "30px");
+      .style("margin-left", "7px");
+    option_captionfontSize.append("i")
+      .attr("class", "cil-text-size")
+      .style("font-size", "30px")
+      .style("display", "inline-block")
+      .style("transform", `translate(0px,5px)`)
+      .style("margin-left", "10px");
+    function captionFontSizeChangeHandler() {
+      captionfontSize = option_captionfontSize_input.property("value");
+      document.getElementById("mytextforeignObject").style.fontSize = captionfontSize;
+    }
 
     //视频时间设置
     let totalTime = 120000;
     let option_totalTime = options.append("div")
-      .style("margin-top", "28px");
+      .style("margin-top", "14px")
+      .style("padding-left", "5px")
+      .style("border-bottom", "dashed 1px #e6e6e6");
     option_totalTime.append("i")
       .attr("class", "cil-clock")
       .style("display", "inline-block")
@@ -1308,7 +1303,7 @@
       .attr("type", "button")
       .attr("value", "Apply")
       .style("border-radius", "5px")
-      .style("margin-left", "14px");
+      .style("margin-left", "4px");
     let option_totalTime_label = option_totalTime.append("label")
       .html("2 minutes")
       .attr("for", "option_totalTime")
@@ -1674,8 +1669,8 @@
     option_totalTime_button.on("click", totalTimeButtonClickedHandler);
     option_showPast_input.on("change", showPastCheckedHandler);
     showPathIcon.on("click", showPastIconClickHandler);
-    option_fontSize_button.on("click", fontApplyButtonClickedHandler);
-    option_captionfontSize_button.on("click", CaptionfontApplyButtonClickedHandler);
+    option_fontSize_input.on("input", bubbleFontSizeChangeHandler);
+    option_captionfontSize_input.on("input", captionFontSizeChangeHandler);
     option_pauseSetting_enablePause_icon.on("click", enablePauseCheckedHandler);
     option_pauseSetting_enablePause.on("change", enablePauseCheckedHandler);
     option_pauseSetting_input.on("change", threshholdChangedHandler);
@@ -1972,18 +1967,16 @@
 
     function showPastIconClickHandler() {
       if (getSelectedLabel().length) {
-        document.getElementById("showPast").click();
+        let showPast_Input = document.getElementById("showPast_input");
+        showPast_Input.click();
+        if (showPast_Input.checked) {
+          showPathIcon.attr("xlink:href", "public/icon/path_ON.png")
+        } else {
+          showPathIcon.attr("xlink:href", "public/icon/path_OFF.png")
+        }
       } else {
         window.alert("Please select topic first.")
       }
-    }
-
-    function fontApplyButtonClickedHandler() {
-      text.style("font-size", option_fontSize_input.property("value"));
-    }
-    function CaptionfontApplyButtonClickedHandler() {
-      captionfontSize = option_captionfontSize_input.property("value")
-      document.getElementById("mytextforeignObject").style.fontSize = captionfontSize
     }
 
     function checkedHandler() {
@@ -3370,7 +3363,7 @@
         .style("fill", "#565656")
         .style("font-weight", "700")
         .attr("font-size", "18")
-        .text("Topic popularity");
+        .text("Hashtag pulse");
 
       svg.append("text")
         .attr("id", "highlightTopic")
