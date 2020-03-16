@@ -1489,7 +1489,6 @@
       .style("display", "inline")
       .style("margin", "0");
     let option_pauseSetting_input = option_pauseSetting_threshhold.append("input")
-      .attr("type", "number")
       .attr("id", "option_pauseSetting_input")
       .attr("value", "4")
       .attr("min", "2")
@@ -1497,7 +1496,9 @@
       .attr("step", 1)
       .attr("placeholder", "4(default)")
       .style("color", "black")
-      .style("border-style", "solid");
+      .style("border-style", "solid")
+      .style("width", "20px")
+      .style("text-align", "center");
     option_pauseSetting_content_right.append("p")
       .text("Fast")
       .style("margin-top", "0")
