@@ -1239,8 +1239,10 @@
       .attr("min", 10)
       .attr("max", 27)
       .attr("value", 20)
+      .attr("class", "disabled")
       .style("display", "inline")
-      .style("margin-left", "10px");
+      .style("margin-left", "10px")
+      .style("transform", `translate(0,-6px)`);
     option_fontSize.append("i")
       .attr("class", "cil-text-size")
       .style("font-size", "30px")
@@ -1266,6 +1268,7 @@
       .attr("min", 14)
       .attr("max", 23)
       .attr("value", 20)
+      .attr("class", "disabled")
       .style("display", "inline")
       .style("margin-left", "7px");
     option_captionfontSize.append("i")
@@ -1297,6 +1300,7 @@
       .attr("min", "60000")
       .attr("max", "240000")
       .attr("step", "10000")
+      .attr("class", "disabled")
       .style("margin-left", "10px");
     document.getElementById("option_totalTime").value = 120000;
     let option_totalTime_button = option_totalTime.append("input")
@@ -1514,9 +1518,10 @@
       .attr("min", "0.1")
       .attr("max", "1.0")
       .attr("step", "0.01")
+      .attr("class", "disabled")
       .style("display", "block")
       .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
-      .style("height", "100px");
+      .style("height", "90px");
     option_pauseSetting_content_right.append("p")
       .text("Long Pause")
       .style("width", "50px")
@@ -1578,6 +1583,20 @@
       let factor = option_pauseSetting_timePauseFactor.property('value');
       pauseTimeFactor = 1.1 - factor;//由于用户直观上会认为大的factor会更快,所以实际赋值对factor做一个颠倒(factor的范围为0.1~1)
     }
+
+    //滑条JS
+    $('input[type=range]').wrap("<div class='range'></div>");
+    var i = 1;
+
+    $('.range').each(function () {
+      this.id = 'range' + i;
+      if (this.getElementsByTagName('input')[0].value == 0) {
+        this.className = "range"
+      } else {
+        this.className = "range rangeM"
+      }
+      i++
+    });
 
     //显示气泡路径开关
     let option_showPast = options.append("div")
