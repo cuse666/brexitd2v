@@ -1486,7 +1486,7 @@
       .style("margin-top", "5px")
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
-      .style("border", "solid black")
+      .style("border", "2px solid black")
       .style("border-radius", "5px")
       .style("z-index", "2");
     option_pauseSetting_threshhold.append("p")
@@ -1503,7 +1503,8 @@
       .attr("placeholder", "4(default)")
       .style("color", "black")
       .style("border-style", "solid")
-      .style("width", "20px")
+      .style("width", "30px")
+      .style("height", "30px")
       .style("display", "block")
       .style("text-align", "center")
       .style("margin", "auto");
