@@ -1455,7 +1455,7 @@
       .style("padding-top", "20px");
     let option_pauseSetting_content_left = option_pauseSetting_content
       .append("div")//暂停功能内容grid布局的左边部分
-      .style("transform", "translate(30px, 0px)")
+      .style("transform", "translate(40px, 0px)")
       .style("width", "100%")
       .style("text-align", "center");
     let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
@@ -1480,7 +1480,7 @@
       .style("margin", "auto");
     let option_pauseSetting_threshhold = option_pauseSetting_content_left.append("div")
       .attr("class", "option_pauseSetting_threshhold")
-      .style("width", "50%")
+      .style("width", "40%")
       .style("text-align", "center")
       .style("margin", "auto")
       .style("margin-top", "5px")
@@ -1502,8 +1502,10 @@
       .attr("step", 1)
       .attr("placeholder", "4(default)")
       .style("color", "black")
-      .style("border-style", "solid")
-      .style("width", "30px")
+      .style("border-style", "none")
+      .style("border-bottom", "2px solid black")
+      .style("font-size", "25px")
+      .style("width", "50px")
       .style("height", "30px")
       .style("display", "block")
       .style("text-align", "center")
@@ -1511,6 +1513,7 @@
     option_pauseSetting_content_right.append("p")
       .text("Brief Pause")
       .style("width", "50px")
+      .style("font-weight", "bold")
       .style("margin-top", "0")
       .style("margin-left", "12px")
       .style("margin-bottom", "0")
@@ -1528,12 +1531,13 @@
     option_pauseSetting_content_right.append("p")
       .text("Long Pause")
       .style("width", "50px")
+      .style("font-weight", "bold")
       .style("margin-left", "12px")
       .style("margin-top", "0")
       .style("text-align", "center");
     document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
     let option_pauseSetting_msg = option_pauseSetting.append("p")
-      .text("(Pause function requires at least 2 topics to be selected.)")
+      .text("(Pause function requires at least TWO hashtags to be selected.)")
       .style("padding", "0 20px")
       .style("text-align", "center")
       .style("display", "none");
@@ -2035,7 +2039,7 @@
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
-            .text("(Pause function requires at least 2 topics to be selected.)")
+            .text("(Pause function requires at least TWO hashtags to be selected.)")
             .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
@@ -2045,14 +2049,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
@@ -2246,7 +2250,7 @@
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
-            .text("(Pause function requires at least 2 topics to be selected.)")
+            .text("(Pause function requires at least TWO hashtags to be selected.)")
             .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
@@ -2256,14 +2260,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
