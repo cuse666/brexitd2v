@@ -1455,14 +1455,15 @@
       .style("padding-top", "20px");
     let option_pauseSetting_content_left = option_pauseSetting_content
       .append("div")//暂停功能内容grid布局的左边部分
-      .style("transform", "translate(40px, 0px)")
+      .style("transform", "translate(30px, 0px)")
+      .style("width", "100%")
+      .style("text-align", "center");
     let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
     let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("img")
       .attr("src", "public/icon/autopause_ON.png")
       .attr("width", "50px")
       .attr("height", "50px")
-      .style("cursor", "pointer")
-      .style("margin-left", "53px");
+      .style("cursor", "pointer");
     let option_pauseSetting_enablePause = option_pauseSetting_content_left.append("input")
       .attr("type", "checkbox")
       .attr("id", "enablePause_input")
@@ -1486,7 +1487,8 @@
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
       .style("border", "solid black")
-      .style("border-radius", "5px");
+      .style("border-radius", "5px")
+      .style("z-index", "2");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
       .text("MINIMUM COLORED BUBBLES")
@@ -1521,7 +1523,7 @@
       .attr("class", "disabled")
       .style("display", "block")
       .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
-      .style("height", "90px");
+      .style("height", "100px");
     option_pauseSetting_content_right.append("p")
       .text("Long Pause")
       .style("width", "50px")
