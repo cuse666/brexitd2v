@@ -2023,14 +2023,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
@@ -2234,14 +2234,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Number of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
@@ -3311,7 +3311,7 @@
       let downsideBlock = downside.append("div").attr("id", "downside-block");
       downsideBlock.append("p")
         .attr("id", "hashTagTimelineMsg")
-        .text("Hashtag Timeline is the coloured dash bars, show the occurrence of the chosen hashtag bubbles on the bubble chart. You can try to select from the hashtag CHECKBOX on the left-hand side and pressing the PLAY button to see the movement of the bubbles.")
+        .html("Hashtag Timeline is the coloured dash bars, show the occurrence of the chosen hashtag bubbles on the bubble chart. You can try to select from the hashtag <b>CHECKBOX</b> on the left-hand side and pressing the <b>PLAY</b> button to see the movement of the bubbles.")
         .style("padding", "0 60px")
         .style("font-size", "15px")
         .style("text-align", "center");
