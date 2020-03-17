@@ -1498,11 +1498,16 @@
       .style("color", "black")
       .style("border-style", "solid")
       .style("width", "20px")
-      .style("text-align", "center");
+      .style("display", "block")
+      .style("text-align", "center")
+      .style("margin", "auto");
     option_pauseSetting_content_right.append("p")
-      .text("Fast")
+      .text("Brief Pause")
+      .style("width", "50px")
       .style("margin-top", "0")
-      .style("margin-left", "25px");
+      .style("margin-left", "12px")
+      .style("margin-bottom", "0")
+      .style("text-align", "center");
     let option_pauseSetting_timePauseFactor = option_pauseSetting_content_right.append("input")
       .attr("id", "option_pauseSetting_timePauseFactor")
       .attr("type", "range")
@@ -1510,11 +1515,14 @@
       .attr("max", "1.0")
       .attr("step", "0.01")
       .style("display", "block")
-      .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.9)")
+      .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
       .style("height", "100px");
     option_pauseSetting_content_right.append("p")
-      .html("Slow")
-      .style("margin-left", "25px");
+      .text("Long Pause")
+      .style("width", "50px")
+      .style("margin-left", "12px")
+      .style("margin-top", "0")
+      .style("text-align", "center");
     document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
     let option_pauseSetting_msg = option_pauseSetting.append("p")
       .text("(Pause function requires at least 2 topics to be selected.)")
@@ -1996,6 +2004,7 @@
       if (selectedLabel.length) {
         //选择话题时显示展示路径勾选项
         showPathIcon.style("display", "inline");
+        document.getElementById("hashTagTimelineMsg").style.display = "none";
 
         //选择话题时隐藏Highlight Colored Bubbles选项
         hightlightColoredBubbleIcon.style('display', 'none');
@@ -2033,6 +2042,7 @@
       } else {
         //没有选择任何话题时隐藏展示路劲设置
         showPathIcon.style("display", "none");
+        document.getElementById("hashTagTimelineMsg").style.display = "block";
 
         //没有选择任何话题时展示Highlight Colored Bubbles选项
         hightlightColoredBubbleIcon.style('display', 'inline');
@@ -2205,6 +2215,7 @@
       if (selectedLabel.length) {
         //有话题被选择时显示展示路径选项
         showPathIcon.style("display", "inline");
+        document.getElementById("hashTagTimelineMsg").style.display = "none";
 
         //有话题被选择时隐藏Highlight Colored Bubbles选项
         hightlightColoredBubbleIcon.style('display', 'none');
@@ -2242,6 +2253,7 @@
       } else {
         //没有任何话题被选择时隐藏展示路劲选项
         showPathIcon.style("display", "none");
+        document.getElementById("hashTagTimelineMsg").style.display = "block";
 
         //没有任何话题被选择时显示Highlight Colored Bubbles选项
         hightlightColoredBubbleIcon.style('display', 'inline');
@@ -3282,7 +3294,7 @@
         .attr("id", "downside-title")
         .style("width", `${svgWidth}px`)
         .style("height", `${downsideTitleHeight}px`)
-        .text("Topic lifetime")
+        .text("Hashtag Timeline")
         .style("text-align", "center")
         .style("font-family", "SimSun")
         .style("fill", "#565656")
@@ -3297,6 +3309,12 @@
       ).style.height = `${downsideHeight}px`;
 
       let downsideBlock = downside.append("div").attr("id", "downside-block");
+      downsideBlock.append("p")
+        .attr("id", "hashTagTimelineMsg")
+        .text("Hashtag Timeline is the coloured dash bars, show the occurrence of the chosen hashtag bubbles on the bubble chart. You can try to select from the hashtag CHECKBOX on the left-hand side and pressing the PLAY button to see the movement of the bubbles.")
+        .style("padding", "0 60px")
+        .style("font-size", "15px")
+        .style("text-align", "center");
 
       document.querySelector(
         "div#downside-block"
@@ -3369,7 +3387,7 @@
         .style("fill", "#565656")
         .style("font-weight", "700")
         .attr("font-size", "18")
-        .text("Hashtag pulse");
+        .text("Hashtag Pulse");
 
       svg.append("text")
         .attr("id", "highlightTopic")
