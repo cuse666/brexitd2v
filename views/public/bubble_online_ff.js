@@ -483,6 +483,7 @@
         .attr("width", width)
         .attr("style", "display:flex; align-items:center;justify-content:center;")
         .style("font-size", captionfontSize + "px")
+        .style("font-family","Arial")
         .on("dblclick", changeText)
 
 
@@ -516,6 +517,7 @@
         .attr("placeholder", "max length: 160")
         .attr("style", "height:50px;line-height:50px;width:1045px;text-align:center;")
         .style("font-size", captionfontSize + "px")
+        .style("font-family","Arial")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
