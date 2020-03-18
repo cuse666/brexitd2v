@@ -321,6 +321,13 @@
     .text("Caption Transcript")
     .style("text-align", "center");
 
+  d3.select("#showTextArea")
+    .append("text")
+    .attr("id", "CaptionInstruction")
+    .style("font-size", "20px")
+    .text("Here is the caption transcript area. You can delete and adjust the duration for caption display here.")
+    .style("text-align", "center");
+
   var bisect = d3.bisector(function (d) {
     return d[0];
   });
@@ -506,13 +513,9 @@
       let textArea = foreignObject.append("xhtml:textarea")
         .attr("id", "tt")
         .attr("maxlength", 160)
-        // .attr("value",tempText)
         .attr("placeholder", "max length: 160")
-        // .attr("placeholder",tempText)
-        // .attr("value","asdfadsf")
-        .attr("style", "font-size:20px;height:50px;width:1045px;resize:none;")
-        .style("text-align", "center")
-        .style("vertical-align", "midddle")
+        .attr("style", "height:50px;line-height:50px;width:1045px;text-align:center;")
+        .style("font-size", captionfontSize + "px")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
@@ -591,6 +594,9 @@
 
     function updateshowTextArea() {   //删除之前所有的文字，再加入现在的文本信息
       let showTextArea = d3.select("#showTextArea") //选中这个区域
+
+      if (document.getElementById("CaptionInstruction"))
+        document.getElementById("CaptionInstruction").remove()
 
       if (document.getElementById("oldTextArea") != null)
         document.getElementById("oldTextArea").remove()
@@ -4055,6 +4061,10 @@
       .append("svg")
       .attr("height", 60)
       .attr("width", 1200);
+
+    let div3 = d3.select("#main").append("div")
+      .attr("class", "tooltip3")
+      .style("opacity", 0);
     middleTitleSvg
       .append("text")
       .attr("transform", "translate(" + 0 + " ," + 40 + ")")
@@ -4062,10 +4072,19 @@
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("BREXBLE is a storytelling prototype tool with animated data visualization. This tool supports data storytelling through bubble charts movement and captions.")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
       })
-      .on("dblclick", () => {  //双击事件
-        // console.log("hello")
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
       })
+
     middleTitleSvg.append("a")
       .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
       .attr("download", "csvfile")
@@ -4112,7 +4131,7 @@
       .append("text")
       .attr("id", "export")
       .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-      .text("Export")
+      .text("Record")
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
@@ -4141,8 +4160,8 @@
 
           if (!buttonPlay)
             buttonClickedHandler();
-          if (document.getElementById("Repalyer"))
-            document.getElementById("Repalyer").remove()
+          if (document.getElementById("Replayer"))
+            document.getElementById("Replayer").remove()
 
           let stopFn = rrweb.record({ // 记录
             emit(event) {
@@ -4197,12 +4216,12 @@
                 document.getElementsByClassName("container")[0].style.border = BorderofContainer
                 document.getElementById("chartAside").style.border = BorderofChartAside
 
-                if (!document.getElementById("Repalyer"))
+                if (!document.getElementById("Replayer"))
                   middleTitleSvg  // 新增一个 Repaly按钮。
                     .append("text")
-                    .attr("id", "Repalyer")
+                    .attr("id", "Replayer")
                     .attr("transform", "translate(" + 900 + " ," + 40 + ")")
-                    .text("Repaly")
+                    .text("Replay")
                     .style("font-size", "40px")
                     .on("mouseover", () => {
                       middleTitleSvg.style("cursor", "hand") //设置光标
