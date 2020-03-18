@@ -1239,7 +1239,7 @@
       .attr("min", 10)
       .attr("max", 27)
       .attr("value", 20)
-      .attr("class", "disabled")
+      .attr("class", "undisabled")
       .style("display", "inline")
       .style("margin-left", "10px")
       .style("transform", `translate(0,-6px)`);
@@ -1268,7 +1268,7 @@
       .attr("min", 14)
       .attr("max", 23)
       .attr("value", 20)
-      .attr("class", "disabled")
+      .attr("class", "undisabled")
       .style("display", "inline")
       .style("margin-left", "7px")
       .style("transform", `translate(0,-4px)`);
@@ -1301,7 +1301,7 @@
       .attr("min", "60000")
       .attr("max", "240000")
       .attr("step", "10000")
-      .attr("class", "disabled")
+      .attr("class", "undisabled")
       .style("margin-left", "10px")
       .style("transform", `translate(0,-4px)`);
     document.getElementById("option_totalTime").value = 120000;
@@ -1522,7 +1522,7 @@
       .attr("min", "0.1")
       .attr("max", "1.0")
       .attr("step", "0.01")
-      .attr("class", "disabled")
+      .attr("class", "undisabled")
       .style("transform", "rotate(90deg) translate(0px, 30px)")
       .style("margin-top", "65px")
       .style("margin-bottom", "65px");
@@ -1547,7 +1547,9 @@
         option_pauseSetting_input
           .attr("disabled", null)
           .style("background-color", "white");
-        option_pauseSetting_timePauseFactor.attr("disabled", null);
+        option_pauseSetting_timePauseFactor.attr("disabled", null)
+          .classed("disabled", null)
+          .classed("undisabled", "true");
         option_pauseSetting_content_right.style("color", "black");
         if (maxHighlightBubbles <= 2) {
           option_pauseSetting_msg.style("display", "block");
@@ -1560,7 +1562,9 @@
         option_pauseSetting_input
           .attr("disabled", "true")
           .style("background-color", "rgb(225,228,228 )");
-        option_pauseSetting_timePauseFactor.attr("disabled", "true");
+        option_pauseSetting_timePauseFactor.attr("disabled", "true")
+          .classed("undisabled", null)
+          .classed("disabled", "true");
         option_pauseSetting_content_right.style("color", "grey");
         option_pauseSetting_msg.style("display", "none");
         enablePause = false;
