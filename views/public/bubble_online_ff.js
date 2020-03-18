@@ -4021,11 +4021,7 @@
           showController: true
         },
       });
-      try {
-        replayer.fullscreen()
-      } catch (error) {
-        console.log("error")
-      }
+      replayer.fullscreen()
     }
 
     document.addEventListener('fullscreenchange', () => {
@@ -4089,17 +4085,18 @@
       .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
       .attr("download", "csvfile")
       .append("text")
-      .attr("transform", "translate(" + 300 + " ," + 40 + ")")
+      .attr("transform", "translate(" + 200 + " ," + 40 + ")")
       .text("Data")
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
       })
-    var textNode1 = document.createTextNode("选择文件");
+    var textNode1 = document.createTextNode("Open");
     middleTitleSvg.append("foreignObject")
-      .attr("x", 775)
-      .attr("y", 10)
-      .attr("height", 40)
+      .attr("id","OpenFile")
+      .attr("x", 600)
+      .attr("y", 5)
+      .attr("height", 60)
       .attr("width", 100)
       .append("xhtml:div")
       .attr("id", "inputFileDiv")
@@ -4125,12 +4122,26 @@
         Events2JSON = this.result;
         Replayer(Events2JSON)
       };
+      if (!document.getElementById("Replayer"))
+        document.getElementById("OpenFile").style.x = 800;
+        middleTitleSvg  // 新增一个 Repaly按钮。
+          .append("text")
+          .attr("id", "Replayer")
+          .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+          .text("Replay")
+          .style("font-size", "40px")
+          .on("mouseover", () => {
+            middleTitleSvg.style("cursor", "hand") //设置光标
+          })
+          .on("click", () => {
+            Replayer(Events2JSON);
+          });
     }
 
     middleTitleSvg
       .append("text")
       .attr("id", "export")
-      .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+      .attr("transform", "translate(" + 400 + " ," + 40 + ")")
       .text("Record")
       .style("font-size", "40px")
       .on("mouseover", () => {
@@ -4217,10 +4228,11 @@
                 document.getElementById("chartAside").style.border = BorderofChartAside
 
                 if (!document.getElementById("Replayer"))
+                  document.getElementById("OpenFile").style.x = 800;
                   middleTitleSvg  // 新增一个 Repaly按钮。
                     .append("text")
                     .attr("id", "Replayer")
-                    .attr("transform", "translate(" + 900 + " ," + 40 + ")")
+                    .attr("transform", "translate(" + 600 + " ," + 40 + ")")
                     .text("Replay")
                     .style("font-size", "40px")
                     .on("mouseover", () => {
