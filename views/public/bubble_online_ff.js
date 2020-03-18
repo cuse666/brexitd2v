@@ -1457,7 +1457,7 @@
       .style("padding-top", "14px");
     let option_pauseSetting_content_left = option_pauseSetting_content
       .append("div")//暂停功能内容grid布局的左边部分
-      .style("transform", "translate(40px, 0px)")
+      .style("transform", "translate(30px, 0px)")
       .style("width", "100%")
       .style("text-align", "center");
     let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
@@ -1489,8 +1489,7 @@
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
       .style("border", "2px solid black")
-      .style("border-radius", "5px")
-      .style("z-index", "2");
+      .style("border-radius", "5px");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
       .text("MINIMUM COLORED BUBBLES")
@@ -1502,24 +1501,21 @@
       .attr("min", "2")
       .attr("max", `${maxHighlightBubbles}`)
       .attr("step", 1)
-      .attr("placeholder", "4(default)")
       .style("color", "black")
       .style("border-style", "none")
       .style("border-bottom", "2px solid black")
       .style("font-size", "25px")
       .style("width", "50px")
       .style("height", "30px")
-      .style("display", "block")
       .style("text-align", "center")
       .style("margin", "auto");
     option_pauseSetting_content_right.append("p")
-      .text("Brief Pause")
-      .style("width", "50px")
+      .text("Long Pause")
+      .style("width", "100px")
       .style("font-weight", "bold")
       .style("margin-top", "0")
-      .style("margin-left", "12px")
-      .style("margin-bottom", "0")
-      .style("text-align", "center");
+      .style("margin-left", "5px")
+      .style("margin-bottom", "0");
     let option_pauseSetting_timePauseFactor = option_pauseSetting_content_right.append("input")
       .attr("id", "option_pauseSetting_timePauseFactor")
       .attr("type", "range")
@@ -1527,16 +1523,15 @@
       .attr("max", "1.0")
       .attr("step", "0.01")
       .attr("class", "disabled")
-      .style("display", "block")
-      .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
-      .style("height", "100px");
+      .style("transform", "rotate(90deg) translate(0px, 30px)")
+      .style("margin-top", "65px")
+      .style("margin-bottom", "65px");
     option_pauseSetting_content_right.append("p")
-      .text("Long Pause")
-      .style("width", "50px")
+      .text("Brief Pause")
+      .style("width", "100px")
       .style("font-weight", "bold")
-      .style("margin-left", "12px")
-      .style("margin-top", "0")
-      .style("text-align", "center");
+      .style("margin-left", "5px")
+      .style("margin-top", "0");
     document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
     let option_pauseSetting_msg = option_pauseSetting.append("p")
       .text("(Pause function requires at least TWO hashtags to be selected.)")
