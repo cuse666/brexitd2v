@@ -1511,7 +1511,7 @@
       .style("text-align", "center")
       .style("margin", "auto");
     option_pauseSetting_content_right.append("p")
-      .text("Brief Pause")
+      .text("Long Pause")
       .style("width", "50px")
       .style("font-weight", "bold")
       .style("margin-top", "0")
@@ -1529,7 +1529,7 @@
       .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
       .style("height", "100px");
     option_pauseSetting_content_right.append("p")
-      .text("Long Pause")
+      .text("Brief Pause")
       .style("width", "50px")
       .style("font-weight", "bold")
       .style("margin-left", "12px")
