@@ -515,7 +515,7 @@
         .attr("id", "tt")
         .attr("maxlength", 160)
         .attr("placeholder", "max length: 160")
-        .attr("style", "height:50px;line-height:50px;width:1045px;text-align:center;")
+        .attr("style", "height:50px;resize:none;line-height:50px;width:1045px;text-align:center;")
         .style("font-size", captionfontSize + "px")
         .style("font-family","Arial")
         .on("blur", inputBlur)
