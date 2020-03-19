@@ -1504,9 +1504,9 @@
       .style("color", "black")
       .style("border-style", "none")
       .style("border-bottom", "2px solid black")
-      .style("font-size", "25px")
+      .style("font-size", "30px")
       .style("width", "50px")
-      .style("height", "30px")
+      .style("height", "35px")
       .style("text-align", "center")
       .style("margin", "auto");
     option_pauseSetting_content_right.append("p")
