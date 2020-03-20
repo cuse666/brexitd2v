@@ -317,9 +317,12 @@
     .attr("class", "xLabel");
 
   d3.select("#showTextArea")
-    .append("p").style("font-size", "25px")
+    .append("p")
+    .style("font-size", "18px")
     .text("Caption Transcript")
-    .style("text-align", "center");
+    .style("text-align", "center")
+    .style("font-weight", "600")
+    .style("color", "#565656");
 
   var bisect = d3.bisector(function (d) {
     return d[0];
@@ -1448,7 +1451,7 @@
       .style("text-align", "center")
       .style("font-size", "18px")
       .style("font-weight", "600")
-      .style("padding-top", "17px")
+      .style("padding-top", "15px")
       .style("color", "#565656");
     let option_pauseSetting_content = option_pauseSetting.append("div")
       .attr("id", "option_pauseSetting_content")
@@ -1460,7 +1463,7 @@
       .style("transform", "translate(30px, 0px)")
       .style("width", "100%")
       .style("text-align", "center");
-    let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
+    let option_pauseSetting_content_right = option_pauseSetting_content.append("div").style("margin-top", "5px");//暂停功能内容grid布局的右边部分
     let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("img")
       .attr("src", "public/icon/autopause_ON.png")
       .attr("width", "50px")
@@ -3323,7 +3326,6 @@
         .style("height", `${downsideTitleHeight}px`)
         .text("Hashtag Timeline")
         .style("text-align", "center")
-        .style("font-family", "SimSun")
         .style("fill", "#565656")
         .style("font-weight", "600")
         .attr("font-size", "18");
@@ -3401,7 +3403,7 @@
         .attr("class", "LevelGraph");
 
       let svg = LevelGraph.append("svg")
-        .attr("height", "190px")
+        .attr("height", "210px")
         .attr("width", "100%");
 
       svg.append("text")
@@ -3410,7 +3412,6 @@
         .attr("y", "18px")
         .style("width", "200px")
         .style("height", "50px")
-        .style("font-family", "SimSun")
         .style("fill", "#565656")
         .style("font-weight", "700")
         .attr("font-size", "18")
@@ -3419,7 +3420,7 @@
       svg.append("text")
         .attr("id", "highlightTopic")
         .attr("x", 100)
-        .attr("y", 60)
+        .attr("y", 75)
         .attr("font-size", 16)
         .style("font-family", "SimSun")
         .style("font-weight", "700")
@@ -3435,12 +3436,12 @@
         .tickSize(6 + tick_offset);
 
       svg.append("g")
-        .attr("transform", `translate(20,170)`)
+        .attr("transform", `translate(20,185)`)
         .call(xAxis)
         .attr("class", "axis");
 
       svg.append("g")
-        .attr("transform", `translate(${20 + tick_offset},30)`)
+        .attr("transform", `translate(${20 + tick_offset},45)`)
         .call(yAxis)
         .attr("class", "axis");
 
@@ -3477,14 +3478,16 @@
       });
       let parseTime = d3.timeParse("%Y%m");
       let linePath = d3.line()
-        .x((d) => xScale(parseTime(d[0]))).y((d) => yScale(d[1])).curve(d3.curveBasis);
+        .x((d) => xScale(parseTime(d[0])))
+        .y((d) => yScale(d[1]))
+        .curve(d3.curveBasis);
       svg.selectAll("path")
         .data(dataset)
         .enter()
         .append("path")
         .attr("id", (d) => `topicPopularity-${d.topic}`)
         .attr("d", (d) => linePath(d.point))
-        .attr("transform", `translate(28,30)`)
+        .attr("transform", `translate(28,45)`)
         .attr("stroke", (d) => d.color)
         .attr("stroke-width", "2px")
         .attr("fill", "none")
