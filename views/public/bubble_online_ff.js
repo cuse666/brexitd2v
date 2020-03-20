@@ -1488,7 +1488,7 @@
       .style("width", "40%")
       .style("text-align", "center")
       .style("margin", "auto")
-      .style("margin-top", "5px")
+      .style("margin-top", "10px")
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
       .style("border", "2px solid black")
