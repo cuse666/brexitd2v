@@ -4026,7 +4026,7 @@
       // replayer.fullscreen()
       function toggleFullscreen() {
         let elem = document.getElementsByClassName("rr-player svelte-1wetjm2")[0]
-        // console.log(elem)
+        //  console.log(elem)
         if (!document.fullscreenElement) {  // 如果没有全屏
           elem.requestFullscreen().catch(err => {
             let elements = document.getElementsByClassName("rr-player svelte-1wetjm2")
@@ -4035,7 +4035,7 @@
               if (elements.item(i))
                 elements.item(i).parentNode.removeChild(elements.item(i));
             }
-            // alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            alert(`Open Success! Click Replay to play it!`);
           });
         }
       }
