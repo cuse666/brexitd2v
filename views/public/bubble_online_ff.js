@@ -3301,7 +3301,8 @@
         .attr("class", "forTooltip")
         .attr(
           "data-tippy-content",
-          d => `${twitterChinese[d]}(#${twitterEnglish[d]}): ${en2ch[d]}`
+          //d => `${twitterChinese[d]}(#${twitterEnglish[d]}): ${en2ch[d]}`
+          d => `#${twitterEnglish[d]}: ${en2ch[d]}`
         )
         .html(d => `${twitterText[d]}`);
 
