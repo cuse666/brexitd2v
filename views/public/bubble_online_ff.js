@@ -1491,7 +1491,7 @@
       .style("margin-top", "10px")
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
-      .style("border", "2px solid black")
+      .style("border", "2px solid gray")
       .style("border-radius", "5px");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
@@ -3235,14 +3235,14 @@
       eleOfAll
         .append("input")
         .attr("type", "checkbox")
-        .attr("name", "all")
+        .attr("name", "All")
         .attr("class", "input-all")
-        .attr("id", idName + "all");
+        .attr("id", idName + "All");
       eleOfAll
         .append("label")
         .attr("class", "label-all")
-        .attr("for", idName + "all")
-        .html(lang === "ch" ? "全选" : "all");
+        .attr("for", idName + "All")
+        .html(lang === "ch" ? "全选" : "All");
 
       let rows = eleOfLabelRow
         .selectAll(".labelRow")
