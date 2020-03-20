@@ -483,7 +483,7 @@
         .attr("width", width)
         .attr("style", "display:flex; align-items:center;justify-content:center;")
         .style("font-size", captionfontSize + "px")
-        .style("font-family","Arial")
+        .style("font-family", "Arial")
         .on("dblclick", changeText)
 
 
@@ -517,7 +517,7 @@
         .attr("placeholder", "max length: 160")
         .attr("style", "height:50px;resize:none;line-height:50px;width:1045px;text-align:center;")
         .style("font-size", captionfontSize + "px")
-        .style("font-family","Arial")
+        .style("font-family", "Arial")
         .on("blur", inputBlur)
         .on("focus", inputFocus)
         .on("input", inputContent)
@@ -4023,7 +4023,23 @@
           showController: true
         },
       });
-      replayer.fullscreen()
+      // replayer.fullscreen()
+      function toggleFullscreen() {
+        let elem = document.getElementsByClassName("rr-player svelte-1wetjm2")[0]
+        // console.log(elem)
+        if (!document.fullscreenElement) {  // 如果没有全屏
+          elem.requestFullscreen().catch(err => {
+            let elements = document.getElementsByClassName("rr-player svelte-1wetjm2")
+            let len = elements.length;
+            for (let i = len - 1; i >= 0; i--) {
+              if (elements.item(i))
+                elements.item(i).parentNode.removeChild(elements.item(i));
+            }
+            // alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+          });
+        }
+      }
+      toggleFullscreen()
     }
 
     document.addEventListener('fullscreenchange', () => {
@@ -4095,7 +4111,7 @@
       })
     var textNode1 = document.createTextNode("Open");
     middleTitleSvg.append("foreignObject")
-      .attr("id","OpenFile")
+      .attr("id", "OpenFile")
       .attr("x", 600)
       .attr("y", 5)
       .attr("height", 60)
@@ -4126,18 +4142,18 @@
       };
       if (!document.getElementById("Replayer"))
         document.getElementById("OpenFile").style.x = 800;
-        middleTitleSvg  // 新增一个 Repaly按钮。
-          .append("text")
-          .attr("id", "Replayer")
-          .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-          .text("Replay")
-          .style("font-size", "40px")
-          .on("mouseover", () => {
-            middleTitleSvg.style("cursor", "hand") //设置光标
-          })
-          .on("click", () => {
-            Replayer(Events2JSON);
-          });
+      middleTitleSvg  // 新增一个 Repaly按钮。
+        .append("text")
+        .attr("id", "Replayer")
+        .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+        .text("Replay")
+        .style("font-size", "40px")
+        .on("mouseover", () => {
+          middleTitleSvg.style("cursor", "hand") //设置光标
+        })
+        .on("click", () => {
+          Replayer(Events2JSON);
+        });
     }
 
     middleTitleSvg
@@ -4224,25 +4240,25 @@
 
                 events = [];  // 设为空
 
-                // Replayer(Events2JSON); // 没有必要立马播放
+                Replayer(Events2JSON); // 没有必要立马播放
                 document.getElementById("main").style.border = BorderofMain
                 document.getElementsByClassName("container")[0].style.border = BorderofContainer
                 document.getElementById("chartAside").style.border = BorderofChartAside
 
                 if (!document.getElementById("Replayer"))
                   document.getElementById("OpenFile").style.x = 800;
-                  middleTitleSvg  // 新增一个 Repaly按钮。
-                    .append("text")
-                    .attr("id", "Replayer")
-                    .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-                    .text("Replay")
-                    .style("font-size", "40px")
-                    .on("mouseover", () => {
-                      middleTitleSvg.style("cursor", "hand") //设置光标
-                    })
-                    .on("click", () => {
-                      Replayer(Events2JSON);
-                    });
+                middleTitleSvg  // 新增一个 Repaly按钮。
+                  .append("text")
+                  .attr("id", "Replayer")
+                  .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+                  .text("Replay")
+                  .style("font-size", "40px")
+                  .on("mouseover", () => {
+                    middleTitleSvg.style("cursor", "hand") //设置光标
+                  })
+                  .on("click", () => {
+                    Replayer(Events2JSON);
+                  });
                 alert("Export success!")
               }
             },
