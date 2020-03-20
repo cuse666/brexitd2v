@@ -4240,7 +4240,7 @@
 
                 events = [];  // 设为空
 
-                Replayer(Events2JSON); // 没有必要立马播放
+                // Replayer(Events2JSON); // 没有必要立马播放
                 document.getElementById("main").style.border = BorderofMain
                 document.getElementsByClassName("container")[0].style.border = BorderofContainer
                 document.getElementById("chartAside").style.border = BorderofChartAside
