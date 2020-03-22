@@ -2547,9 +2547,9 @@
       let overText = text.filter((d) => { return d.label.substr(1) == label });
       let fontSize = overText.style("font-size");
       fontSize = Number(fontSize.substring(0, fontSize.length - 2));
-      if (direction === "up") {
+      if (fontSize < 27 && direction === "up") {
         fontSize = fontSize + 1;
-      } else {
+      } else if (fontSize > 10 && direction === "down") {
         fontSize = fontSize - 1;
       }
       overText.style("font-size", fontSize);
