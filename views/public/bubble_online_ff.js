@@ -4109,13 +4109,13 @@
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
       })
-    var textNode1 = document.createTextNode("Open");
+    var textNode1 = document.createTextNode("Replay");
     middleTitleSvg.append("foreignObject")
       .attr("id", "OpenFile")
       .attr("x", 600)
       .attr("y", 5)
       .attr("height", 60)
-      .attr("width", 100)
+      .attr("width", 150)
       .append("xhtml:div")
       .attr("id", "inputFileDiv")
       // .attr("style", "width: 100%;height: 100%;text-align:center;")
@@ -4140,20 +4140,20 @@
         Events2JSON = this.result;
         Replayer(Events2JSON)
       };
-      if (!document.getElementById("Replayer"))
-        document.getElementById("OpenFile").style.x = 800;
-      middleTitleSvg  // 新增一个 Repaly按钮。
-        .append("text")
-        .attr("id", "Replayer")
-        .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-        .text("Replay")
-        .style("font-size", "40px")
-        .on("mouseover", () => {
-          middleTitleSvg.style("cursor", "hand") //设置光标
-        })
-        .on("click", () => {
-          Replayer(Events2JSON);
-        });
+      // if (!document.getElementById("Replayer"))
+      //   document.getElementById("OpenFile").style.x = 800;
+      // middleTitleSvg  // 新增一个 Repaly按钮。
+      //   .append("text")
+      //   .attr("id", "Replayer")
+      //   .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+      //   .text("Replay")
+      //   .style("font-size", "40px")
+      //   .on("mouseover", () => {
+      //     middleTitleSvg.style("cursor", "hand") //设置光标
+      //   })
+      //   .on("click", () => {
+      //     Replayer(Events2JSON);
+      //   });
     }
 
     middleTitleSvg
@@ -4189,8 +4189,8 @@
 
           if (!buttonPlay)
             buttonClickedHandler();
-          if (document.getElementById("Replayer"))
-            document.getElementById("Replayer").remove()
+          // if (document.getElementById("Replayer"))
+          //   document.getElementById("Replayer").remove()
 
           let stopFn = rrweb.record({ // 记录
             emit(event) {
@@ -4245,20 +4245,20 @@
                 document.getElementsByClassName("container")[0].style.border = BorderofContainer
                 document.getElementById("chartAside").style.border = BorderofChartAside
 
-                if (!document.getElementById("Replayer"))
-                  document.getElementById("OpenFile").style.x = 800;
-                middleTitleSvg  // 新增一个 Repaly按钮。
-                  .append("text")
-                  .attr("id", "Replayer")
-                  .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-                  .text("Replay")
-                  .style("font-size", "40px")
-                  .on("mouseover", () => {
-                    middleTitleSvg.style("cursor", "hand") //设置光标
-                  })
-                  .on("click", () => {
-                    Replayer(Events2JSON);
-                  });
+                // if (!document.getElementById("Replayer"))
+                //   document.getElementById("OpenFile").style.x = 800;
+                // middleTitleSvg  // 新增一个 Repaly按钮。
+                //   .append("text")
+                //   .attr("id", "Replayer")
+                //   .attr("transform", "translate(" + 600 + " ," + 40 + ")")
+                //   .text("Replay")
+                //   .style("font-size", "40px")
+                //   .on("mouseover", () => {
+                //     middleTitleSvg.style("cursor", "hand") //设置光标
+                //   })
+                //   .on("click", () => {
+                //     Replayer(Events2JSON);
+                //   });
                 alert("Export success!")
               }
             },
