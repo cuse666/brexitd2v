@@ -4017,8 +4017,6 @@
         target: document.body, //getElementById("main"), 
         data: {
           events: evts,
-          // width: document.body.clientWidth,
-          // height: document.body.clientHeight,
           autoPlay: false,
           showController: true
         },
@@ -4035,7 +4033,7 @@
               if (elements.item(i))
                 elements.item(i).parentNode.removeChild(elements.item(i));
             }
-            alert(`Open Success! Click Replay to play it!`);
+            alert(`Open Success! Click Play to play it!`);
           });
         }
       }
@@ -4103,16 +4101,16 @@
       .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
       .attr("download", "csvfile")
       .append("text")
-      .attr("transform", "translate(" + 200 + " ," + 40 + ")")
+      .attr("transform", "translate(" + 210 + " ," + 40 + ")")
       .text("Data")
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
       })
-    var textNode1 = document.createTextNode("Replay");
+    var textNode1 = document.createTextNode("Load");
     middleTitleSvg.append("foreignObject")
       .attr("id", "OpenFile")
-      .attr("x", 600)
+      .attr("x", 640)
       .attr("y", 5)
       .attr("height", 60)
       .attr("width", 150)
@@ -4138,22 +4136,23 @@
 
       reader.onload = function () {
         Events2JSON = this.result;
-        Replayer(Events2JSON)
+        // Replayer(Events2JSON)
       };
+      alert("Load Success, Click Play to play it")
       // if (!document.getElementById("Replayer"))
       //   document.getElementById("OpenFile").style.x = 800;
-      // middleTitleSvg  // 新增一个 Repaly按钮。
-      //   .append("text")
-      //   .attr("id", "Replayer")
-      //   .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-      //   .text("Replay")
-      //   .style("font-size", "40px")
-      //   .on("mouseover", () => {
-      //     middleTitleSvg.style("cursor", "hand") //设置光标
-      //   })
-      //   .on("click", () => {
-      //     Replayer(Events2JSON);
-      //   });
+      middleTitleSvg  // 新增一个 Repaly按钮。
+        .append("text")
+        .attr("id", "Play")
+        .attr("transform", "translate(" + 830 + " ," + 40 + ")")
+        .text("Play")
+        .style("font-size", "40px")
+        .on("mouseover", () => {
+          middleTitleSvg.style("cursor", "hand") //设置光标
+        })
+        .on("click", () => {
+          Replayer(Events2JSON);
+        });
     }
 
     middleTitleSvg
