@@ -324,8 +324,8 @@
   d3.select("#showTextArea")
     .append("text")
     .attr("id", "CaptionInstruction")
-    .style("font-size", "20px")
-    .text("Here is the caption transcript area. You can delete and adjust the duration for caption display here.")
+    .style("font-size", "15px")
+    .text("Here is the caption transcript area. You can delete the captions and edit captions duration here.")
     .style("text-align", "center");
 
   var bisect = d3.bisector(function (d) {
@@ -469,7 +469,7 @@
       .attr("opacity", 0.1)
 
     //.attr("width", `${slider.attr("width")}px`)
-    let tempText = "double click to change the text"
+    let tempText = "Double click to change the caption"
 
     function createText() {
       var textforeignObject = svg.append("foreignObject")
@@ -572,7 +572,7 @@
         myText = createText() //重新创建一个文本框
 
         if (change === false) {
-          TextandDate[dateString + "-" + dateString] = tempText
+          TextandDate[dateString + " - " + dateString] = tempText
 
           //排序操作
           datearr = Object.keys(TextandDate).sort()
@@ -660,7 +660,7 @@
         div1.transition()
           .duration(200)
           .style("opacity", .9);
-        div1.html("double click the text to delete it")
+        div1.html("Double click to delete the caption")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       }
@@ -669,7 +669,7 @@
         div2.transition()
           .duration(200)
           .style("opacity", .9);
-        div2.html("double click the date to change it")
+        div2.html("Double click to change the caption duration")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       }
@@ -701,9 +701,9 @@
           .attr("type", "date")
           .attr("date-date-format", "YYYY-MM-DD")
           // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
-          // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+"-" +htmlstring.slice(0,4 ))
-          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
-          .attr("min", begindatehtmlstring.slice(0, 4) + "-" + begindatehtmlstring.slice(5, 7) + "-" + begindatehtmlstring.slice(8, 10)) //最小值
+          // .attr("value", htmlstring.slice(8,10) + " - " +htmlstring.slice(5,7)+ " - " +htmlstring.slice(0,4 ))
+          .attr("value", htmlstring.slice(0, 4) + " - " + htmlstring.slice(5, 7) + " - " + htmlstring.slice(8, 10))
+          .attr("min", begindatehtmlstring.slice(0, 4) + " - " + begindatehtmlstring.slice(5, 7) + " - " + begindatehtmlstring.slice(8, 10)) //最小值
           .attr("max", "2019-05-30") //指定最晚日期
           .on("blur", inputdateBlur)
 
@@ -741,7 +741,7 @@
             if (changestrformat > endDate) {
               changestrformat = endDate
             }
-            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
+            let tmp1 = datestr.slice(0, 10) + " - " + changestrformat
             let tmp2 = TextandDate[datestr]
             delete TextandDate[datestr]
             TextandDate[tmp1] = tmp2      //改变数组
@@ -751,7 +751,7 @@
             if (changestrformat > tmpmaxdate) {
               changestrformat = tmpmaxdate
             }
-            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
+            let tmp1 = datestr.slice(0, 10) + " - " + changestrformat
             let tmp2 = TextandDate[datestr]
             // console.log(datestr)
             // console.log(tmp1)
@@ -3052,7 +3052,7 @@
         }
         return textToshow
       } else {
-        return "double click to change the text"
+        return "Double click to change the caption"
       }
     }
 
@@ -4106,8 +4106,19 @@
       .style("font-size", "40px")
       .on("mouseover", () => {
         middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("Download the example dataset")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
       })
-    var textNode1 = document.createTextNode("Load");
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+    var textNode1 = document.createTextNode("Upload");
     middleTitleSvg.append("foreignObject")
       .attr("id", "OpenFile")
       .attr("x", 640)
@@ -4145,7 +4156,7 @@
         .append("text")
         .attr("id", "Play")
         .attr("transform", "translate(" + 830 + " ," + 40 + ")")
-        .text("Play")
+        .text("Replay")
         .style("font-size", "40px")
         .on("mouseover", () => {
           middleTitleSvg.style("cursor", "hand") //设置光标
