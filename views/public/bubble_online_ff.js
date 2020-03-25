@@ -669,7 +669,7 @@
         div2.transition()
           .duration(200)
           .style("opacity", .9);
-        div2.html("Double click to change the caption duration")
+        div2.html("Double click to change the duration")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       }
@@ -4083,11 +4083,13 @@
       .text("About")
       .style("font-size", "40px")
       .on("mouseover", () => {
-        middleTitleSvg.style("cursor", "hand") //设置光标
+        // middleTitleSvg.style("cursor", "hand") //设置光标
         div3.transition()
           .duration(200)
           .style("opacity", .9);
         div3.html("BREXBLE is a storytelling prototype tool with animated data visualization. This tool supports data storytelling through bubble charts movement and captions.")
+          .style("width", "400px")
+          .style("height", "98px")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
@@ -4096,7 +4098,6 @@
           .duration(500)
           .style("opacity", 0);
       })
-
     middleTitleSvg.append("a")
       .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
       .attr("download", "csvfile")
@@ -4105,11 +4106,12 @@
       .text("Data")
       .style("font-size", "40px")
       .on("mouseover", () => {
-        middleTitleSvg.style("cursor", "hand") //设置光标
         div3.transition()
           .duration(200)
           .style("opacity", .9);
         div3.html("Download the example dataset")
+          .style("width", "278px")
+          .style("height", "25px")
           .style("left", (d3.event.pageX) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
@@ -4131,15 +4133,33 @@
       .attr("class", "file")
       .append("input")
       .attr("type", "file")
+      .attr("title", "")
       .attr("id", "files")
+      .on("mouseover", () => {
+        // middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("Upload a JSON file to replay")
+          .style("width", "260px")
+          .style("height", "25px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(200)
+          .style("opacity", 0);
+      })
     document.getElementById("inputFileDiv").appendChild(textNode1)
 
+    let filename = null;
     var inputElement = document.getElementById("files");
     if (inputElement)
       inputElement.addEventListener("change", handleFiles, false);
     function handleFiles() {
       var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
-      // var name = selectedFile.name;//读取选中文件的文件名
+      filename = selectedFile.name;//读取选中文件的文件名
       // var size = selectedFile.size;//读取选中文件的大小
       // console.log("文件名:" + name + "大小：" + size);
       var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
@@ -4149,35 +4169,77 @@
         Events2JSON = this.result;
         // Replayer(Events2JSON)
       };
-      alert("Load Success, Click Play to play it")
-      // if (!document.getElementById("Replayer"))
-      //   document.getElementById("OpenFile").style.x = 800;
-      middleTitleSvg  // 新增一个 Repaly按钮。
-        .append("text")
-        .attr("id", "Play")
-        .attr("transform", "translate(" + 830 + " ," + 40 + ")")
-        .text("Replay")
-        .style("font-size", "40px")
-        .on("mouseover", () => {
-          middleTitleSvg.style("cursor", "hand") //设置光标
-        })
-        .on("click", () => {
-          Replayer(Events2JSON);
-        });
+      let replaybutton = document.getElementById("Play")
+      replaybutton.addEventListener("mouseover", () => {
+        // middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html(filename)
+          .style("width", (filename.length * 10) + "px")
+          .style("height", "25px")
+          .style("left", (event.pageX) + "px")
+          .style("top", (event.pageY) + "px");
+      })
+      replaybutton.addEventListener("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+      alert("Load Success, Click RePlay to play it")
     }
+    middleTitleSvg  // 新增一个 Repaly按钮。
+      .append("text")
+      .attr("id", "Play")
+      .attr("transform", "translate(" + 870 + " ," + 40 + ")")
+      .text("Replay")
+      .style("font-size", "40px")
+      .on("mouseover", () => {
+        // middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("You have to upload a JSON file to replay")
+          .style("width", "360px")
+          .style("height", "25px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+      .on("click", () => {
+        Replayer(Events2JSON);
+      });
 
     middleTitleSvg
       .append("text")
+      .attr("class", "export")
       .attr("id", "export")
       .attr("transform", "translate(" + 400 + " ," + 40 + ")")
       .text("Record")
       .style("font-size", "40px")
       .on("mouseover", () => {
-        middleTitleSvg.style("cursor", "hand") //设置光标
+        // middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("Record the bubble chart as a JSON file")
+          .style("width", "350px")
+          .style("height", "25px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
       })
       .on("click", () => { // 先完成设置 -> 选择文件夹以保存 ->选择区域 -> 从头开始
         events = [];
-        if (confirm("已完成设置，并继续导出视频")) {
+        if (confirm("Complete all the settings and ready to export")) {
           let BorderofMain = document.getElementById("main").style.border;
           let BorderofContainer = document.getElementsByClassName("container")[0].style.border;
           let BorderofChartAside = document.getElementById("chartAside").style.border;
