@@ -1457,7 +1457,7 @@
       .attr("id", "option_pauseSetting_content")
       .style("display", "grid")
       .style("grid-template-columns", "50% 1fr")
-      .style("padding-top", "14px");
+      .style("padding-top", "13px");
     let option_pauseSetting_content_left = option_pauseSetting_content
       .append("div")//暂停功能内容grid布局的左边部分
       .style("transform", "translate(30px, 0px)")
