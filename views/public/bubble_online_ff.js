@@ -4186,6 +4186,10 @@
           .duration(500)
           .style("opacity", 0);
       })
+      replaybutton.addEventListener("click", () => {
+        Replayer(Events2JSON);
+      })
+
       alert("Load Success, Click RePlay to play it")
     }
     middleTitleSvg  // 新增一个 Repaly按钮。
@@ -4210,9 +4214,6 @@
           .duration(500)
           .style("opacity", 0);
       })
-      .on("click", () => {
-        Replayer(Events2JSON);
-      });
 
     middleTitleSvg
       .append("text")
