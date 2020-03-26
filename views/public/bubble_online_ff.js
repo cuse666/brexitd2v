@@ -4155,6 +4155,9 @@
 
     let filename = null;
     var inputElement = document.getElementById("files");
+    let mouseOverHandler2 = null;
+    let mouseOutHandler2 = null;
+    let clickHandler2 = null;
     if (inputElement)
       inputElement.addEventListener("change", handleFiles, false);
     function handleFiles() {
@@ -4170,25 +4173,34 @@
         // Replayer(Events2JSON)
       };
       let replaybutton = document.getElementById("Play")
-      replaybutton.addEventListener("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
-        div3.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div3.html(filename)
-          .style("width", (filename.length * 10) + "px")
-          .style("height", "25px")
-          .style("left", (event.pageX) + "px")
-          .style("top", (event.pageY) + "px");
-      })
-      replaybutton.addEventListener("mouseout", () => {
-        div3.transition()
-          .duration(500)
-          .style("opacity", 0);
-      })
-      replaybutton.addEventListener("click", () => {
-        Replayer(Events2JSON);
-      })
+      let EventListener = function () {
+        mouseOverHandler2 && replaybutton.removeEventListener("mouseover", mouseOverHandler2)
+        mouseOutHandler2 && replaybutton.removeEventListener("mouseout", mouseOutHandler2)
+        clickHandler2 && replaybutton.removeEventListener("click", clickHandler2)
+        mouseOverHandler2 = () => {
+          // middleTitleSvg.style("cursor", "hand") //设置光标
+          div3.transition()
+            .duration(200)
+            .style("opacity", .9);
+          div3.html(filename)
+            .style("width", (filename.length * 10) + "px")
+            .style("height", "25px")
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY) + "px");
+        }
+        mouseOutHandler2 = () => {
+          div3.transition()
+            .duration(500)
+            .style("opacity", 0);
+        }
+        clickHandler2 = () => {
+          Replayer(Events2JSON);
+        }
+        replaybutton.addEventListener("mouseover", mouseOverHandler2)
+        replaybutton.addEventListener("mouseout", mouseOutHandler2)
+        replaybutton.addEventListener("click", clickHandler2)
+      }
+      EventListener()
 
       alert("Load Success, Click RePlay to play it")
     }
