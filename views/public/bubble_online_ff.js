@@ -683,6 +683,7 @@
       function changedate2(datestr, idx) {
         div2.style("opacity", 0);	//悬浮框立刻消失
         let htmlstring = d3.select("#dttext2" + idx)._groups[0][0].innerHTML
+        htmlstring = htmlstring.slice(2)
         // d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
 
         // let top = d3.select("#dt2"+idx)._groups[0][0].offsetTop
@@ -702,8 +703,8 @@
           .attr("date-date-format", "YYYY-MM-DD")
           // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
           // .attr("value", htmlstring.slice(8,10) + " - " +htmlstring.slice(5,7)+ " - " +htmlstring.slice(0,4 ))
-          .attr("value", htmlstring.slice(0, 4) + " - " + htmlstring.slice(5, 7) + " - " + htmlstring.slice(8, 10))
-          .attr("min", begindatehtmlstring.slice(0, 4) + " - " + begindatehtmlstring.slice(5, 7) + " - " + begindatehtmlstring.slice(8, 10)) //最小值
+          .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
+          .attr("min", begindatehtmlstring.slice(0, 4) + "-" + begindatehtmlstring.slice(5, 7) + "-" + begindatehtmlstring.slice(8, 10)) //最小值
           .attr("max", "2019-05-30") //指定最晚日期
           .on("blur", inputdateBlur)
 
