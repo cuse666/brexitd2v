@@ -1242,6 +1242,22 @@
       .attr("height", "25px")
       .attr("width", "25px")
       .style("margin-left", "20px")
+      .on("mouseover", () => {
+        // middleTitleSvg.style("cursor", "hand") //设置光标
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("You can point the mouse on the bubble and adjust the bubble size by scrolling the mouse even while the bubble charts play automatically")
+          .style("width", "400px")
+          .style("height", "98px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
       .style("transform", `translate(0px,5px)`);
     let option_fontSize_input = option_fontSize.append("input")
       .attr("type", "range")
@@ -4203,7 +4219,7 @@
       }
       EventListener()
 
-      alert("Load Success, Click RePlay to play it")
+      alert("The JSON file uploaded successfully, click 'Replay' to play the video")
     }
     middleTitleSvg  // 新增一个 Repaly按钮。
       .append("text")
@@ -4253,7 +4269,7 @@
       })
       .on("click", () => { // 先完成设置 -> 选择文件夹以保存 ->选择区域 -> 从头开始
         events = [];
-        if (confirm("Complete all the settings and ready to export")) {
+        if (confirm("You have already adjusted the story of the bubble chart and want to record the bubble chart, right?")) {
           let BorderofMain = document.getElementById("main").style.border;
           let BorderofContainer = document.getElementsByClassName("container")[0].style.border;
           let BorderofChartAside = document.getElementById("chartAside").style.border;
@@ -4345,7 +4361,7 @@
                 //   .on("click", () => {
                 //     Replayer(Events2JSON);
                 //   });
-                alert("Export success!")
+                alert("The JSON file has been recorded successfully!")
               }
             },
           });
