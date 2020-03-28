@@ -322,8 +322,10 @@
     .style("text-align", "center");
 
   d3.select("#showTextArea")
-    .append("text")
+    .append("div")
+    .style("margin", "10px")
     .attr("id", "CaptionInstruction")
+    .append("text")
     .style("font-size", "15px")
     .text("Here is the caption transcript area. You can delete the captions and edit captions duration here.")
     .style("text-align", "center");
@@ -610,7 +612,7 @@
         let singleText = textarea
           .append("div")
           .attr("id", "singleTextArea" + i)
-          .style("margin","10px")
+          .style("margin", "10px")
         //时间-时间
         //text
         let datetext1 = singleText.append("div")
