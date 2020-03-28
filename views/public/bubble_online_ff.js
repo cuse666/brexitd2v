@@ -25,7 +25,7 @@
     .append("div")
     .attr("class", "options")
     .style("display", "grid")
-    .style("grid-template-rows", "30px 30px 66px 226px");
+    .style("grid-template-rows", "30px 30px 66px 224px");
 
   // scale
   var y = d3
@@ -317,9 +317,12 @@
     .attr("class", "xLabel");
 
   d3.select("#showTextArea")
-    .append("p").style("font-size", "25px")
+    .append("p")
+    .style("font-size", "18px")
     .text("Caption Transcript")
-    .style("text-align", "center");
+    .style("text-align", "center")
+    .style("font-weight", "600")
+    .style("color", "#565656");
 
   d3.select("#showTextArea")
     .append("div")
@@ -1270,8 +1273,10 @@
       .attr("min", 10)
       .attr("max", 27)
       .attr("value", 20)
+      .attr("class", "undisabled")
       .style("display", "inline")
-      .style("margin-left", "10px");
+      .style("margin-left", "10px")
+      .style("transform", `translate(0,-6px)`);
     option_fontSize.append("i")
       .attr("class", "cil-text-size")
       .style("font-size", "30px")
@@ -1297,8 +1302,10 @@
       .attr("min", 14)
       .attr("max", 23)
       .attr("value", 20)
+      .attr("class", "undisabled")
       .style("display", "inline")
-      .style("margin-left", "7px");
+      .style("margin-left", "7px")
+      .style("transform", `translate(0,-4px)`);
     option_captionfontSize.append("i")
       .attr("class", "cil-text-size")
       .style("font-size", "30px")
@@ -1328,7 +1335,9 @@
       .attr("min", "60000")
       .attr("max", "240000")
       .attr("step", "10000")
-      .style("margin-left", "10px");
+      .attr("class", "undisabled")
+      .style("margin-left", "10px")
+      .style("transform", `translate(0,-4px)`);
     document.getElementById("option_totalTime").value = 120000;
     let option_totalTime_button = option_totalTime.append("input")
       .attr("type", "button")
@@ -1473,23 +1482,24 @@
       .style("text-align", "center")
       .style("font-size", "18px")
       .style("font-weight", "600")
-      .style("padding-top", "17px")
+      .style("padding-top", "15px")
       .style("color", "#565656");
     let option_pauseSetting_content = option_pauseSetting.append("div")
       .attr("id", "option_pauseSetting_content")
       .style("display", "grid")
       .style("grid-template-columns", "50% 1fr")
-      .style("padding-top", "20px");
+      .style("padding-top", "13px");
     let option_pauseSetting_content_left = option_pauseSetting_content
       .append("div")//暂停功能内容grid布局的左边部分
-      .style("transform", "translate(40px, 0px)")
-    let option_pauseSetting_content_right = option_pauseSetting_content.append("div");//暂停功能内容grid布局的右边部分
+      .style("transform", "translate(30px, 0px)")
+      .style("width", "100%")
+      .style("text-align", "center");
+    let option_pauseSetting_content_right = option_pauseSetting_content.append("div").style("margin-top", "5px");//暂停功能内容grid布局的右边部分
     let option_pauseSetting_enablePause_icon = option_pauseSetting_content_left.append("img")
       .attr("src", "public/icon/autopause_ON.png")
       .attr("width", "50px")
       .attr("height", "50px")
-      .style("cursor", "pointer")
-      .style("margin-left", "53px");
+      .style("cursor", "pointer");
     let option_pauseSetting_enablePause = option_pauseSetting_content_left.append("input")
       .attr("type", "checkbox")
       .attr("id", "enablePause_input")
@@ -1506,13 +1516,13 @@
       .style("margin", "auto");
     let option_pauseSetting_threshhold = option_pauseSetting_content_left.append("div")
       .attr("class", "option_pauseSetting_threshhold")
-      .style("width", "50%")
+      .style("width", "40%")
       .style("text-align", "center")
       .style("margin", "auto")
-      .style("margin-top", "5px")
+      .style("margin-top", "10px")
       .style("padding-top", "5px")
       .style("padding-bottom", "5px")
-      .style("border", "solid black")
+      .style("border", "2px solid gray")
       .style("border-radius", "5px");
     option_pauseSetting_threshhold.append("p")
       .style("width", "150px")
@@ -1525,38 +1535,40 @@
       .attr("min", "2")
       .attr("max", `${maxHighlightBubbles}`)
       .attr("step", 1)
-      .attr("placeholder", "4(default)")
       .style("color", "black")
-      .style("border-style", "solid")
-      .style("width", "20px")
-      .style("display", "block")
+      .style("border-style", "none")
+      .style("border-bottom", "2px solid black")
+      .style("font-size", "30px")
+      .style("width", "50px")
+      .style("height", "35px")
       .style("text-align", "center")
       .style("margin", "auto");
     option_pauseSetting_content_right.append("p")
-      .text("Brief Pause")
-      .style("width", "50px")
+      .text("Long Pause")
+      .style("width", "100px")
+      .style("font-weight", "bold")
       .style("margin-top", "0")
-      .style("margin-left", "12px")
-      .style("margin-bottom", "0")
-      .style("text-align", "center");
+      .style("margin-left", "5px")
+      .style("margin-bottom", "0");
     let option_pauseSetting_timePauseFactor = option_pauseSetting_content_right.append("input")
       .attr("id", "option_pauseSetting_timePauseFactor")
       .attr("type", "range")
       .attr("min", "0.1")
       .attr("max", "1.0")
       .attr("step", "0.01")
-      .style("display", "block")
-      .style("transform", "rotate(-90deg) translate(0px, -30px) scale(0.7)")
-      .style("height", "100px");
+      .attr("class", "undisabled")
+      .style("transform", "rotate(90deg) translate(0px, 30px)")
+      .style("margin-top", "65px")
+      .style("margin-bottom", "65px");
     option_pauseSetting_content_right.append("p")
-      .text("Long Pause")
-      .style("width", "50px")
-      .style("margin-left", "12px")
-      .style("margin-top", "0")
-      .style("text-align", "center");
+      .text("Brief Pause")
+      .style("width", "100px")
+      .style("font-weight", "bold")
+      .style("margin-left", "5px")
+      .style("margin-top", "0");
     document.getElementById("option_pauseSetting_timePauseFactor").value = 0.5;//d3好像改不了input中type为range的value,所以只能用原生来改(1.1-0.6=0.5)
     let option_pauseSetting_msg = option_pauseSetting.append("p")
-      .text("(Pause function requires at least 2 topics to be selected.)")
+      .text("(Pause function requires at least TWO hashtags to be selected.)")
       .style("padding", "0 20px")
       .style("text-align", "center")
       .style("display", "none");
@@ -1569,7 +1581,9 @@
         option_pauseSetting_input
           .attr("disabled", null)
           .style("background-color", "white");
-        option_pauseSetting_timePauseFactor.attr("disabled", null);
+        option_pauseSetting_timePauseFactor.attr("disabled", null)
+          .classed("disabled", null)
+          .classed("undisabled", "true");
         option_pauseSetting_content_right.style("color", "black");
         if (maxHighlightBubbles <= 2) {
           option_pauseSetting_msg.style("display", "block");
@@ -1582,7 +1596,9 @@
         option_pauseSetting_input
           .attr("disabled", "true")
           .style("background-color", "rgb(225,228,228 )");
-        option_pauseSetting_timePauseFactor.attr("disabled", "true");
+        option_pauseSetting_timePauseFactor.attr("disabled", "true")
+          .classed("undisabled", null)
+          .classed("disabled", "true");
         option_pauseSetting_content_right.style("color", "grey");
         option_pauseSetting_msg.style("display", "none");
         enablePause = false;
@@ -1609,6 +1625,20 @@
       let factor = option_pauseSetting_timePauseFactor.property('value');
       pauseTimeFactor = 1.1 - factor;//由于用户直观上会认为大的factor会更快,所以实际赋值对factor做一个颠倒(factor的范围为0.1~1)
     }
+
+    //滑条JS
+    $('input[type=range]').wrap("<div class='range'></div>");
+    var i = 1;
+
+    $('.range').each(function () {
+      this.id = 'range' + i;
+      if (this.getElementsByTagName('input')[0].value == 0) {
+        this.className = "range"
+      } else {
+        this.className = "range rangeM"
+      }
+      i++
+    });
 
     //显示气泡路径开关
     let option_showPast = options.append("div")
@@ -2044,7 +2074,7 @@
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
-            .text("(Pause function requires at least 2 topics to be selected.)")
+            .text("(Pause function requires at least TWO hashtags to be selected.)")
             .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
@@ -2054,14 +2084,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
@@ -2255,7 +2285,7 @@
           document.getElementById("option_pauseSetting_input").value = 2;
           threshhold = 2;
           option_pauseSetting_msg
-            .text("(Pause function requires at least 2 topics to be selected.)")
+            .text("(Pause function requires at least TWO hashtags to be selected.)")
             .style("display", "block");
           document.getElementById("option_pauseSetting_content").style.display = "none";
         } else if (maxHighlightBubbles == 1) {//选择的话题数量满足2个,但是这些话题没有交集(无法暂停),禁用调整,显示提示信息
@@ -2265,14 +2295,14 @@
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
         } else if (maxHighlightBubbles == 2) {//选择的话题数量满足2个,这些话题最多只有两个有交集,禁用调整,显示提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
           document.getElementById("option_pauseSetting_input").disabled = true;
           threshhold = 2;
           option_pauseSetting_msg
             .style("display", "block")
-            .text("(Nember of colored bubbles only can be set when there are more then 2 colored bubbles in a same month.)");
+            .text("(Minimum Colored Bubbles can be set when there are more than TWO colored bubbles in the same month.)");
           document.getElementById("option_pauseSetting_content").style.display = "grid";
         } else {//选择的话题数量满足2个,并且至少有3个话题有交集,启用调整,隐藏提示信息
           document.getElementById("option_pauseSetting_input").value = maxHighlightBubbles;
@@ -2548,9 +2578,9 @@
       let overText = text.filter((d) => { return d.label.substr(1) == label });
       let fontSize = overText.style("font-size");
       fontSize = Number(fontSize.substring(0, fontSize.length - 2));
-      if (direction === "up") {
+      if (fontSize < 27 && direction === "up") {
         fontSize = fontSize + 1;
-      } else {
+      } else if (fontSize > 10 && direction === "down") {
         fontSize = fontSize - 1;
       }
       overText.style("font-size", fontSize);
@@ -3236,14 +3266,14 @@
       eleOfAll
         .append("input")
         .attr("type", "checkbox")
-        .attr("name", "all")
+        .attr("name", "All")
         .attr("class", "input-all")
-        .attr("id", idName + "all");
+        .attr("id", idName + "All");
       eleOfAll
         .append("label")
         .attr("class", "label-all")
-        .attr("for", idName + "all")
-        .html(lang === "ch" ? "全选" : "all");
+        .attr("for", idName + "All")
+        .html(lang === "ch" ? "全选" : "All");
 
       let rows = eleOfLabelRow
         .selectAll(".labelRow")
@@ -3302,7 +3332,8 @@
         .attr("class", "forTooltip")
         .attr(
           "data-tippy-content",
-          d => `${twitterChinese[d]}(#${twitterEnglish[d]}): ${en2ch[d]}`
+          //d => `${twitterChinese[d]}(#${twitterEnglish[d]}): ${en2ch[d]}`
+          d => `#${twitterEnglish[d]}: ${en2ch[d]}`
         )
         .html(d => `${twitterText[d]}`);
 
@@ -3327,7 +3358,6 @@
         .style("height", `${downsideTitleHeight}px`)
         .text("Hashtag Timeline")
         .style("text-align", "center")
-        .style("font-family", "SimSun")
         .style("fill", "#565656")
         .style("font-weight", "600")
         .attr("font-size", "18");
@@ -3342,7 +3372,7 @@
       let downsideBlock = downside.append("div").attr("id", "downside-block");
       downsideBlock.append("p")
         .attr("id", "hashTagTimelineMsg")
-        .text("Hashtag Timeline is the coloured dash bars, show the occurrence of the chosen hashtag bubbles on the bubble chart. You can try to select from the hashtag CHECKBOX on the left-hand side and pressing the PLAY button to see the movement of the bubbles.")
+        .html("Hashtag Timeline is the coloured dash bars, show the occurrence of the chosen hashtag bubbles on the bubble chart. You can try to select from the hashtag <b>CHECKBOX</b> on the left-hand side and pressing the <b>PLAY</b> button to see the movement of the bubbles.")
         .style("padding", "0 60px")
         .style("font-size", "15px")
         .style("text-align", "center");
@@ -3405,7 +3435,7 @@
         .attr("class", "LevelGraph");
 
       let svg = LevelGraph.append("svg")
-        .attr("height", "190px")
+        .attr("height", "210px")
         .attr("width", "100%");
 
       svg.append("text")
@@ -3414,7 +3444,6 @@
         .attr("y", "18px")
         .style("width", "200px")
         .style("height", "50px")
-        .style("font-family", "SimSun")
         .style("fill", "#565656")
         .style("font-weight", "700")
         .attr("font-size", "18")
@@ -3423,7 +3452,7 @@
       svg.append("text")
         .attr("id", "highlightTopic")
         .attr("x", 100)
-        .attr("y", 60)
+        .attr("y", 75)
         .attr("font-size", 16)
         .style("font-family", "SimSun")
         .style("font-weight", "700")
@@ -3439,12 +3468,12 @@
         .tickSize(6 + tick_offset);
 
       svg.append("g")
-        .attr("transform", `translate(20,170)`)
+        .attr("transform", `translate(20,185)`)
         .call(xAxis)
         .attr("class", "axis");
 
       svg.append("g")
-        .attr("transform", `translate(${20 + tick_offset},30)`)
+        .attr("transform", `translate(${20 + tick_offset},45)`)
         .call(yAxis)
         .attr("class", "axis");
 
@@ -3481,14 +3510,16 @@
       });
       let parseTime = d3.timeParse("%Y%m");
       let linePath = d3.line()
-        .x((d) => xScale(parseTime(d[0]))).y((d) => yScale(d[1])).curve(d3.curveBasis);
+        .x((d) => xScale(parseTime(d[0])))
+        .y((d) => yScale(d[1]))
+        .curve(d3.curveBasis);
       svg.selectAll("path")
         .data(dataset)
         .enter()
         .append("path")
         .attr("id", (d) => `topicPopularity-${d.topic}`)
         .attr("d", (d) => linePath(d.point))
-        .attr("transform", `translate(28,30)`)
+        .attr("transform", `translate(28,45)`)
         .attr("stroke", (d) => d.color)
         .attr("stroke-width", "2px")
         .attr("fill", "none")

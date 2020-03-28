@@ -453,7 +453,6 @@
       font-weight: 700;
       font-size: 18px;
       color: #565656;
-      font-family: 'SimSun', 'STSong', Helvetica, "Helvetica Neue", Arial, sans-serif;
     }
 
 
@@ -471,6 +470,7 @@
       overflow-y: auto;
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       line-height: 30px;
+      margin-top: 15px;
     }
 
     #downside-bloc::-webkit-scrollbar {
@@ -715,9 +715,10 @@
     .tippy-tooltip.tomato-theme {
       background-color: rgba(223, 223, 223, 0.9);
       color: #000000;
-      font-weight: 500;
-      text-align: justify;
-      /* font-size: 1.2em; */
+      font-weight: 250;
+      /*text-align: justify;*/
+      text-align: inherit;
+      font-size: 1.5em;
       font-family: 'DFKai-SB', 'PMingLiU', 'BiauKai', "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
@@ -828,17 +829,72 @@
     }
 
     #downmiddle {
-      padding-top: 30px;
+      padding-top: 15px;
       border: dashed 1px #e6e6e6;
       border-bottom: none;
     }
 
     #downleft {
-      padding-top: 30px;
+      padding-top: 15px;
       border: dashed 1px #e6e6e6;
       border-bottom: none;
       border-left: none;
       border-right: none;
+    }
+
+    /* 滑条样式 */
+    .range {
+      display: inline-block;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      position: relative
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 300px;
+      height: 2px;
+      border: none;
+      border-radius: 3px
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: none;
+      height: 8px;
+      width: 8px;
+      border-radius: 510%;
+      border: 2px solid grey;
+      margin-top: -3px;
+    }
+
+    .undisabled::-webkit-slider-thumb {
+      -webkit-transform: scale(0.9);
+      box-shadow: 0 0 0 3px #141414;
+      background: grey;
+      border-color: grey;
+      cursor: pointer;
+    }
+
+    .disabled::-webkit-slider-thumb {
+      -webkit-transform: scale(0.9);
+      box-shadow: 0 0 0 3px grey;
+      background: grey;
+      border-color: grey;
+      cursor: not-allowed;
+    }
+
+    input[type=range]:focus {
+      outline: none;
+    }
+
+    .rangeM input[type=range].undisabled::-webkit-slider-runnable-track {
+      background: #515151;
+    }
+
+    .rangeM input[type=range].disabled::-webkit-slider-runnable-track {
+      background: grey;
     }
   </style>
 </head>
@@ -880,7 +936,7 @@
     </div> -->
     <!-- -->
     <!-- </div> -->
-
+    <script src="public/jquery-3.4.1.min.js"></script>
     <script src="public/d3.min.js"></script>
     <script src="public/fisheye.js"></script>
     <!--For test only--->
