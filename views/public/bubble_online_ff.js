@@ -620,7 +620,7 @@
           // .on("dblclick",changeText)
           // .on("mouseover",MouseOverText)
           // .on("mouseout",MouseOutText)
-          .text(datearr[i].slice(0, 11))
+          .text(datearr[i].slice(0, 10) + " - ")
 
         let datetext2 = singleText.append("div")
           .style("position", "relative")
