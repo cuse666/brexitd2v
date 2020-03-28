@@ -572,7 +572,7 @@
         myText = createText() //重新创建一个文本框
 
         if (change === false) {
-          TextandDate[dateString + " - " + dateString] = tempText
+          TextandDate[dateString + "-" + dateString] = tempText
 
           //排序操作
           datearr = Object.keys(TextandDate).sort()
@@ -624,7 +624,7 @@
           .attr("id", "dt2" + i)
           .style("display", "inline")
           .append("text")
-          .style("text-decoration","underline")
+          .style("text-decoration", "underline")
           .attr("id", "dttext2" + i)
           .on("dblclick", () => { changedate2(datearr[i], i) })
           .on("mouseover", MouseOverDate)
@@ -684,7 +684,7 @@
       function changedate2(datestr, idx) {
         div2.style("opacity", 0);	//悬浮框立刻消失
         let htmlstring = d3.select("#dttext2" + idx)._groups[0][0].innerHTML
-        htmlstring = htmlstring.slice(2)
+        // htmlstring = htmlstring.slice(2)
         // d3.select("#dt2"+idx)._groups[0][0].innerHTML = "2136251321"
 
         // let top = d3.select("#dt2"+idx)._groups[0][0].offsetTop
@@ -703,7 +703,7 @@
           .attr("type", "date")
           .attr("date-date-format", "YYYY-MM-DD")
           // .attr("pattern","[0-9]{4}-[0-9]{2}-[0-9]{2}")
-          // .attr("value", htmlstring.slice(8,10) + " - " +htmlstring.slice(5,7)+ " - " +htmlstring.slice(0,4 ))
+          // .attr("value", htmlstring.slice(8,10) + "-" +htmlstring.slice(5,7)+ "-" +htmlstring.slice(0,4 ))
           .attr("value", htmlstring.slice(0, 4) + "-" + htmlstring.slice(5, 7) + "-" + htmlstring.slice(8, 10))
           .attr("min", begindatehtmlstring.slice(0, 4) + "-" + begindatehtmlstring.slice(5, 7) + "-" + begindatehtmlstring.slice(8, 10)) //最小值
           .attr("max", "2019-05-30") //指定最晚日期
@@ -743,7 +743,7 @@
             if (changestrformat > endDate) {
               changestrformat = endDate
             }
-            let tmp1 = datestr.slice(0, 10) + " - " + changestrformat
+            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
             let tmp2 = TextandDate[datestr]
             delete TextandDate[datestr]
             TextandDate[tmp1] = tmp2      //改变数组
@@ -753,7 +753,7 @@
             if (changestrformat > tmpmaxdate) {
               changestrformat = tmpmaxdate
             }
-            let tmp1 = datestr.slice(0, 10) + " - " + changestrformat
+            let tmp1 = datestr.slice(0, 10) + "-" + changestrformat
             let tmp2 = TextandDate[datestr]
             // console.log(datestr)
             // console.log(tmp1)
@@ -3062,7 +3062,6 @@
           let begin = child.childNodes[0], end = child.childNodes[1]
           begin = begin.childNodes[0].innerText.slice(0, 10) // 开始时间字符串
           end = end.childNodes[0].innerText //结束时间字符串
-          end = end.slice(2)
           child.style.background = ""
           if (begin <= dateString && dateString <= end) {
             child.style.background = "#e6e6e6"
