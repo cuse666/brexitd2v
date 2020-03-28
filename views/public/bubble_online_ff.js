@@ -607,7 +607,10 @@
 
       var datearr = Object.keys(TextandDate)
       for (let i = 0, len = datearr.length; i < len; i++) {
-        let singleText = textarea.append("div").attr("id", "singleTextArea" + i)
+        let singleText = textarea
+          .append("div")
+          .attr("id", "singleTextArea" + i)
+          .style("margin","10px")
         //时间-时间
         //text
         let datetext1 = singleText.append("div")
@@ -1251,7 +1254,7 @@
         div3.html("You can point the mouse on the bubble and adjust the bubble size by scrolling the mouse even while the bubble charts play automatically")
           .style("width", "400px")
           .style("height", "98px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 400) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
