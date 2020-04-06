@@ -4057,7 +4057,7 @@
 
     headSvg
       .append("text")
-      .attr("transform", "translate(" + 0 + " ," + 40 + ")")
+      .attr("transform", "translate(" + 0 + " ," + 45 + ")")
       .text("BREXBLE")
       .style("font-size", "60px")
       .style("fill", "#003399");
