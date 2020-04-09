@@ -4131,8 +4131,6 @@
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")
       .style("opacity", 0);
-    middleTitleSvg.append('i')
-      .attr('class','cil-info');
     middleTitleSvg
       .append("text")
       .attr("transform", "translate(" + 0 + " ," + 40 + ")")
