@@ -1252,7 +1252,6 @@
       .attr("width", "25px")
       .style("margin-left", "20px")
       .on("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
         div3.transition()
           .duration(200)
           .style("opacity", .9);
@@ -4123,21 +4122,20 @@
       }
     });
 
-    let middleTitleSvg = d3.select(".middle-title")
-      .append("svg")
-      .attr("height", 60)
-      .attr("width", 1200);
+    let middleul = d3.select(".middle-title")
+      .append("ul")
+      .attr("class", "middle_ul");
 
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")
       .style("opacity", 0);
-    middleTitleSvg
+
+    middleul.append("li")
+      .append("a")
       .append("text")
-      .attr("transform", "translate(" + 0 + " ," + 40 + ")")
+      .attr("class", "about_li")
       .text("About")
-      .style("font-size", "40px")
       .on("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
         div3.transition()
           .duration(200)
           .style("opacity", .9);
@@ -4152,13 +4150,14 @@
           .duration(500)
           .style("opacity", 0);
       })
-    middleTitleSvg.append("a")
+
+    middleul.append("li")
+      .append("a")
       .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
       .attr("download", "csvfile")
       .append("text")
-      .attr("transform", "translate(" + 210 + " ," + 40 + ")")
+      .attr("class", "data_li")
       .text("Data")
-      .style("font-size", "40px")
       .on("mouseover", () => {
         div3.transition()
           .duration(200)
@@ -4174,122 +4173,13 @@
           .duration(500)
           .style("opacity", 0);
       })
-    var textNode1 = document.createTextNode("Upload");
-    middleTitleSvg.append("foreignObject")
-      .attr("id", "OpenFile")
-      .attr("x", 640)
-      .attr("y", 5)
-      .attr("height", 60)
-      .attr("width", 150)
-      .append("xhtml:div")
-      .attr("id", "inputFileDiv")
-      // .attr("style", "width: 100%;height: 100%;text-align:center;")
-      .attr("class", "file")
-      .append("input")
-      .attr("type", "file")
-      .attr("title", "")
-      .attr("id", "files")
-      .on("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
-        div3.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div3.html("Upload a JSON file to replay")
-          .style("width", "260px")
-          .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY) + "px");
-      })
-      .on("mouseout", () => {
-        div3.transition()
-          .duration(200)
-          .style("opacity", 0);
-      })
-    document.getElementById("inputFileDiv").appendChild(textNode1)
 
-    let filename = null;
-    var inputElement = document.getElementById("files");
-    let mouseOverHandler2 = null;
-    let mouseOutHandler2 = null;
-    let clickHandler2 = null;
-    if (inputElement)
-      inputElement.addEventListener("change", handleFiles, false);
-    function handleFiles() {
-      var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
-      filename = selectedFile.name;//读取选中文件的文件名
-      // var size = selectedFile.size;//读取选中文件的大小
-      // console.log("文件名:" + name + "大小：" + size);
-      var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
-      reader.readAsText(selectedFile);//读取文件的内容
-
-      reader.onload = function () {
-        Events2JSON = this.result;
-        // Replayer(Events2JSON)
-      };
-      let replaybutton = document.getElementById("Play")
-      let EventListener = function () {
-        mouseOverHandler2 && replaybutton.removeEventListener("mouseover", mouseOverHandler2)
-        mouseOutHandler2 && replaybutton.removeEventListener("mouseout", mouseOutHandler2)
-        clickHandler2 && replaybutton.removeEventListener("click", clickHandler2)
-        mouseOverHandler2 = () => {
-          // middleTitleSvg.style("cursor", "hand") //设置光标
-          div3.transition()
-            .duration(200)
-            .style("opacity", .9);
-          div3.html(filename)
-            .style("width", (filename.length * 10) + "px")
-            .style("height", "25px")
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY) + "px");
-        }
-        mouseOutHandler2 = () => {
-          div3.transition()
-            .duration(500)
-            .style("opacity", 0);
-        }
-        clickHandler2 = () => {
-          Replayer(Events2JSON);
-        }
-        replaybutton.addEventListener("mouseover", mouseOverHandler2)
-        replaybutton.addEventListener("mouseout", mouseOutHandler2)
-        replaybutton.addEventListener("click", clickHandler2)
-      }
-      EventListener()
-
-      alert("The JSON file uploaded successfully, click 'Replay' to play the video")
-    }
-    middleTitleSvg  // 新增一个 Repaly按钮。
+    middleul.append("li")
+      .append("a")
       .append("text")
-      .attr("id", "Play")
-      .attr("transform", "translate(" + 870 + " ," + 40 + ")")
-      .text("Replay")
-      .style("font-size", "40px")
-      .on("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
-        div3.transition()
-          .duration(200)
-          .style("opacity", .9);
-        div3.html("You have to upload a JSON file to replay")
-          .style("width", "360px")
-          .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
-          .style("top", (d3.event.pageY) + "px");
-      })
-      .on("mouseout", () => {
-        div3.transition()
-          .duration(500)
-          .style("opacity", 0);
-      })
-
-    middleTitleSvg
-      .append("text")
-      .attr("class", "export")
-      .attr("id", "export")
-      .attr("transform", "translate(" + 400 + " ," + 40 + ")")
+      .attr("class", "record_li")
       .text("Record")
-      .style("font-size", "40px")
       .on("mouseover", () => {
-        // middleTitleSvg.style("cursor", "hand") //设置光标
         div3.transition()
           .duration(200)
           .style("opacity", .9);
@@ -4359,12 +4249,12 @@
                     eventOftype4.data.height = 800;
                   }
 
-                  let divmain = eventOftype2.data.node.childNodes[1].childNodes[2].childNodes[1]
-                  // console.log(divmain)
+                  let divmain = eventOftype2.data.node.childNodes[1].childNodes[2].childNodes[1].childNodes[1]
+                  console.log(divmain)
                   let divcontainer = divmain.childNodes[5]
-                  // console.log(divcontainer)
+                  console.log(divcontainer)
                   let divChartaside = divcontainer.childNodes[3]
-                  // console.log(divChartaside)
+                  console.log(divChartaside)
 
                   divcontainer.childNodes = [];
                   divcontainer.childNodes.push(divChartaside);
@@ -4385,20 +4275,6 @@
                   document.getElementsByClassName("container")[0].style.border = BorderofContainer
                   document.getElementById("chartAside").style.border = BorderofChartAside
 
-                  // if (!document.getElementById("Replayer"))
-                  //   document.getElementById("OpenFile").style.x = 800;
-                  // middleTitleSvg  // 新增一个 Repaly按钮。
-                  //   .append("text")
-                  //   .attr("id", "Replayer")
-                  //   .attr("transform", "translate(" + 600 + " ," + 40 + ")")
-                  //   .text("Replay")
-                  //   .style("font-size", "40px")
-                  //   .on("mouseover", () => {
-                  //     middleTitleSvg.style("cursor", "hand") //设置光标
-                  //   })
-                  //   .on("click", () => {
-                  //     Replayer(Events2JSON);
-                  //   });
                   alert("The JSON file has been recorded successfully!")
                 }
               },
@@ -4406,6 +4282,110 @@
 
           }
       })
+
+
+
+    var textNode1 = document.createTextNode("Upload");
+    middleul.append("li")
+      .append("div")
+      .attr("id", "inputFileDiv")
+      .attr("class", "file")
+      .append("input")
+      .attr("type", "file")
+      .attr("title", "")
+      .attr("id", "files")
+      .on("mouseover", () => {
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("Upload a JSON file to replay")
+          .style("width", "260px")
+          .style("height", "25px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(200)
+          .style("opacity", 0);
+      })
+    document.getElementById("inputFileDiv").appendChild(textNode1)
+    // .attr("class", "upload_li")
+    // .html("Upload")
+
+    let filename = null;
+    var inputElement = document.getElementById("files");
+    let mouseOverHandler2 = null;
+    let mouseOutHandler2 = null;
+    let clickHandler2 = null;
+    if (inputElement)
+      inputElement.addEventListener("change", handleFiles, false);
+    function handleFiles() {
+      var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+      filename = selectedFile.name;//读取选中文件的文件名
+      // var size = selectedFile.size;//读取选中文件的大小
+      // console.log("文件名:" + name + "大小：" + size);
+      var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+      reader.readAsText(selectedFile);//读取文件的内容
+
+      reader.onload = function () {
+        Events2JSON = this.result;
+        // Replayer(Events2JSON)
+      };
+      let replaybutton = document.getElementById("Play")
+      let EventListener = function () {
+        mouseOverHandler2 && replaybutton.removeEventListener("mouseover", mouseOverHandler2)
+        mouseOutHandler2 && replaybutton.removeEventListener("mouseout", mouseOutHandler2)
+        clickHandler2 && replaybutton.removeEventListener("click", clickHandler2)
+        mouseOverHandler2 = () => {
+          div3.transition()
+            .duration(200)
+            .style("opacity", .9);
+          div3.html(filename)
+            .style("width", (filename.length * 10) + "px")
+            .style("height", "25px")
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY) + "px");
+        }
+        mouseOutHandler2 = () => {
+          div3.transition()
+            .duration(500)
+            .style("opacity", 0);
+        }
+        clickHandler2 = () => {
+          Replayer(Events2JSON);
+        }
+        replaybutton.addEventListener("mouseover", mouseOverHandler2)
+        replaybutton.addEventListener("mouseout", mouseOutHandler2)
+        replaybutton.addEventListener("click", clickHandler2)
+      }
+      EventListener()
+
+      alert("The JSON file uploaded successfully, click 'Replay' to play the video")
+    }
+
+    middleul.append("li")
+      .append("text")
+      .attr("class", "replay_li")
+      .attr("id", "Play")
+      .text("Replay")
+      .on("mouseover", () => {
+        div3.transition()
+          .duration(200)
+          .style("opacity", .9);
+        div3.html("You have to upload a JSON file to replay")
+          .style("width", "360px")
+          .style("height", "25px")
+          .style("left", (d3.event.pageX) + "px")
+          .style("top", (d3.event.pageY) + "px");
+      })
+      .on("mouseout", () => {
+        div3.transition()
+          .duration(500)
+          .style("opacity", 0);
+      })
+
+
 
     function updatePast(selector, currentDate, reRenderLine = false) {
       let label = selector.attr("name");

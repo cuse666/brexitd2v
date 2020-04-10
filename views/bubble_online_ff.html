@@ -74,6 +74,7 @@
 
     .file {
       position: relative;
+      vertical-align: middle;
       display: inline-block;
       overflow: hidden;
       /* color: #1E88C7; */
@@ -92,6 +93,43 @@
 
     a {
       cursor: default;
+    }
+
+    .middle_ul {
+      display: block;
+      white-space: nowrap;
+      margin-top: 0px;
+      margin-bottom: 0px;
+      width: 100%;
+      font-size: 40px;
+    }
+
+    .middle_ul li {
+      width: 20%;
+      height: 100%;
+      margin: 3px;
+      display: inline-block;
+    }
+
+    .about_li::before{
+      content: url(public/icon/about-icon.png);
+      vertical-align: middle;
+    }
+    .data_li::before{
+      content: url(public/icon/data-icon.png);
+      vertical-align: middle;
+    }
+    .record_li::before{
+      content: url(public/icon/record-icon.png);
+      vertical-align: middle;
+    }
+    .upload_li::before{
+      content: url(public/icon/upload-icon.png);
+      vertical-align: middle;
+    }
+    .replay_li::before{
+      content: url(public/icon/replay-icon.png);
+      vertical-align: middle;
     }
 
     .textLabel {
@@ -551,6 +589,7 @@
       display: grid;
       grid-template-columns: 410px 1200px 310px;
       margin-top: 10px;
+      background-color: tomato;
     }
 
     .trendBar {
@@ -599,7 +638,7 @@
       /* border: 1px solid white;
     border-radius: 15px; */
       /* outline: 1px solid white; */
-      background-color: #ffffff;
+      /* background-color: #ffffff; */
       vertical-align: middle;
       font-weight: 500;
       font-size: 1.4rem;
@@ -785,6 +824,10 @@
     }
 
     #inputText {
+      vertical-align: middle;
+    }
+
+    .middle-title{
       vertical-align: middle;
     }
 
