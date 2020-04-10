@@ -111,24 +111,28 @@
       display: inline-block;
     }
 
-    .about_li::before{
-      content: url(public/icon/about-icon.png);
+    .about_li::before {
+      content: url(public/icon/about-icon.svg);
       vertical-align: middle;
     }
-    .data_li::before{
-      content: url(public/icon/data-icon.png);
+
+    .data_li::before {
+      content: url(public/icon/data-icon.svg);
       vertical-align: middle;
     }
-    .record_li::before{
-      content: url(public/icon/record-icon.png);
+
+    .record_li::before {
+      content: url(public/icon/record-icon.svg);
       vertical-align: middle;
     }
-    .upload_li::before{
-      content: url(public/icon/upload-icon.png);
+
+    .file::before {
+      content: url(public/icon/upload-icon.svg);
       vertical-align: middle;
     }
-    .replay_li::before{
-      content: url(public/icon/replay-icon.png);
+
+    .replay_li::before {
+      content: url(public/icon/replay-icon.svg);
       vertical-align: middle;
     }
 
@@ -589,7 +593,7 @@
       display: grid;
       grid-template-columns: 410px 1200px 310px;
       margin-top: 10px;
-      background-color: tomato;
+      background-color: #e6e6e6;
     }
 
     .trendBar {
@@ -639,11 +643,22 @@
     border-radius: 15px; */
       /* outline: 1px solid white; */
       /* background-color: #ffffff; */
-      vertical-align: middle;
+      /* vertical-align: middle; */
       font-weight: 500;
-      font-size: 1.4rem;
-      line-height: 1.7rem;
+      font-size: 60PX;
+      line-height: 60px;
+      text-align: center;
+      color: #003399;
       font-family: 'KaiTi', 'BiauKai', "Helvetica Neue", Helvetica, Arial, sans-serif;
+      
+      /* 禁止鼠标点击选中文字 */
+      moz-user-select: -moz-none;
+      -moz-user-select: none;
+      -o-user-select: none;
+      -khtml-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
     }
 
     .header::-webkit-scrollbar {
@@ -827,7 +842,9 @@
       vertical-align: middle;
     }
 
-    .middle-title{
+    .middle-title {
+      height: 68.6px;
+      line-height: 68.6px;
       vertical-align: middle;
     }
 
@@ -954,7 +971,7 @@
     <div id='main'>
       <!-- <div class="title">How did the British discuss brexit</div> -->
       <div class="heading">
-        <div class="header"></div>
+        <div class="header">BREXBLE</div>
         <div class="middle-title"></div>
         <div class="aside-title"></div>
       </div>

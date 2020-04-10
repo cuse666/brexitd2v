@@ -4048,18 +4048,6 @@
       });
     }
 
-    let headSvg = d3
-      .select(".header")
-      .append("svg")
-      .attr("height", 60)
-      .style("position", "absolute");
-
-    headSvg
-      .append("text")
-      .attr("transform", "translate(" + 0 + " ," + 45 + ")")
-      .text("BREXBLE")
-      .style("font-size", "60px")
-      .style("fill", "#003399");
 
     let Events2JSON = null;
     function Replayer(Events2JSON) {  // 参数为JSON文件
@@ -4310,8 +4298,6 @@
           .style("opacity", 0);
       })
     document.getElementById("inputFileDiv").appendChild(textNode1)
-    // .attr("class", "upload_li")
-    // .html("Upload")
 
     let filename = null;
     var inputElement = document.getElementById("files");
