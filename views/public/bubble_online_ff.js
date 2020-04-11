@@ -4139,10 +4139,12 @@
           .style("opacity", 0);
       })
 
+    var textNode2 = document.createTextNode("Data");
     middleul.append("li")
       .append("a")
-      .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
-      .attr("download", "csvfile")
+      // .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
+      .attr("download", "csvfile.csv")
+      .attr("id", "dataDownload")
       .append("text")
       .attr("class", "data_li")
       .text("Data")
@@ -4161,6 +4163,8 @@
           .duration(500)
           .style("opacity", 0);
       })
+    document.getElementById("dataDownload").href = "public/data/hashtag_bubble_deleted0414.csv"
+    // document.getElementById("dataDownload").download = "csvfile.csv"
 
     middleul.append("li")
       .append("a")
