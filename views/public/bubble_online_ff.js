@@ -4110,19 +4110,36 @@
       }
     });
 
-    let middleul = d3.select(".middle-title")
+    let middleul = d3.select(".aside-title")
       .append("ul")
       .attr("class", "middle_ul");
+
+    let textArea = d3.select(".aside-title")
+      .attr("font-size", "10px")
+    textArea.append("text")
+      .text("About")
+			.attr("style","position:relative; left:10px")
+
+    textArea.append("text")
+      .text("Data")
+			.attr("style","position:relative; left:45px")
+    textArea.append("text")
+      .text("Record")
+			.attr("style","position:relative; left:80px")
+    textArea.append("text")
+      .text("Upload")
+			.attr("style","position:relative; left:105px")
+    textArea.append("text")
+      .text("Replay")
+			.attr("style","position:relative; left:135px")
 
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")
       .style("opacity", 0);
 
-    middleul.append("li")
-      .append("a")
-      .append("text")
-      .attr("class", "about_li")
-      .text("About")
+    let aboutLi = middleul.append("li")
+    aboutLi.append("a")
+      .append("img").attr("src", "public/icon/about-icon.svg")
       .on("mouseover", () => {
         div3.transition()
           .duration(200)
@@ -4130,7 +4147,7 @@
         div3.html("BREXBLE is a storytelling prototype tool with animated data visualization. This tool supports data storytelling through bubble charts movement and captions.")
           .style("width", "400px")
           .style("height", "98px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 350) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
@@ -4139,15 +4156,13 @@
           .style("opacity", 0);
       })
 
+
     var textNode2 = document.createTextNode("Data");
-    middleul.append("li")
-      .append("a")
-      // .attr("xlink:href", "public/data/hashtag_bubble_deleted0414.csv")
+    let dataLi = middleul.append("li")
+    dataLi.append("a")
       .attr("download", "csvfile.csv")
       .attr("id", "dataDownload")
-      .append("text")
-      .attr("class", "data_li")
-      .text("Data")
+      .append("img").attr("src", "public/icon/data-icon.svg")
       .on("mouseover", () => {
         div3.transition()
           .duration(200)
@@ -4155,7 +4170,7 @@
         div3.html("Download the example dataset")
           .style("width", "278px")
           .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 250) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
@@ -4164,13 +4179,10 @@
           .style("opacity", 0);
       })
     document.getElementById("dataDownload").href = "public/data/hashtag_bubble_deleted0414.csv"
-    // document.getElementById("dataDownload").download = "csvfile.csv"
 
-    middleul.append("li")
-      .append("a")
-      .append("text")
-      .attr("class", "record_li")
-      .text("Record")
+    let recordLi = middleul.append("li")
+    recordLi.append("a")
+      .append("img").attr("src", "public/icon/record-icon.svg")
       .on("mouseover", () => {
         div3.transition()
           .duration(200)
@@ -4178,7 +4190,7 @@
         div3.html("Record the bubble chart as a JSON file")
           .style("width", "350px")
           .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 320) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
@@ -4275,9 +4287,6 @@
           }
       })
 
-
-
-    var textNode1 = document.createTextNode("Upload");
     middleul.append("li")
       .append("div")
       .attr("id", "inputFileDiv")
@@ -4293,7 +4302,7 @@
         div3.html("Upload a JSON file to replay")
           .style("width", "260px")
           .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 230) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
@@ -4301,7 +4310,6 @@
           .duration(200)
           .style("opacity", 0);
       })
-    document.getElementById("inputFileDiv").appendChild(textNode1)
 
     let filename = null;
     var inputElement = document.getElementById("files");
@@ -4354,11 +4362,9 @@
       alert("The JSON file uploaded successfully, click 'Replay' to play the video")
     }
 
-    middleul.append("li")
-      .append("text")
-      .attr("class", "replay_li")
-      .attr("id", "Play")
-      .text("Replay")
+    let replayLi = middleul.append("li")
+    replayLi.append("a")
+      .append("img").attr("src", "public/icon/replay-icon.svg")
       .on("mouseover", () => {
         div3.transition()
           .duration(200)
@@ -4366,7 +4372,7 @@
         div3.html("You have to upload a JSON file to replay")
           .style("width", "360px")
           .style("height", "25px")
-          .style("left", (d3.event.pageX) + "px")
+          .style("left", (d3.event.pageX - 330) + "px")
           .style("top", (d3.event.pageY) + "px");
       })
       .on("mouseout", () => {
