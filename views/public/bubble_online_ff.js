@@ -4118,20 +4118,20 @@
       .attr("font-size", "10px")
     textArea.append("text")
       .text("About")
-			.attr("style","position:relative; left:10px")
+      .attr("style", "position:relative; left:10px")
 
     textArea.append("text")
       .text("Data")
-			.attr("style","position:relative; left:45px")
+      .attr("style", "position:relative; left:45px")
     textArea.append("text")
       .text("Record")
-			.attr("style","position:relative; left:80px")
+      .attr("style", "position:relative; left:80px")
     textArea.append("text")
       .text("Upload")
-			.attr("style","position:relative; left:105px")
+      .attr("style", "position:relative; left:105px")
     textArea.append("text")
       .text("Replay")
-			.attr("style","position:relative; left:135px")
+      .attr("style", "position:relative; left:135px")
 
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")
@@ -4364,6 +4364,7 @@
 
     let replayLi = middleul.append("li")
     replayLi.append("a")
+      .attr("id", "Play")
       .append("img").attr("src", "public/icon/replay-icon.svg")
       .on("mouseover", () => {
         div3.transition()
