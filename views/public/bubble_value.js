@@ -138,6 +138,23 @@ function getTwitterEnglish() {
       yeseu: "对欧盟说是！"
     };
   }
+
+  function getCountryName() {
+    return {
+      BruneiDarussalam: "Brunei Darussalam",
+      Cambodia: "Cambodia",
+      Indonesia: "Indonesia",
+      Laos: "Laos",
+      Malaysia: "Malaysia",
+      Myanmar: "Myanmar",
+      Philippines: "Philippines",
+      Singapore: "Singapore",
+      Thailand: "Thailand",
+      Vietnam: "Vietnam"
+    };
+  }
+
+
   
   function getTweenValue() {
     return [
