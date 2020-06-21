@@ -46,7 +46,7 @@
       200000,
       400000
     ])*/
-    .domain([
+    /*.domain([
       0,
       25,
       50,
@@ -61,6 +61,23 @@
       275,
       300,
       325
+    ])*/
+    
+    .domain([
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
     ])
 
     .range([
@@ -110,7 +127,7 @@
       1800,
       2900
     ])*/
-    .domain([
+    /*.domain([
       0,
       1000,
       2000,
@@ -120,6 +137,18 @@
       6000,
       7000,
       8000
+    ])*/
+
+    .domain([
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
     ])
 
     .range([
@@ -152,7 +181,7 @@
     // .domain([0, 0.365010869, (0.365010869 + 2 / 3) / 2, 2 / 3, 1])
     .domain([0, 0.05, 0.2, 0.50448195659342, 0.72, 0.9, 1])
     // .range([25, 7, 25, 7, 25]);
-    .range([25, 19, 15, 15, 15, 20, 25]);
+    .range([25, 20, 15, 15, 15, 20, 25]);
 
   var color = d3
     .scaleQuantile()
@@ -176,14 +205,15 @@
   // 设定trendbar长度范围 Trendbar length range
   var trendScale = d3
     .scaleLinear()
-    .domain([-1, 0, 1])
+    .domain([-1, 0, 1])    
     //  .domain([0,1])
     .range([trendBarLength, tendBarLengthMin, trendBarLength]);
-
+    
   var trendTransform = d3
     .scaleLinear()
     .domain([0, 1])
-    .range([-1, 1]);
+    //.range([-1, 1]);
+    .range([0, 1]);
 
   // axises
   var xAxis = d3
@@ -200,7 +230,7 @@
       1800,
       2900
     ])*/
-    .tickValues([      
+    /*.tickValues([      
       0,
       1000,
       2000,
@@ -210,6 +240,18 @@
       6000,
       7000,
       8000
+    ]);*/
+
+    .tickValues([      
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
     ]);
 
   var yAxis = d3
@@ -231,7 +273,7 @@
       200000,
       400000
     ])*/
-    .tickValues([      
+    /*.tickValues([      
       0,
       25,
       50,
@@ -246,6 +288,23 @@
       275,
       300,
       325
+    ]);*/
+
+    .tickValues([
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
     ]);
 
   let buttonSize = 40;
@@ -332,7 +391,8 @@
     .attr("r", anchorRadius);
   let anchortext = svg.append("text")
     .attr("class", "anchor-text")
-    .text("2016/1")
+    //.text("2016/1")
+    .text("2020/1")
     .attr("x", margin.left - 20)
     .attr("y", margin.top + height + videoYOffset + buttonSize / 2 + 30 + 25 - 10)
     .attr("font-size", 15)
@@ -480,6 +540,11 @@
     // return now[2];
   }
 
+  function getDateOfWeek(weekNumber,year){
+    //Create a date object starting january first of chosen year, plus the number of days in a week multiplied by the week number to get the right date.
+    return new Date(year, 0, 1+((weekNumber-1)*7));
+  }
+  
   var dataArray = [];
   var trendMap = new Map();
   //d3.csv("public/data/hashtag_bubble_deleted0414.csv").then(function (data) {
@@ -491,10 +556,11 @@
       tmp.label = d.country.trim();
       tmp.trend = d.size.trim();
 
-      trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
+      //trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
+      trendMap.set(tmp.label.slice(0), parseFloat(tmp.trend));
       tmp.value = [];
       // start default date      
-      for (let label in d) {
+      for (let label in d) {        
         if (
           //label !== "hashtag" &&
           //label !== "trend" &&
@@ -504,11 +570,10 @@
           //label.substr(0, 2) !== "lv"
           label.substr(0, 2) !== "D_" &&
           label.substr(0, 2) !== "lv"
-
-
         ) {
-          tmp.value.push([
-            parseDate(label),
+          let date_label = getDateOfWeek(label, 2020).toISOString().slice(0,10).replace(/-/g,"")
+          tmp.value.push([                        
+            parseDate(date_label),
             parseInt(d[label]),
             //parseInt(d["re" + label]),
             //parseInt(d["lv" + label]),
@@ -518,7 +583,7 @@
         }
       }
       //tmp.value.push([new Date(2019, 5), tmp.value[40][1], tmp.value[40][2], tmp.value[40][3]]); // 2019/05+1
-      tmp.value.push([new Date(2019, 5), tmp.value[23][1], tmp.value[23][2], tmp.value[23][3]]); // 2019/05+1
+      tmp.value.push([new Date(2020, 5), tmp.value[23][1], tmp.value[23][2], tmp.value[23][3]]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
     });
@@ -891,6 +956,10 @@
     let twitterText = getCountryName();
 
     let labelSet = dataArray.map(d => d.label.slice(0));
+    let labelSet2 = labelSet
+    let labelSet1 = []
+    let labelSet0 = []
+    /*
     let labelSet0 = dataArray
       .filter(d => category(d.trend) === "0")
       .sort((a, b) => b.trend - a.trend)
@@ -903,7 +972,8 @@
       .filter(d => category(d.trend) === "2")
       .sort((a, b) => b.trend - a.trend)
       .map(d => d.label.slice(0));
-
+    */
+   
     // let rightSvgWidth = document.getElementsByClassName('aside')[1].offsetWidth;
     let rightAsideSvg = d3
       .select("#rightAside")
@@ -925,6 +995,8 @@
       .attr("y2", svgHeight - 50)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#3179AE");
+
+    /*
     pivotLines
       .append("line")
       .attr("x1", rightAsidePivotFromLeft)
@@ -933,6 +1005,8 @@
       .attr("y2", svgHeight - 50)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#222");
+    */
+
     pivotLines
       .append("line")
       .attr("x1", redPivot)
@@ -1145,8 +1219,8 @@
     drawRightLeg(rightAsideSvg, 12);
     drawRightBottomLeg(rightAsideSvg, svgHeight - 45);
     createAsidePanel(labelSet2, "labelSet2");
-    createAsidePanel(labelSet1, "labelSet1");
-    createAsidePanel(labelSet0, "labelSet0");
+    //createAsidePanel(labelSet1, "labelSet1");
+    //createAsidePanel(labelSet0, "labelSet0");
     /*tippy(".forTooltip", {
       placement: "right",
       arrow: true,
@@ -1164,11 +1238,14 @@
       .attr("y", margin.top + 120)
       .attr("class", "monthText");
     // Add a dot per state. Initialize the data at 1950, and set the colors.
-    let startDate = new Date(2016, 0);
-    let limitDate = new Date(2019, 4, 30, 23, 59, 59);
+    //let startDate = new Date(2016, 0);
+    //let limitDate = new Date(2019, 4, 30, 23, 59, 59);
+    let startDate = new Date(2020, 0);
+    let limitDate = new Date(2020, 5, 16, 23, 59, 59);
     // let StopDate = limitDate
     //console.log(limitDate)
-    let endDate = new Date(2019, 5);
+    //let endDate = new Date(2019, 5);
+    let endDate = new Date(2020, 5);
     // dataset format example
     /* {label: "#abtv", 
         forward: 1.6105742383512545, 
@@ -1905,7 +1982,8 @@
     }
 
     function isVisible(dataItem) {
-      return dataItem.freq >= 500 || dataItem.forward >= 50; //Y||X
+      //return dataItem.freq >= 500 || dataItem.forward >= 50; //Y||X
+      return dataItem.freq > 0 || dataItem.forward > 0; //Y||X
     }
 
     function transformLifeCycleToGradient(lifeCycle) {
@@ -3286,7 +3364,7 @@
         })
         .style("display", function (d) {
           if (!isVisible(d)) {
-            return "none";
+            return "none";            
           }
         });
 
@@ -3314,7 +3392,8 @@
         .select("#rightAside")
         .append("div")
         .attr("class", "aside")
-        .style("height", height / 3);
+        //.style("height", height / 3);
+        .style("height", height);
       // 这句下面还有一句 
       // document.querySelector("div#aside").style.width = `${asideWidth}px`;
       // document.querySelector("div#aside").style.height = `${anchor.attr("cy")}px`;
@@ -3325,7 +3404,8 @@
         .append("div")
         .attr("class", "eleOfLabelRow")
         .attr("id", idName + "Rows")
-        .style("height", height / 3 - 25 + "px")
+        //.style("height", height / 3 - 25 + "px")
+        .style("height", "260px")
         .style(
           "max-height",
           `${2 * anchor.attr("cy") - lineHeight - svgHeight}px`
@@ -3359,6 +3439,9 @@
           return trendScale(trendTransform(trendMap.get(d))) + "px";
         })
         .style("margin-left", d => {
+          //return rightAsidePivotFromLeft + "px";
+          return "136px"
+          /*
           if (trendTransform(trendMap.get(d)) >= 0)
             return rightAsidePivotFromLeft + "px";
           else
@@ -3367,7 +3450,9 @@
               trendScale(trendTransform(trendMap.get(d))) +
               "px"
             );
+          */
         })
+        /*
         .style("border-top-right-radius", d => {
           if (trendTransform(trendMap.get(d)) >= 0) return "8px";
         })
@@ -3380,6 +3465,14 @@
         .style("border-bottom-left-radius", d => {
           if (trendTransform(trendMap.get(d)) <= 0) return "8px";
         })
+        */
+        .style("border-top-right-radius", d => {
+          //if (trendTransform(trendMap.get(d)) >= 0) return "8px";
+          return "8px";
+        })
+        .style("border-bottom-right-radius", d => {
+          return "8px";
+        })        
         .style("background", d => {
           if (category(trendMap.get(d)) === "2") return "#f1706f";
           if (category(trendMap.get(d)) === "1") return "#b2b2b2";
@@ -3530,9 +3623,11 @@
         .style("font-weight", "700")
         .text("");
 
-      const xScale = d3.scaleTime().domain([new Date(2016, 1), new Date(2019, 5)]).range([0, 400]);
+      //const xScale = d3.scaleTime().domain([new Date(2016, 0), new Date(2019, 5)]).range([0, 400]);
+      const xScale = d3.scaleTime().domain([new Date(2020, 0), new Date(2020, 5)]).range([0, 350]);
       const xAxis = d3.axisBottom(xScale)
-        .ticks(d3.timeYear.every(1));
+        //.ticks(d3.timeYear.every(1)); //2016 2017 2018 2019
+        .ticks(d3.timeMonth.every(1)); //Jan Feb
       const yScale = d3.scaleLinear().domain([3, 0]).range([0, 140]);
       let tick_offset = 400;
       const yAxis = d3.axisLeft(yScale)
@@ -3554,7 +3649,8 @@
         let color = [];
         let tmp = [];
         //let topic = d.hashtag.substr(1);
-        let topic = d.country.substr(1);
+        //let topic = d.country.substr(1);
+        let topic = d.country.substr(0);
 
         switch (classifyTopic(topic)) {
           case 0:
@@ -3572,16 +3668,25 @@
         }
 
         for (let label in d) {
+
           if (label.substr(0, 2) == "lv") {
-            tmp.push([label.substr(2), d[label]]);
+            //tmp.push([label.substr(2), d[label]]);
+            let date_label = getDateOfWeek(label.substr(2), 2020).toISOString().slice(0,10).replace(/-/g,"")
+            tmp.push([date_label, d[label]])
           }
+
+           
+
+
         }
+
         data.color = color;
         data.point = tmp;
         data.topic = topic;
         return data;
       });
-      let parseTime = d3.timeParse("%Y%m");
+      let parseTime = d3.timeParse("%Y%m%d");
+      //let parseTime = d3.timeParse("%V");
       let linePath = d3.line()
         .x((d) => xScale(parseTime(d[0])))
         .y((d) => yScale(d[1]))
