@@ -13,7 +13,7 @@
 
   var width = svgWidth - margin.left - margin.right;
   var height = svgHeight - margin.top - margin.bottom;
-
+  
   let timeout = null
   var svg = d3
     .select("#chartAside")
@@ -62,8 +62,9 @@
       300,
       325
     ])*/
-    
-    .domain([
+
+    .domain([      
+      0,
       1,
       2,
       3,
@@ -72,14 +73,38 @@
       6,
       7,
       8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14
+      9
     ])
+    /*
+    .domain([
+      0,
+      0.5,
+      1,
+      1.5,
+      2,
+      2.5,
+      3,
+      3.5,
+      4,
+      4.5,
+      5,
+      5.5,
+      6,
+      6.5
+    ])*/
 
+    .range([
+      height / 10 * 10,
+      height / 10 * 9,
+      height / 10 * 8,
+      height / 10 * 7,
+      height / 10 * 6,
+      height / 10 * 5,
+      height / 10 * 4,
+      height / 10 * 3,
+      height / 10 * 2,
+      height / 10 * 1,
+    /*
     .range([
       height / 14 * 14,
       height / 14 * 13,
@@ -95,6 +120,7 @@
       height / 14 * 3,
       height / 14 * 2,
       height / 14 * 1,
+      */
       /*
             console.log([
               height / 14 * 14,
@@ -138,8 +164,8 @@
       7000,
       8000
     ])*/
-
-    .domain([
+    .domain([      
+      0,
       1,
       2,
       3,
@@ -148,9 +174,54 @@
       6,
       7,
       8,
-      9
+      9,
     ])
 
+    .domain([
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13
+    ])
+
+    /*.domain([
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ])*/
+
+    .range([
+      width / 14 * 0,
+      width / 14 * 1,
+      width / 14 * 2,
+      width / 14 * 3,
+      width / 14 * 4,
+      width / 14 * 5,
+      width / 14 * 6,
+      width / 14 * 7,
+      width / 14 * 8,
+      width / 14 * 9,
+      width / 14 * 10,
+      width / 14 * 11,
+      width / 14 * 12,
+      width / 14 * 13,
+    /*
     .range([
       width / 9 * 0,
       width / 9 * 1,
@@ -160,7 +231,7 @@
       width / 9 * 5,
       width / 9 * 6,
       width / 9 * 7,
-      width / 9 * 8,
+      width / 9 * 8,*/
       /*
             console.log([
               width / 9 * 0,
@@ -171,25 +242,65 @@
               width / 9 * 5,
               width / 9 * 6,
               width / 9 * 7,
-              width / 9 * 8,
+              width / 9 * 8
             ])
           */
     ]);
+  
+    let color_list = { "BruneiDarussalam":"#b37359", 
+    "Singapore" : "#EF3340",
+    "Laos" : "#671c47",
+    "Cambodia" : "#555555",
+    "Malaysia" : "#F7E017",
+    "Myanmar" : "#99bf1a",
+    "Thailand" : "#1800ff",
+    "Vietnam" : "#ed920e",
+    "Philippines" : "#995e4c",
+    "Indonesia" : "#ff8080" }
 
+    function color(trend){
+    let color_trend = { 0.001205713:"#b37359", 
+    0.020544273 : "#EF3340",
+    0.025636156 : "#671c47",
+    0.059374652 : "#555555",
+    0.115276881 : "#F7E017",
+    0.194032869 : "#99bf1a",
+    0.249017428 : "#1800ff",
+    0.347404712 : "#ed920e",
+    0.391143544 : "#995e4c",
+    0.97686179: "#ff8080" }
+      return color_trend[trend]
+    }
+
+/*
+Brunei #b17c4f 
+Cambodia #555555 
+Indonesia #ff8080
+Laos #671c47
+Malaysia #b37359
+Myanmar #99bf1a 
+Philippine #995e4c
+Singapore #f799a0
+Thai #97687c 
+Vietnam #ed920e 
+
+*/
+
+  
   var r = d3
     .scaleLinear()
     // .domain([0, 0.365010869, (0.365010869 + 2 / 3) / 2, 2 / 3, 1])
     .domain([0, 0.05, 0.2, 0.50448195659342, 0.72, 0.9, 1])
     // .range([25, 7, 25, 7, 25]);
     .range([25, 20, 15, 15, 15, 20, 25]);
-
+/*
   var color = d3
     .scaleQuantile()
     // .domain([0, 0.365010869, (0.365010869 + 2 / 3) / 2, 2 / 3, 1])
     .domain([0, 0.2, 0.50448195659342, 0.72, 1])
     // .range(["#1B6AA5", "#748C9D", "#9D7A7F", "#E8110F" ]);
     .range(["#1B6AA5", "#7F7F7F", "#7F7F7F", "#E8110F"]);
-
+*/
   var category = d3
     .scaleQuantile()
     .domain([0, 0.2, 0.50448195659342, 0.72, 1])
@@ -205,9 +316,10 @@
   // 设定trendbar长度范围 Trendbar length range
   var trendScale = d3
     .scaleLinear()
-    .domain([-1, 0, 1])    
-    //  .domain([0,1])
-    .range([trendBarLength, tendBarLengthMin, trendBarLength]);
+    //.domain([-1, 0, 1])    
+    .domain([1,0])
+    //.range([trendBarLength, tendBarLengthMin, trendBarLength]);
+    .range([trendBarLength, tendBarLengthMin]);
     
   var trendTransform = d3
     .scaleLinear()
@@ -241,8 +353,8 @@
       7000,
       8000
     ]);*/
-
-    .tickValues([      
+    .tickValues([
+      0,
       1,
       2,
       3,
@@ -251,8 +363,24 @@
       6,
       7,
       8,
-      9
+      9,
+      10,
+      11,
+      12,
+      13
     ]);
+
+    /*.tickValues([      
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]);*/
 
   var yAxis = d3
     .axisLeft(y)
@@ -289,8 +417,8 @@
       300,
       325
     ]);*/
-
-    .tickValues([
+    .tickValues([      
+      0,
       1,
       2,
       3,
@@ -300,12 +428,24 @@
       7,
       8,
       9,
-      10,
-      11,
-      12,
-      13,
-      14
     ]);
+
+    /*.tickValues([
+      0,
+      0.5,
+      1,
+      1.5,
+      2,
+      2.5,
+      3,
+      3.5,
+      4,
+      4.5,
+      5,
+      5.5,
+      6,
+      6.5
+    ]);*/
 
   let buttonSize = 40;
   let buttonPlay = true;
@@ -411,7 +551,8 @@
     .append("text")
     .attr(
       "transform",
-      "translate(" + (width - 16) + " ," + (height + margin.top - 10) + ")"
+      //"translate(" + (width - 16) + " ," + (height + margin.top - 10) + ")"
+      "translate(" + (width - 50) + " ," + (height + margin.top - 10) + ")"
     )
     .style("text-anchor", "start")
     //.text(lang === "en" ? "Tweet" : "讨论量")
@@ -1121,7 +1262,8 @@
         .append("text")
         .attr("x", rightAsidePivotFromLeft)
         .attr("y", height + legendHeight / 2 + 5)
-        .text("Neutral")
+        //.text("Neutral")
+        .text("Population")
         .attr("class", "label-legend")
         // .attr("text-anchor","middle")
         .attr("fill", "#fff");
@@ -1129,14 +1271,16 @@
         .append("text")
         .attr("x", rightAsidePivotFromLeft - legendGray - legendBlue + 35)
         .attr("y", height + legendHeight / 2 + 5)
-        .text("Stay in the EU")
+        //.text("Stay in the EU")
+        .text("Small")
         .attr("class", "label-legend")
         .attr("fill", "#fff");
       trendLegend
         .append("text")
         .attr("x", rightAsidePivotFromLeft + legendGray + legendRed - 35)
         .attr("y", height + legendHeight / 2 + 5)
-        .text("Leave the EU")
+        //.text("Leave the EU")
+        .text("Large")
         .attr("class", "label-legend")
         .attr("fill", "#fff");
     }
@@ -1148,70 +1292,93 @@
       // gray
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft)
+        .attr("cx", rightAsidePivotFromLeft-15)
         .attr("cy", height + maxRadius)
-        .attr("r", minRadius)
+        //.attr("r", minRadius)
+        .attr("r", 12)
+        .attr("fill", "#b2b2b2")
+        .attr("style", "fill-opacity:1;");
+      trendLegend
+        .append("circle")
+        //.attr("cx", rightAsidePivotFromLeft + 8 + 11)
+        .attr("cx", rightAsidePivotFromLeft + 8 + 5)
+        .attr("cy", height + maxRadius)
+        //.attr("r", 11)
+        .attr("r", 14)
+        .attr("fill", "#b2b2b2")
+        .attr("style", "fill-opacity:1;");
+      trendLegend
+        .append("circle")
+        //.attr("cx", rightAsidePivotFromLeft - 8 - 11)
+        .attr("cx", rightAsidePivotFromLeft - 8 - 35)
+        .attr("cy", height + maxRadius)
+        //.attr("r", 11)
+        .attr("r", 10)
         .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;");
 
-      trendLegend
-        .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11)
-        .attr("cy", height + maxRadius)
-        .attr("r", 11)
-        .attr("fill", "#b2b2b2")
-        .attr("style", "fill-opacity:1;");
-      trendLegend
-        .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11)
-        .attr("cy", height + maxRadius)
-        .attr("r", 11)
-        .attr("fill", "#b2b2b2")
-        .attr("style", "fill-opacity:1;");
       //red
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14)
+        //.attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14)
+        .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 13)
         .attr("cy", height + maxRadius)
-        .attr("r", 14)
-        .attr("fill", "#f1706f")
+        //.attr("r", 14)
+        .attr("r", 16)
+        //.attr("fill", "#f1706f")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
+        //.attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17)
         .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17)
         .attr("cy", height + maxRadius)
-        .attr("r", 17)
-        .attr("fill", "#f1706f")
+        //.attr("r", 17)
+        .attr("r", 18)
+        //.attr("fill", "#f1706f")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
+        //.attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17 * 2 + 20)
         .attr("cx", rightAsidePivotFromLeft + 8 + 11 * 2 + 14 * 2 + 17 * 2 + 20)
         .attr("cy", height + maxRadius)
+        //.attr("r", 20)
         .attr("r", 20)
-        .attr("fill", "#f1706f")
+        //.attr("fill", "#f1706f")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
 
       // blue
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14)
+        //.attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14)
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 38)
         .attr("cy", height + maxRadius)
-        .attr("r", 14)
-        .attr("fill", "#76a6ca")
+        //.attr("r", 14)
+        .attr("r", 8)
+        //.attr("fill", "#76a6ca")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17)
+        //.attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17)
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 34)
         .attr("cy", height + maxRadius)
-        .attr("r", 17)
-        .attr("fill", "#76a6ca")
+        //.attr("r", 17)
+        .attr("r", 6)
+        //.attr("fill", "#76a6ca")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
       trendLegend
         .append("circle")
-        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17 * 2 - 20)
+        //.attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17 * 2 - 20)
+        .attr("cx", rightAsidePivotFromLeft - 8 - 11 * 2 - 14 * 2 - 17 * 2 - 24)
         .attr("cy", height + maxRadius)
-        .attr("r", 20)
-        .attr("fill", "#76a6ca")
+        //.attr("r", 20)
+        .attr("r", 4)
+        //.attr("fill", "#76a6ca")
+        .attr("fill", "#b2b2b2")
         .attr("style", "fill-opacity:1;")
     }
 
@@ -2892,8 +3059,7 @@
       //   }*/
 
       // }
-
-
+      
       timer
         .transition()
         .duration(timeTodo)
@@ -2909,7 +3075,7 @@
         //.attr("duration", function(d,i){return 1000*(i+1)})
         .ease(d3.easeLinear)
         .tween("time", () => {
-          return function (t) {
+          return function (t) {            
             let new_t;
             let dateTime = monthScale(t);
             let [max_story, btw_max_story] = getMaxStory(dateTime);
@@ -2926,19 +3092,21 @@
               let t_LastDayOfMonth = monthScale.invert(lastDayOfMonth);
               scale.domain([t_FirstDayOfMonth, t_LastDayOfMonth])
                 .range([0, 1]);
-              new_t = scale.invert(d3.easePolyInOut(scale(t), btw_max_story));
+              new_t = scale.invert(d3.easePolyInOut(scale(t), btw_max_story));//+0.06;   
+              
+              if (new_t < t) {
+                new_t = t
+              }
             } else {
-              new_t = t;
-            }
-
+              new_t = t;              
+            }           
+            
             dateTime = monthScale(new_t);
-            // console.log(dateTime)
-            tweenYear(dateTime);
-
+            //console.log(dateTime)
+            tweenYear(dateTime);                        
             //Plotly.newPlot('easeFunc2', [trace], { title: 'Tween graph' });
           };
         });
-
     }
 
     function startTime(ease, totalTime, timeTodo, dateScale) {
@@ -2977,6 +3145,7 @@
     }
 
     function getTime() {
+      console.log("time -->", timer.attr("T"))
       return timer.attr("T");
     }
 
@@ -3431,12 +3600,12 @@
         .append("div")
         .attr("class", `labelRow ${idName}Row`)
         .attr("id", d => `row-${d}`);
-
+      
       rows
         .append("div")
         .attr("class", "trendBar")
         .style("width", d => {
-          return trendScale(trendTransform(trendMap.get(d))) + "px";
+          return trendScale(trendTransform(trendMap.get(d)+1)) + "px";
         })
         .style("margin-left", d => {
           //return rightAsidePivotFromLeft + "px";
@@ -3473,10 +3642,12 @@
         .style("border-bottom-right-radius", d => {
           return "8px";
         })        
-        .style("background", d => {
+        .style("background", d => {                           
+          return color_list[d]
+          /*
           if (category(trendMap.get(d)) === "2") return "#f1706f";
           if (category(trendMap.get(d)) === "1") return "#b2b2b2";
-          if (category(trendMap.get(d)) === "0") return "#76a6ca";
+          if (category(trendMap.get(d)) === "0") return "#76a6ca";     */
         });
 
       let rowslabel = rows.append("div").attr("class", "textLabelRow");
@@ -3652,6 +3823,7 @@
         //let topic = d.country.substr(1);
         let topic = d.country.substr(0);
 
+        /*
         switch (classifyTopic(topic)) {
           case 0:
             color.push(["rgb(27, 106, 165)"]);
@@ -3665,7 +3837,8 @@
           default:
             color.push(["black"]);
             break;
-        }
+        }*/
+        color.push(color_list[topic])
 
         for (let label in d) {
 
@@ -3674,13 +3847,9 @@
             let date_label = getDateOfWeek(label.substr(2), 2020).toISOString().slice(0,10).replace(/-/g,"")
             tmp.push([date_label, d[label]])
           }
-
-           
-
-
         }
 
-        data.color = color;
+        data.color = color;                
         data.point = tmp;
         data.topic = topic;
         return data;
