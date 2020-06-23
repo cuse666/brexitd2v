@@ -3160,8 +3160,7 @@ Vietnam #ed920e
       svg.interrupt();
     }
 
-    function getTime() {
-      console.log("time -->", timer.attr("T"))
+    function getTime() {      
       return timer.attr("T");
     }
 

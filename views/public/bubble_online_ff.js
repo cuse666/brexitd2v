@@ -1,3 +1,29 @@
+function linearRegression(x, y)
+{
+    var xs = 0;  // sum(x)
+    var ys = 0;  // sum(y)
+    var xxs = 0; // sum(x*x)
+    var xys = 0; // sum(x*y)
+    var yys = 0; // sum(y*y)
+
+    var n = 0;
+    for (; n < x.length && n < y.length; n++)
+    {
+        xs += x[n];
+        ys += y[n];
+        xxs += x[n] * x[n];
+        xys += x[n] * y[n];
+        yys += y[n] * y[n];
+    }
+
+    var div = n * xxs - xs * xs;
+    var gain = (n * xys - xs * ys) / div;
+    var offset = (ys * xxs - xs * xys) / div;
+    var correlation = Math.abs((xys * n - xs * ys) / Math.sqrt((xxs * n - xs * xs) * (yys * n - ys * ys)));
+
+    return { a: gain, b: offset, correlation: correlation };
+}
+
 (async function main() {
 
   let events = [];
@@ -424,6 +450,8 @@
     // return now[2];
   }
 
+  
+
   var dataArray = [];
   var trendMap = new Map();
   d3.csv("public/data/hashtag_bubble_deleted0414.csv").then(function (data) {
@@ -433,6 +461,8 @@
       tmp.trend = d.trend.trim();
       trendMap.set(tmp.label.slice(1), parseFloat(tmp.trend));
       tmp.value = [];
+      x_regress = []
+      y_regress = []
       // start default date      
       for (let label in d) {
         if (
@@ -440,8 +470,6 @@
           label !== "trend" &&
           label.substr(0, 2) !== "re" &&
           label.substr(0, 2) !== "lv"
-
-
         ) {
           tmp.value.push([
             parseDate(label),
@@ -449,12 +477,49 @@
             parseInt(d["re" + label]),
             parseInt(d["lv" + label]),
           ]);
+          x_regress.push(parseInt(d[label]))
+          y_regress.push(parseInt(d["re" + label]))
         }
       }
+      tmp.regress = linearRegression(x_regress, y_regress);      
       tmp.value.push([new Date(2019, 5), tmp.value[40][1], tmp.value[40][2], tmp.value[40][3]]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
     });
+
+    let groupRegression = svg.append("g"); 
+    let showRegress_list = {}
+
+    for(let d of dataArray){
+      let a = d.regress.a
+      let b = d.regress.b
+      let coef = d.regress.correlation
+      let x1 = d.value[0][1]
+      let x2 = d.value[d.value.length-1][1] 
+      let showRegress = groupRegression
+      .append("line")
+      .attr("x1", x1)
+      .attr("y1", x1*coef)
+      //.attr("y1", a+ b*x1)
+      .attr("x2", x2)
+      .attr("y2", x2*coef)
+      //.attr("y2", a+ b*x2)
+      .attr("stroke", "rgb(255,255,0)")
+      .attr("stroke-width", 10 )
+      .style("display", "none")
+
+      showRegress_list[d.label] = showRegress
+
+      /*let showDot = groupRegression.append("circle")
+        .attr("cx", x2)
+        .attr("cy", x2*coef)
+        .attr("r", 5)
+        .attr("fill", "#b2b2b2")
+        .attr("style", "fill-opacity:1;");*/
+    }
+
+    groupRegression.attr("transform", "translate(120, 565) scale(1,-1)")
+                   // .style("display", "none");
 
     //******************************************************************************************************** */
     //添加一个矩形框，在其上添加文本
@@ -2040,13 +2105,25 @@
     }
 
     function showPastIconClickHandler() {
+      let labels = getSelectedLabel()
+      console.log(labels)
       if (getSelectedLabel().length) {
         let showPast_Input = document.getElementById("showPast_input");
         showPast_Input.click();
         if (showPast_Input.checked) {
           showPathIcon.attr("xlink:href", "public/icon/path_ON.png")
+          if( getTime() == totalTime){
+            //groupRegression.style("display", "block");            
+            for ( l of labels){
+              showRegress_list["#"+l].style("display", "block")
+            }
+          }
         } else {
           showPathIcon.attr("xlink:href", "public/icon/path_OFF.png")
+          //groupRegression.style("display", "none");
+          for ( regress of Object.values(showRegress_list)){
+            regress.style("display", "none")
+          }
         }
       } else {
         window.alert("Please select topic first.")
