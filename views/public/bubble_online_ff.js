@@ -1347,7 +1347,7 @@
       .html("2 minutes")
       .attr("for", "option_totalTime")
       .style("display", "block")
-      .style("margin-left", "30px");
+      .style("margin-left", "35px");
     function totalTimeInputHandler() {
       let __totalTime = option_totalTime_input.property("value")
       option_totalTime_label.html(msToMinute(__totalTime));
@@ -4122,16 +4122,16 @@
 
     textArea.append("text")
       .text("Data")
-      .attr("style", "position:relative; left:45px")
+      .attr("style", "position:relative; left:48px")
     textArea.append("text")
       .text("Record")
-      .attr("style", "position:relative; left:80px")
+      .attr("style", "position:relative; left:85px")
     textArea.append("text")
       .text("Upload")
-      .attr("style", "position:relative; left:105px")
+      .attr("style", "position:relative; left:115px")
     textArea.append("text")
       .text("Replay")
-      .attr("style", "position:relative; left:135px")
+      .attr("style", "position:relative; left:145px")
 
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")

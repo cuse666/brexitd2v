@@ -247,28 +247,39 @@
           */
     ]);
   
-    let color_list = { "BruneiDarussalam":"#b37359", 
-    "Singapore" : "#EF3340",
-    "Laos" : "#671c47",
-    "Cambodia" : "#555555",
-    "Malaysia" : "#F7E017",
-    "Myanmar" : "#99bf1a",
-    "Thailand" : "#1800ff",
-    "Vietnam" : "#ed920e",
-    "Philippines" : "#995e4c",
-    "Indonesia" : "#ff8080" }
+    /*let color_list = { "BruneiDarussalam":"#fff100", 
+    "Singapore" : "#ff8c00",
+    "Laos" : "#e81123",
+    "Cambodia" : "#ec008c",
+    "Malaysia" : "#68217a",
+    "Myanmar" : "#00188f",
+    "Thailand" : "#00bcf2",
+    "Vietnam" : "#00b294",
+    "Philippines" : "#009e49",
+    "Indonesia" : "#bad80a" }*/
+
+    let color_list = { "BruneiDarussalam":"#FFF766", 
+    "Singapore" : "#FFBA66",
+    "Laos" : "#F1707B",
+    "Cambodia" : "#F466BA",
+    "Malaysia" : "#A47AAF",
+    "Myanmar" : "#6674BC",
+    "Thailand" : "#66D7F7",
+    "Vietnam" : "#66D1BF",
+    "Philippines" : "#66C592",
+    "Indonesia" : "#D6E86C" }
 
     function color(trend){
-    let color_trend = { 0.001205713:"#b37359", 
-    0.020544273 : "#EF3340",
-    0.025636156 : "#671c47",
-    0.059374652 : "#555555",
-    0.115276881 : "#F7E017",
-    0.194032869 : "#99bf1a",
-    0.249017428 : "#1800ff",
-    0.347404712 : "#ed920e",
-    0.391143544 : "#995e4c",
-    0.97686179: "#ff8080" }
+    let color_trend = { 0.001205713:"#fff100", 
+    0.020544273 : "#ff8c00",
+    0.025636156 : "#e81123",
+    0.059374652 : "#ec008c",
+    0.115276881 : "#68217a",
+    0.194032869 : "#00188f",
+    0.249017428 : "#00bcf2",
+    0.347404712 : "#00b294",
+    0.391143544 : "#009e49",
+    0.97686179: "#bad80a" }
       return color_trend[trend]
     }
 
@@ -292,7 +303,8 @@ Vietnam #ed920e
     // .domain([0, 0.365010869, (0.365010869 + 2 / 3) / 2, 2 / 3, 1])
     .domain([0, 0.05, 0.2, 0.50448195659342, 0.72, 0.9, 1])
     // .range([25, 7, 25, 7, 25]);
-    .range([25, 20, 15, 15, 15, 20, 25]);
+    //.range([25, 20, 15, 15, 15, 20, 25]);
+    .range([10, 17, 24, 31, 38, 45, 52]);
 /*
   var color = d3
     .scaleQuantile()
@@ -552,11 +564,11 @@ Vietnam #ed920e
     .attr(
       "transform",
       //"translate(" + (width - 16) + " ," + (height + margin.top - 10) + ")"
-      "translate(" + (width - 50) + " ," + (height + margin.top - 10) + ")"
+      "translate(" + (width - 130) + " ," + (height + margin.top - 10) + ")"
     )
     .style("text-anchor", "start")
     //.text(lang === "en" ? "Tweet" : "讨论量")
-    .text("New Case")
+    .text("log2 New Case")
     .attr("class", "xLabel");
   svg
     .append("g")
@@ -570,7 +582,7 @@ Vietnam #ed920e
     .attr("transform", "rotate(270)")
     .style("text-anchor", "end")
     //.text(lang === "en" ? "Retweet" : "支持量")
-    .text("New Death")
+    .text("log2 New Death")
     .attr("class", "xLabel");
 
   d3.select("#showTextArea")
@@ -724,7 +736,7 @@ Vietnam #ed920e
         }
       }
       //tmp.value.push([new Date(2019, 5), tmp.value[40][1], tmp.value[40][2], tmp.value[40][3]]); // 2019/05+1
-      tmp.value.push([new Date(2020, 5), tmp.value[23][1], tmp.value[23][2], tmp.value[23][3]]); // 2019/05+1
+      tmp.value.push([new Date(2020, 5, 16, 23, 59, 59), tmp.value[23][1], tmp.value[23][2], tmp.value[23][3]]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
     });
@@ -1133,7 +1145,7 @@ Vietnam #ed920e
       .attr("x1", bluePivot)
       .attr("y1", "35")
       .attr("x2", bluePivot)
-      .attr("y2", svgHeight - 50)
+      .attr("y2", svgHeight - 440)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#3179AE");
 
@@ -1153,7 +1165,8 @@ Vietnam #ed920e
       .attr("x1", redPivot)
       .attr("y1", "35")
       .attr("x2", redPivot)
-      .attr("y2", svgHeight - 50)
+      //.attr("y2", svgHeight - 50)
+      .attr("y2", svgHeight - 440)
       .style("stroke-dasharray", "5,5") //dashed array for line
       .style("stroke", "#EE504E");
     let showPathIcon = showPathIconG
@@ -1412,7 +1425,7 @@ Vietnam #ed920e
     // let StopDate = limitDate
     //console.log(limitDate)
     //let endDate = new Date(2019, 5);
-    let endDate = new Date(2020, 5);
+    let endDate = new Date(2020, 5, 16, 23, 59, 59);
     // dataset format example
     /* {label: "#abtv", 
         forward: 1.6105742383512545, 
@@ -1660,7 +1673,7 @@ Vietnam #ed920e
       .html("2 minutes")
       .attr("for", "option_totalTime")
       .style("display", "block")
-      .style("margin-left", "30px");
+      .style("margin-left", "35px");
     function totalTimeInputHandler() {
       let __totalTime = option_totalTime_input.property("value")
       option_totalTime_label.html(msToMinute(__totalTime));
@@ -3097,6 +3110,9 @@ Vietnam #ed920e
               if (new_t < t) {
                 new_t = t
               }
+              else{
+                new_t = t
+              }
             } else {
               new_t = t;              
             }           
@@ -3374,7 +3390,8 @@ Vietnam #ed920e
         textPosition(dataset);
         if (year_month_date < limitDate) {
           // console.log(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate())
-          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
+          //monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1));
+          monthText.text(year_month_date.getFullYear() + "/" + (year_month_date.getMonth() + 1) + "/" + year_month_date.getDate());
         }
         else {
           // console.log("isAnimationFinished == true")
@@ -4470,16 +4487,16 @@ Vietnam #ed920e
 
     textArea.append("text")
       .text("Data")
-      .attr("style", "position:relative; left:45px")
+      .attr("style", "position:relative; left:48px")
     textArea.append("text")
       .text("Record")
-      .attr("style", "position:relative; left:80px")
+      .attr("style", "position:relative; left:85px")
     textArea.append("text")
       .text("Upload")
-      .attr("style", "position:relative; left:105px")
+      .attr("style", "position:relative; left:115px")
     textArea.append("text")
       .text("Replay")
-      .attr("style", "position:relative; left:135px")
+      .attr("style", "position:relative; left:145px")
 
     let div3 = d3.select("#main").append("div")
       .attr("class", "tooltip3")
