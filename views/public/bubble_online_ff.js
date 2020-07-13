@@ -17,11 +17,13 @@ function linearRegression(x, y)
     }
 
     var div = n * xxs - xs * xs;
-    var gain = (n * xys - xs * ys) / div;
+    //var gain = (n * xys - xs * ys) / div;
+    var slope = xys/xxs
     var offset = (ys * xxs - xs * xys) / div;
     var correlation = Math.abs((xys * n - xs * ys) / Math.sqrt((xxs * n - xs * xs) * (yys * n - ys * ys)));
 
-    return { a: gain, b: offset, correlation: correlation };
+    //return { a: gain, b: offset, correlation: correlation };
+    return slope
 }
 
 (async function main() {
@@ -481,7 +483,7 @@ function linearRegression(x, y)
           y_regress.push(parseInt(d["re" + label]))
         }
       }
-      tmp.regress = linearRegression(x_regress, y_regress);      
+      tmp.slope = linearRegression(x_regress, y_regress);      
       tmp.value.push([new Date(2019, 5), tmp.value[40][1], tmp.value[40][2], tmp.value[40][3]]); // 2019/05+1
       tmp.value.sort((a, b) => a[0] - b[0]);
       dataArray.push(tmp);
@@ -491,20 +493,28 @@ function linearRegression(x, y)
     let showRegress_list = {}
 
     for(let d of dataArray){
-      let a = d.regress.a
-      let b = d.regress.b
-      let coef = d.regress.correlation
-      let x1 = d.value[0][1]
-      let x2 = d.value[d.value.length-1][1] 
+      let slope = d.slope      
+      //let x1 = d.value[0][1]
+      //let x2 = d.value[d.value.length-1][1] 
+      let data = []
+      for( i=0; i<d.value.length-1; i++){
+        data.push( d.value[i][1])
+      }
+      
+      let x1 = Math.min(...data)
+      let x2 = Math.max(...data)
+
       let showRegress = groupRegression
       .append("line")
-      .attr("x1", x1)
-      .attr("y1", x1*coef)
+      .attr("x1", x(x1))
+      .attr("y1", y(x1*slope))
       //.attr("y1", a+ b*x1)
-      .attr("x2", x2)
-      .attr("y2", x2*coef)
+      .attr("x2", x(x2))
+      .attr("y2", y(x2*slope))
+      .attr("id", `regression_${d.label.slice(1)}`)
+
       //.attr("y2", a+ b*x2)
-      .attr("stroke", "rgb(255,255,0)")
+      .attr("stroke", "rgb(255,255,122)")
       .attr("stroke-width", 10 )
       .style("display", "none")
 
@@ -518,7 +528,8 @@ function linearRegression(x, y)
         .attr("style", "fill-opacity:1;");*/
     }
 
-    groupRegression.attr("transform", "translate(120, 565) scale(1,-1)")
+    groupRegression.attr("transform", "translate(120, 10)")
+    
                    // .style("display", "none");
 
     //******************************************************************************************************** */
@@ -2615,6 +2626,11 @@ function linearRegression(x, y)
           .selectAll("text")
           .style("display", "none");
       }
+
+      if( getTime() == totalTime ){
+          d3.select(`#regression_${label}`).style("display", "block")          
+      }
+
     }
 
     function mouseOutHandler() {
@@ -2645,6 +2661,10 @@ function linearRegression(x, y)
           .selectAll("text")
           .style("display", "block");
       }
+
+      if( getTime() == totalTime ){
+        d3.select(`#regression_${label}`).style("display", "none")          
+    }
     }
 
     function mouseWheelHandler() {
@@ -2755,8 +2775,13 @@ function linearRegression(x, y)
       let btw_max_story = 0;
 
       index = bisect.left(maxStory, dateTime);
-      max_story = maxStory[index - 1][1]; // maximum story levels
+      
+      if(index == 0){
+        return [1, 1]; 
+      }
 
+      max_story = maxStory[index - 1][1]; // maximum story levels
+      
       if (index == 1) {
         btw_max_story = 0 - maxStory[index - 1][1];
       } else {
