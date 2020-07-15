@@ -489,6 +489,7 @@ function linearRegression(x, y)
       dataArray.push(tmp);
     });
 
+    
     let groupRegression = svg.append("g"); 
     let showRegress_list = {}
 
@@ -515,7 +516,7 @@ function linearRegression(x, y)
 
       //.attr("y2", a+ b*x2)
       .attr("stroke", "rgb(255,255,122)")
-      .attr("stroke-width", 10 )
+      .attr("stroke-width", 5 )
       .style("display", "none")
 
       showRegress_list[d.label] = showRegress
@@ -2116,25 +2117,13 @@ function linearRegression(x, y)
     }
 
     function showPastIconClickHandler() {
-      let labels = getSelectedLabel()
-      console.log(labels)
       if (getSelectedLabel().length) {
         let showPast_Input = document.getElementById("showPast_input");
         showPast_Input.click();
         if (showPast_Input.checked) {
           showPathIcon.attr("xlink:href", "public/icon/path_ON.png")
-          if( getTime() == totalTime){
-            //groupRegression.style("display", "block");            
-            for ( l of labels){
-              showRegress_list["#"+l].style("display", "block")
-            }
-          }
         } else {
           showPathIcon.attr("xlink:href", "public/icon/path_OFF.png")
-          //groupRegression.style("display", "none");
-          for ( regress of Object.values(showRegress_list)){
-            regress.style("display", "none")
-          }
         }
       } else {
         window.alert("Please select topic first.")
@@ -2300,8 +2289,8 @@ function linearRegression(x, y)
         }
       });
 
-      // let currentTime = getTime();
-      // let currentDate = dateScale.invert(currentTime);
+      //let currentTime = getTime();
+      //let currentDate = dateScale.invert(currentTime);
       let selectedLabel = getSelectedLabel();
 
       maxHighlightBubbles = getMaxHighlightBubbles()
@@ -2462,7 +2451,7 @@ function linearRegression(x, y)
             );
             //***************************************************************************************************** */
           } else {    //运行结束，没有选中任何标签
-            resetTime();
+            resetTime();            
             startTime(easeFunc, totalTime, totalTime, dateScale);
             disableCursor();
           }
@@ -2470,7 +2459,7 @@ function linearRegression(x, y)
           isAnimationFinished = false;
         } else {  //没有运行结束
           let timeTodo = totalTime - getTime();
-          //startTime(easeFunc, totalTime, timeTodo, dateScale);          
+          //startTime(easeFunc, totalTime, timeTodo, dateScale);   
           startTime2(easeFunc, totalTime, timeTodo, dateScale);
           disableCursor();
         }
@@ -2627,10 +2616,9 @@ function linearRegression(x, y)
           .style("display", "none");
       }
 
-      if( getTime() == totalTime ){
+      if(isAnimationFinished){
           d3.select(`#regression_${label}`).style("display", "block")          
       }
-
     }
 
     function mouseOutHandler() {
@@ -2662,9 +2650,9 @@ function linearRegression(x, y)
           .style("display", "block");
       }
 
-      if( getTime() == totalTime ){
+      if(isAnimationFinished){
         d3.select(`#regression_${label}`).style("display", "none")          
-    }
+      }
     }
 
     function mouseWheelHandler() {
@@ -2774,12 +2762,7 @@ function linearRegression(x, y)
       let max_story = 0;
       let btw_max_story = 0;
 
-      index = bisect.left(maxStory, dateTime);
-      
-      if(index == 0){
-        return [1, 1]; 
-      }
-
+      index = bisect.left(maxStory, dateTime); 
       max_story = maxStory[index - 1][1]; // maximum story levels
       
       if (index == 1) {
@@ -2866,7 +2849,7 @@ function linearRegression(x, y)
           return function (t) {
             let new_t;
             let dateTime = monthScale(t);
-            let [max_story, btw_max_story] = getMaxStory(dateTime);
+            let [max_story, btw_max_story] = getMaxStory(dateTime);                    
             if (btw_max_story != 0) {
               let firstDayOfMonth = new Date(dateTime.getTime());
               firstDayOfMonth.setDate(1);

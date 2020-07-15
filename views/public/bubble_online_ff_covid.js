@@ -3007,7 +3007,7 @@ Vietnam #ed920e
 
       index = bisect.left(maxStory, dateTime);
       max_story = maxStory[index - 1][1]; // maximum story levels
-
+ 
       if (index == 1) {
         btw_max_story = 0 - maxStory[index - 1][1];
       } else {
@@ -3091,7 +3091,7 @@ Vietnam #ed920e
           return function (t) {            
             let new_t;
             let dateTime = monthScale(t);
-            let [max_story, btw_max_story] = getMaxStory(dateTime);
+            let [max_story, btw_max_story] = getMaxStory(dateTime);            
             if (btw_max_story != 0) {
               let firstDayOfMonth = new Date(dateTime.getTime());
               firstDayOfMonth.setDate(1);
