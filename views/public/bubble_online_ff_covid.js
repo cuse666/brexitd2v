@@ -2082,7 +2082,7 @@ Vietnam #ed920e
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
-    slider.on("click", sliderClickedHandler);
+    //slider.on("click", sliderClickedHandler);
     anchor.call(
       d3
         .drag()

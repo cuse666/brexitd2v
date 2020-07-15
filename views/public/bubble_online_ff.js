@@ -1832,7 +1832,7 @@ function linearRegression(x, y)
     checkboxs.on("change", checkedHandler);
     checkAll.on("change", checkedAllHandler);
     button.on("click", buttonClickedHandler);
-    slider.on("click", sliderClickedHandler);
+    //slider.on("click", sliderClickedHandler);
     anchor.call(
       d3
         .drag()
@@ -2459,7 +2459,7 @@ function linearRegression(x, y)
           isAnimationFinished = false;
         } else {  //没有运行结束
           let timeTodo = totalTime - getTime();
-          //startTime(easeFunc, totalTime, timeTodo, dateScale);   
+          //startTime(easeFunc, totalTime, timeTodo, dateScale);           
           startTime2(easeFunc, totalTime, timeTodo, dateScale);
           disableCursor();
         }
@@ -2729,7 +2729,6 @@ function linearRegression(x, y)
       return timeSeries
     }
 
-
     var maxStory = []
     function getMaxStory(dateTime) {
       let selectedLabel = getSelectedLabel();
@@ -2781,7 +2780,7 @@ function linearRegression(x, y)
       let monthScale = d3.scaleLinear()
         .domain([0, 1])
         .range([dateScale.invert(getTime()), endDate]);
-
+      
 
       let t_list = [];
       let t_new_list = [];
@@ -3087,6 +3086,10 @@ function linearRegression(x, y)
         proper_date = lastProperDate;
       } else {
         paused = false;
+      }
+
+      if (formatTime(new Date(2019, 5)) == formatTime(proper_date)){
+        paused = true        
       }
 
       function myNewDate() {
