@@ -1019,7 +1019,7 @@ Vietnam #ed920e
           // console.log(TextandDate[datestr])
           // console.log(datearr)
 
-          let endDate = "2019/05/30"
+          let endDate = "2020/06/16"
           let datearr = Object.keys(TextandDate)
           let len = datearr.length
           let pos = datearr.indexOf(datestr)
